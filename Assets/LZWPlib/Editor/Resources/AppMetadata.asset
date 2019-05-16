@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -43055666, guid: d637507f4bf30a04ba1abb4dbbde2767, type: 3}
+  m_Name: AppMetadata
+  m_EditorClassIdentifier: 
+  name: WikiGraph
+  aliases: []
+  tags:
+  - Wikipedia
+  authors:
+  - "Stanis\u0142aw G\xF3ra"
+  - "Jan Kruczy\u0144ski"
+  - "Miko\u0142aj Mirko"
+  - Mateusz Janicki
+  descriptionShort: "Aplikacja pozwalaj\u0105ca na poruszanie si\u0119 po tr\xF3jwymiarowym
+    grafie z\u0142o\u017Conym z podstron Wikipedii"
+  descriptionLong: 
+  tools:
+  - Unity 2018.1.9f2
+  LzwpLibVersion: 2.8 (mock)
+  appGUID: D69EA0D8DB3B457BB752A71C2E94AE29
+  buildGUID: 
+  defaultConfig:
+    obstacleWallWarningScaleMultiplier: 1
+    masterInstanceCursorVisible: 1
+    slaveInstanceCursorVisible: 0
+    setMaxFov: 0
+    allowHDR: 0
+    allowMSAA: 0
+    setRenderingPath: 0
+    renderingPath: 3

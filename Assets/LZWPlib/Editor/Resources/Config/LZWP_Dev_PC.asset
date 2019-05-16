@@ -1,0 +1,188 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -552429281, guid: d637507f4bf30a04ba1abb4dbbde2767, type: 3}
+  m_Name: LZWP_Dev_PC
+  m_EditorClassIdentifier: 
+  wrapper:
+    debug:
+      logToHtml: 0
+      htmlLogFileName: log_[INSTANCE_ID]_[DATETIME].html
+    display:
+      stereoscopyMode: 1
+      eyeSeparation: 0.05
+      swapEyes: 0
+      fullscreen: 1
+      setWindowPos: 0
+      windowPos: {x: 0, y: 0}
+      cursorVisible: 1
+    sync:
+      masterInstanceID: 0
+      serverIP: 127.0.0.7
+      port: 54321
+      sendRate: 60
+      quitOnDisconnection: 1
+      maxConnectionTries: 5
+    input:
+      posesStartingPosition: {x: 0, y: 1.75, z: 0}
+      posesStartingRotation: {x: 0, y: 0, z: 0}
+      dtracks:
+      - name: SMARTTRACK miniCave
+        enabled: 1
+        startMeasurement: 0
+        controllerIP: 192.168.77.101
+        dataPort: 5000
+        offsetFromOrigin: {x: 0, y: 1.65, z: 0}
+        bodies:
+        - name: Glasses Target 8
+          glasses: 1
+          positionCorrection: {x: 0, y: 0, z: 0}
+          rotationCorrection: {x: 0, y: 0, z: 0}
+        - name: Tree Target 1 (TT1)
+          glasses: 1
+          positionCorrection: {x: 0, y: 0, z: 0}
+          rotationCorrection: {x: 0, y: 0, z: 0}
+        flysticks:
+        - name: Flystick2 00602
+          positionCorrection: {x: 0, y: 0, z: 0}
+          rotationCorrection: {x: 0, y: 0, z: 0}
+        - name: Flystick2 00612
+          positionCorrection: {x: 0, y: 0, z: 0}
+          rotationCorrection: {x: 0, y: 0, z: 0}
+        posesListStartingIdx: 0
+        joysitckThreshold: 0.01
+    instances:
+    - name: INST_1
+      debug:
+        logToHtml: 1
+        htmlLogFileName: log_[INSTANCE_ID]_[DATETIME].html
+        inherit_logToHtml: 1
+        inherit_htmlLogFileName: 1
+      cameras:
+      - screenIdx: 0
+        displayIdx: 0
+        viewport:
+          serializedVersion: 2
+          x: 0
+          y: 0
+          width: 1
+          height: 1
+        asymmetricFrustum: 0
+        convergenceDistance: 1
+        pointOfViewIdx: 0
+        setMaxFov: 0
+        allowHDR: 0
+        allowMSAA: 0
+        setRenderingPath: 0
+        renderingPath: 3
+        inherit_setMaxFov: 1
+        inherit_allowHDR: 1
+        inherit_allowMSAA: 1
+        inherit_setRenderingPath: 1
+        inherit_renderingPath: 1
+      display:
+        stereoscopyMode: 1
+        eyeSeparation: 0.05
+        swapEyes: 0
+        fullscreen: 1
+        setWindowPos: 0
+        windowPos: {x: 0, y: 0}
+        cursorVisible: 1
+        inherit_stereoscopyMode: 1
+        inherit_eyeSeparation: 1
+        inherit_swapEyes: 1
+        inherit_fullscreen: 1
+        inherit_setWindowPos: 1
+        inherit_windowPos: 1
+        inherit_cursorVisible: 1
+    - name: INST_2
+      debug:
+        logToHtml: 1
+        htmlLogFileName: log_[INSTANCE_ID]_[DATETIME].html
+        inherit_logToHtml: 1
+        inherit_htmlLogFileName: 1
+      cameras:
+      - screenIdx: 0
+        displayIdx: 0
+        viewport:
+          serializedVersion: 2
+          x: 0
+          y: 0
+          width: 1
+          height: 1
+        asymmetricFrustum: 0
+        convergenceDistance: 1
+        pointOfViewIdx: 0
+        setMaxFov: 0
+        allowHDR: 0
+        allowMSAA: 0
+        setRenderingPath: 0
+        renderingPath: 3
+        inherit_setMaxFov: 1
+        inherit_allowHDR: 1
+        inherit_allowMSAA: 1
+        inherit_setRenderingPath: 1
+        inherit_renderingPath: 1
+      display:
+        stereoscopyMode: 1
+        eyeSeparation: 0.05
+        swapEyes: 0
+        fullscreen: 1
+        setWindowPos: 0
+        windowPos: {x: 0, y: 0}
+        cursorVisible: 0
+        inherit_stereoscopyMode: 1
+        inherit_eyeSeparation: 1
+        inherit_swapEyes: 1
+        inherit_fullscreen: 1
+        inherit_setWindowPos: 1
+        inherit_windowPos: 1
+        inherit_cursorVisible: 1
+    pointsOfView:
+    - poseIdx: 0
+    screens:
+    - name: FRONT
+      centre: {x: 0, y: 0, z: 0.6}
+      normal: {x: 0, y: 0, z: -1}
+      up: {x: 0, y: 1, z: 0}
+      width: 0.6
+      height: 0.34
+    obstacleWalls:
+    - name: FRONT
+      centre: {x: 0, y: 0, z: 0.6}
+      normal: {x: 0, y: 0, z: -1}
+      up: {x: 0, y: 1, z: 0}
+      width: 0.6
+      height: 0.34
+    - name: LEFT
+      centre: {x: -0.31, y: 0, z: 0.3}
+      normal: {x: 1, y: 0, z: 0}
+      up: {x: 0, y: 1, z: 0}
+      width: 0.6
+      height: 0.34
+    - name: RIGHT
+      centre: {x: 0.31, y: 0, z: 0.3}
+      normal: {x: -1, y: 0, z: 0}
+      up: {x: 0, y: 1, z: 0}
+      width: 0.6
+      height: 0.34
+    - name: FLOOR
+      centre: {x: 0, y: -0.17, z: 0.42}
+      normal: {x: 0, y: 1, z: 0}
+      up: {x: 0, y: 0, z: 1}
+      width: 0.6
+      height: 0.34
+    screensAndObstacleWallsOffsetFromOrigin: {x: 0, y: 1.65, z: 0}
+    obstacleWallWarningScale: 0.1
+    setMaxFov: 0
+    allowHDR: 0
+    allowMSAA: 0
+    setRenderingPath: 0
+    renderingPath: 3

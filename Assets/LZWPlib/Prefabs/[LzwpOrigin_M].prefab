@@ -1,0 +1,329 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1036901858813508}
+  m_IsPrefabParent: 1
+--- !u!1 &1036901858813508
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4762045868463618}
+  - component: {fileID: 148316566699044646}
+  - component: {fileID: 114142175394883690}
+  - component: {fileID: 114305524130680100}
+  - component: {fileID: 114810793624457228}
+  - component: {fileID: 54610774471100422}
+  - component: {fileID: 82525976394153628}
+  - component: {fileID: 136579907531431566}
+  - component: {fileID: 143830891166382024}
+  m_Layer: 0
+  m_Name: '[LzwpOrigin_M]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4762045868463618
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1036901858813508}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &54610774471100422
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1036901858813508}
+  serializedVersion: 2
+  m_Mass: 10
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!82 &82525976394153628
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1036901858813508}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+--- !u!114 &114142175394883690
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1036901858813508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -33015773, guid: 90926b38e37e64a4d9679c8ad622e989, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstacleWallsMaterial: {fileID: 2100000, guid: d7b343a363c0fe640bf4f02e3eb60cf0,
+    type: 2}
+--- !u!114 &114305524130680100
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1036901858813508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -828153059, guid: 90926b38e37e64a4d9679c8ad622e989, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  screensDrawMode: 0
+  screenFaceColor: {r: 0, g: 1, b: 1, a: 0.35}
+  screensBorderColor: {r: 0, g: 0, b: 1, a: 1}
+  screensDrawFaces: 1
+  screensDrawBorders: 1
+  screensDrawArrows: 0
+  screensDrawNames: 0
+  obstacleWallDrawMode: 2
+  obstacleWallFaceColor: {r: 0, g: 1, b: 1, a: 0.35}
+  obstacleWallBorderColor: {r: 0, g: 0, b: 1, a: 1}
+  obstacleWallDrawFaces: 1
+  obstacleWallDrawBorders: 1
+  obstacleWallDrawArrows: 0
+  obstacleWallDrawNames: 0
+  posesDrawMode: 0
+  drawPoses: 6
+  posesDrawSpheres: 1
+  poseSphereSize: 0.08
+  untrackedPoseColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.2}
+  trackedPoseColor: {r: 0, g: 1, b: 0, a: 0.6}
+  lostPoseColor: {r: 1, g: 0, b: 0, a: 0.6}
+  posesDrawArrows: 1
+  posesDrawNames: 1
+  choosenConfigFile: 
+--- !u!114 &114810793624457228
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1036901858813508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49276e3a8bf3e1942a65423aee44d90e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  config:
+    general:
+      movementType: 1
+      dblJumpToToggleMovementType: 1
+      dblJumpDetectionTime: 0.5
+      rotationSmoothSpeed: 7
+      keyboardAndMouse:
+        moveFasterKey: 304
+        moveFasterKeyAlt: 0
+        moveSlowerKey: 306
+        moveSlowerKeyAlt: 303
+        mouseRotationSpeed: 2
+      flystick:
+        anyFlystick: 1
+        flystickIndex: 0
+        joystickHorizontalAction: 1
+    flying:
+      useCapsuleCollider: 0
+      keyboardAndMouse:
+        flyUpKey: 101
+        flyUpKeyAlt: 32
+        flyDownKey: 113
+        NormalMoveSpeed: 7
+        MoveSlowerMultiplier: 0.25
+        MoveFasterMultiplier: 4
+      flystick:
+        moveSpeed: 10
+        rotateSpeed: 1.5
+    walking:
+      walkingType: 0
+      jumpingEnabled: 1
+      flystick:
+        jumpBtn: 0
+        walkInFlystickDirection: 1
+      runSpeedMultiplier: 2
+      strafeSpeedMultiplier: 0.9
+      backwardSpeedMultiplier: 0.6
+      stepInterval: 5
+      runstepLenghten: 0.7
+      playWalkingAudio: 1
+      playJumpingAudio: 1
+      footstepSounds:
+      - {fileID: 8300000, guid: 42e65e088b3f4374e851b8dbd38f3df9, type: 3}
+      - {fileID: 8300000, guid: 8bc94ec6ed537e743b481638bdcd503d, type: 3}
+      - {fileID: 8300000, guid: 5a9383dda6cabc047b7a297602e93eb4, type: 3}
+      - {fileID: 8300000, guid: e9714160ce34f2b4ab63ff8c27bd68e1, type: 3}
+      jumpSound: {fileID: 8300000, guid: 5897aeed9b676024fbb8c694b421a861, type: 3}
+      landSound: {fileID: 8300000, guid: 3b09d59f4499d45428baa7a21e954296, type: 3}
+      characterControllerWalkingType:
+        walkSpeed: 5
+        jumpSpeed: 5
+        stickToGroundForce: 10
+        gravityMultiplier: 1
+      physicsBasedWalkingType:
+        walkSpeed: 5
+        JumpForce: 65
+        SlopeCurveModifier:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 2
+            time: -90
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+          - serializedVersion: 2
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+          - serializedVersion: 2
+            time: 90
+            value: 0
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        groundCheckDistance: 0.1
+        stickToGroundHelperDistance: 0.6
+        airControl: 0
+  currentSpeed: 8
+--- !u!136 &136579907531431566
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1036901858813508}
+  m_Material: {fileID: 13400000, guid: e3379e4b30ca3b944b008484b468974f, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  m_Radius: 0.4
+  m_Height: 1.6
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.8, z: 0}
+--- !u!143 &143830891166382024
+CharacterController:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1036901858813508}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Height: 1.6
+  m_Radius: 0.4
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0
+  m_Center: {x: 0, y: 0.8, z: 0}
+--- !u!148 &148316566699044646
+NetworkView:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1036901858813508}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 4762045868463618}
+  m_ViewID:
+    m_ID: 0
+    m_Type: 0

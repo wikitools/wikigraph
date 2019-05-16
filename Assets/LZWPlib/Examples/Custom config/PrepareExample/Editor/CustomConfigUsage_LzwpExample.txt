@@ -1,0 +1,44 @@
+﻿using Newtonsoft.Json;
+using System;
+using UnityEngine;
+
+
+// could be in separate file
+public partial class CustomAppConfig
+{
+    [Serializable]
+    public class CubeRotation
+    {
+        public bool rotate = true;
+        public float speed = 20f;
+
+        [JsonConverter(typeof(LzwpUtils.Converters.Vector3Converter))]
+        public Vector3 axis = Vector3.one;
+    }
+
+    public CubeRotation cubeRotation = new CubeRotation();
+
+    public int someInt = 1337;
+
+    public string someString = "LZWP!";
+}
+
+public partial class CustomConfig_LzwpExample : MonoBehaviour
+{
+    void Start()
+    {
+        Debug.Log("String from custom config: " + Lzwp.config.GetCustom().someString);
+        Debug.Log("Int from custom config: " + Lzwp.config.GetCustom().someInt);
+
+        // declared in: Assets/LZWPlib/Scripts/MovementController.cs
+        Debug.Log("Movement type from custom config: " + Lzwp.config.GetCustom().movement.movementSettings.general.movementType);
+    }
+
+    void Update()
+    {
+        var cfg = Lzwp.config.GetCustom().cubeRotation;
+
+        if (cfg.rotate)
+            cube.Rotate(cfg.axis.normalized * cfg.speed * Time.deltaTime);
+    }
+}
