@@ -1,12 +1,11 @@
-﻿using System;
-using Services;
+﻿using Services;
 using UnityEngine;
 
 public class GraphController : MonoBehaviour {
-	private DataFileReader fileReader;
+	private NodeLoader nodeLoader;
 	
 	void Start () {
-		fileReader = new DataFileReader();
+		nodeLoader = new NodeLoader();
 	}
 	
 	void Update () {
@@ -14,6 +13,6 @@ public class GraphController : MonoBehaviour {
 	}
 
 	private void OnDestroy() {
-		fileReader.Dispose();
+		nodeLoader.Dispose();
 	}
 }

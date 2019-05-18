@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Model {
@@ -5,8 +6,10 @@ namespace Model {
 		public List<Node> Children;
 		public List<Node> Parents;
 		
+		public uint ID;
+		public uint WikiID;
+		
 		public string Title;
-		public int WikiId;
 		public NodeType Type;
 	}
 
