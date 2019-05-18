@@ -5,7 +5,8 @@ namespace Model {
 		public List<Node> Children;
 		public List<Node> Parents;
 		
-		public string title;
+		public string Title;
+		public int WikiId;
 		public NodeType Type;
 	}
 
