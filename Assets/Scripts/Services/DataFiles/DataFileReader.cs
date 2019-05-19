@@ -24,7 +24,7 @@ namespace Services {
 		}
 
 		public ulong ReadLong(DataFileType file, long offset) {
-			byte[] bytes = readBytes(file, offset, 4);
+			byte[] bytes = readBytes(file, offset, 8);
 			return (ulong) (bytes[0] | bytes[1] << 8 | bytes[2] << 16 | bytes[3] << 24 | bytes[4] << 32 | bytes[5] << 40 | bytes[6] << 48 | bytes[7] << 56);
 		}
 
@@ -34,18 +34,27 @@ namespace Services {
 		}
 
 		public uint ReadInt24(DataFileType file, long offset) {
-			byte[] bytes = readBytes(file, offset, 4);
+			byte[] bytes = readBytes(file, offset, 3);
 			return (uint) (bytes[0] | bytes[1] << 8 | bytes[2] << 16);
 		}
 
 		public ushort ReadShort(DataFileType file, long offset) {
-			byte[] bytes = readBytes(file, offset, 4);
+			byte[] bytes = readBytes(file, offset, 2);
 			return (ushort) (bytes[0] | bytes[1] << 8);
+		}
+
+		public byte ReadByte(DataFileType file, long offset) {
+			byte[] bytes = readBytes(file, offset, 1);
+			return bytes[0];
 		}
 
 		public string ReadString(DataFileType file, long offset, int length) {
 			byte[] bytes = readBytes(file, offset, length, false);
 			return Encoding.UTF8.GetString(bytes);
+		}
+
+		public long GetFileLength(DataFileType file) {
+			return streams[file].Length;
 		}
 
 		private void loadDataFile(DataFileType type, string dataFilePostfix) {

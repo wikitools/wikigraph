@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-
 namespace Model {
 	public struct Node {
-		public List<Node> Children;
-		public List<Node> Parents;
+		public uint[] Children;
+		public uint[] Parents;
 		
 		public uint ID;
 		public uint WikiID;
