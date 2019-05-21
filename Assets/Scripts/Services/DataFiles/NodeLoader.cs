@@ -22,7 +22,6 @@ namespace Services {
 
 		public NodeLoader() {
 			fileReader = new DataFileReader();
-			Node one = LoadNode(0);
 		}
 
 		public Node LoadNode(uint id) {
