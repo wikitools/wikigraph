@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Model;
 
 namespace Services {
@@ -7,6 +6,11 @@ namespace Services {
 		private DataFileReader fileReader;
 
 		public const ushort NODE_TYPE_DIVIDER = 2;
+
+		private static class INFO {
+			public const ushort NODE_NUMBER_SIZE = 3;
+		}
+		
 		private static class MAP {
 			public const ushort GRAPH_OFFSET_SIZE = 4;
 			public const ushort TITLE_OFFSET_SIZE = 4;
@@ -26,7 +30,7 @@ namespace Services {
 
 		public Node LoadNode(uint id) {
 			var node = new Node {ID = id};
-			node.Type = id < NODE_TYPE_DIVIDER ? NodeType.CATEGORY : NodeType.ARTICLE;
+			node.Type = id < fileReader.ReadInt24(DataFileType.INFO, INFO.NODE_NUMBER_SIZE) ? NodeType.CATEGORY : NodeType.ARTICLE;
 			long nodeMapFilePos = id * MAP.LINE_SIZE;
 			loadNodeConnections(ref node, nodeMapFilePos);
 			
@@ -35,6 +39,10 @@ namespace Services {
 			uint nextNodeTitleFilePos = getNextNodePropPos(DataFileType.TITLES, nodeMapFilePos + MAP.LINE_SIZE + MAP.GRAPH_OFFSET_SIZE);
 			node.Title = fileReader.ReadString(DataFileType.TITLES, nodeTitleFilePos, (int) (nextNodeTitleFilePos - nodeTitleFilePos));
 			return node;
+		}
+
+		public uint GetNodeNumber() {
+			return fileReader.ReadInt24(DataFileType.INFO, 0);
 		}
 
 		private void loadNodeConnections(ref Node node, long nodeMapFilePos) {
