@@ -2,6 +2,7 @@
 using Model;
 using Services;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GraphController : MonoBehaviour {
 	private NodeLoader nodeLoader;
@@ -18,11 +19,17 @@ public class GraphController : MonoBehaviour {
 		nodePool = new GameObjectPool(NodePrefab, NodePreloadNumber, PoolNodeContainer);
 		
 		for (uint i = 0; i < nodeLoader.GetNodeNumber(); i++) {
-			GameObject nodeGO = nodePool.Spawn();
-			nodeGO.transform.SetParent(transform, false);
-			nodeGO.transform.position = Random.insideUnitSphere * WorldRadius;
-			nodes[nodeLoader.LoadNode(i)] = nodeGO;
+			LoadNode(i);
 		}
+	}
+
+	private void LoadNode(uint id) {
+		Node node = nodeLoader.LoadNode(id);
+		GameObject nodeGO = nodePool.Spawn();
+		nodeGO.transform.parent = transform;
+		nodeGO.transform.position = Random.insideUnitSphere * WorldRadius;
+		nodeGO.GetComponentInChildren<Text>().text = node.Title;
+		nodes[node] = nodeGO;
 	}
 	
 	void Update () {
