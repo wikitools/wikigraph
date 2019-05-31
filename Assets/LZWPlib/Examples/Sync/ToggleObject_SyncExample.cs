@@ -19,10 +19,10 @@ public class ToggleObject_SyncExample : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha3))
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha3))
             ToggleVisibility();
 
-        if (Input.GetKeyDown(KeyCode.Alpha4))
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha4))
             ChangeOrientation();
     }
 

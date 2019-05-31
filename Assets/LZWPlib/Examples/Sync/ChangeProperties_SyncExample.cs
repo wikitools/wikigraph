@@ -23,10 +23,10 @@ public class ChangeProperties_SyncExample : MonoBehaviour
     {
         if (Lzwp.sync.isMaster)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1))
                 ChangeSize();
 
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2))
                 ChangeColor();
         }
     }

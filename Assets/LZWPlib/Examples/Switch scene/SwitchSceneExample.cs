@@ -67,7 +67,7 @@ public class SwitchSceneExample : MonoBehaviour
         string activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         // or: activeScene = Lzwp.sync.GetActiveScene().name;
 
-        if (Input.GetKeyDown(KeyCode.Space))  // toggle between the two
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Space))  // toggle between the two
         {
             if (activeScene == SCENE_1_NAME)
                 Lzwp.sync.LoadScene(SCENE_2_NAME);
@@ -76,14 +76,14 @@ public class SwitchSceneExample : MonoBehaviour
         }
 
 
-        if (Input.GetKeyDown(KeyCode.R))  // reload current scene
+        if (UnityEngine.Input.GetKeyDown(KeyCode.R))  // reload current scene
             Lzwp.sync.ReloadScene();  // same as: Lzwp.sync.LoadScene(activeScene);
 
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1))
             Lzwp.sync.LoadScene(SCENE_1_NAME);
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2))
             Lzwp.sync.LoadScene(SCENE_2_NAME);
     }
 }

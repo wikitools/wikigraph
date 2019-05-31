@@ -44,13 +44,13 @@ public class Instantiation_LzwpExample : LZWPlib.UnitySingleton<Instantiation_Lz
     {
         if (Lzwp.sync.isMaster)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1))
                 SetMode1();
 
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2))
                 SetMode2();
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
                 ExecuteAction();
         }
     }
