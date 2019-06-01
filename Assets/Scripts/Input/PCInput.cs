@@ -5,12 +5,14 @@ namespace AppInput {
 		private InputConfig config;
 		private Vector3 lastMousePos = Vector3.zero;
 
+		private int mainAxisDirection, crossAxisDirection;
+
 		public PCInput(InputConfig config) {
 			this.config = config;
 		}
 
-		public Vector3 GetRotation() {
-			Vector3 mousePosDelta = Vector3.zero;
+		public Vector2 GetRotation() {
+			Vector2 mousePosDelta = Vector3.zero;
 			if (Input.GetMouseButtonDown((int) config.RotationButton)) {
 				lastMousePos = Input.mousePosition;
 			} else if (Input.GetMouseButton((int) config.RotationButton)) {
@@ -19,6 +21,19 @@ namespace AppInput {
 				lastMousePos = Input.mousePosition;
 			}
 			return mousePosDelta;
+		}
+
+		public Vector2 GetMovement() {
+			CheckAxisDirection(ref mainAxisDirection, KeyCode.UpArrow, KeyCode.DownArrow);
+			CheckAxisDirection(ref crossAxisDirection, KeyCode.RightArrow, KeyCode.LeftArrow);
+			return new Vector2(mainAxisDirection * config.MovementSpeed, crossAxisDirection * config.MovementSpeed);
+		}
+
+		private void CheckAxisDirection(ref int state, KeyCode forward, KeyCode backward) {
+			if(Input.GetKeyDown(forward) || Input.GetKeyDown(backward))
+				state = Input.GetKeyDown(forward) ? 1 : -1;
+			if(Input.GetKeyUp(forward) || Input.GetKeyUp(backward))
+				state = 0;
 		}
 	}
 }

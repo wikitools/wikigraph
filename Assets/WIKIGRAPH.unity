@@ -203,10 +203,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Cave: {fileID: 508853209}
   Environment: 0
-  config:
+  Config:
     RotationSpeed: 10
     MaxRotationSpeed: {x: 10, y: 10}
     RotationButton: 0
+    MovementSpeed: 0.1
 --- !u!114 &68664596
 MonoBehaviour:
   m_ObjectHideFlags: 0

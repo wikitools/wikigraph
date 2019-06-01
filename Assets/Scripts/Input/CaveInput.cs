@@ -8,8 +8,12 @@ namespace AppInput {
 			this.config = config;
 		}
 
-		public Vector3 GetRotation() {
-			return Vector3.zero;
+		public Vector2 GetRotation() {
+			return Vector2.zero;
+		}
+
+		public Vector2 GetMovement() {
+			return Vector2.zero;
 		}
 	}
 }
