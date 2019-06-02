@@ -12,13 +12,13 @@ namespace AppInput.Event.Button {
 		public KeyCode KeyboardButton;
 
 		public void CheckForInput() {
-			if (OnPress != null && (ButtonType == ButtonType.Mouse ? Input.GetMouseButtonDown((int) MouseButton) : Input.GetKeyDown(KeyboardButton))) {
+			if (ButtonType == ButtonType.Mouse ? Input.GetMouseButtonDown((int) MouseButton) : Input.GetKeyDown(KeyboardButton)) {
 				Pressed = true;
-				OnPress();
+				OnPress?.Invoke();
 			}
-			if (OnRelease != null && (ButtonType == ButtonType.Mouse ? Input.GetMouseButtonUp((int) MouseButton) : Input.GetKeyUp(KeyboardButton))) {
+			if (ButtonType == ButtonType.Mouse ? Input.GetMouseButtonUp((int) MouseButton) : Input.GetKeyUp(KeyboardButton)) {
 				Pressed = false;
-				OnRelease();
+				OnRelease?.Invoke();
 			}
 		}
 

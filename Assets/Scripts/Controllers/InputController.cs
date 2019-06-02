@@ -1,41 +1,44 @@
 ﻿using System;
 using System.Reflection;
 using AppInput;
+using AppInput.Binding;
 using AppInput.Event.Button;
-using AppInput.Mapping;
 using Inspector;
 using UnityEditor;
 using UnityEngine;
 
 namespace Controllers {
 	public class InputController : MonoBehaviour {
-		public GameObject Cave;
+		public GameObject Entity;
 		public InputConfig Config;
 
 		public Environment Environment;
-		public PCInputMapping PCMapping;
-		public CaveInputMapping CaveMapping;
+		public PcInputBinding PCInputBinding;
+		public CaveInputBinding CaveInputBinding;
 
 		private InputEnvironment input;
-		private InputMapping mapping;
+		private InputBinding binding;
 
 		void Start() {
-			input = Environment == Environment.PC ? (InputEnvironment) new PCInput(Config, PCMapping) : new CaveInput(Config, CaveMapping);
-			mapping = Environment == Environment.PC ? (InputMapping) PCMapping : CaveMapping;
+			input = Environment == Environment.PC ? (InputEnvironment) new PCInput(Config, PCInputBinding, this) : new CaveInput(Config, CaveInputBinding, this);
+			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
 			
 			// TODO: need to wait for Lzwp lib initialization
-			mapping.Init();
+			binding.Init();
+		}
+
+		public void Rotate(Vector2 rawRotation) {
+			Vector2 rotation = Config.RotationSpeed * Time.deltaTime * rawRotation;
+			Utils.clamp(ref rotation, -Config.MaxRotationSpeed, Config.MaxRotationSpeed);
+			Entity.transform.Rotate(new Vector3(-rotation.y, 0, 0), Space.Self);
+			Entity.transform.Rotate(new Vector3(0, rotation.x, 0), Space.World);
 		}
 
 		void Update() {
-			mapping.CheckForInput();
-			
-			Vector2 rotation = input.GetRotation();
-			Cave.transform.Rotate(new Vector3(-rotation.y, 0, 0), Space.Self);
-			Cave.transform.Rotate(new Vector3(0, rotation.x, 0), Space.World);
+			binding.CheckForInput();
 
 			Vector2 movement = input.GetMovement();
-			Cave.transform.Translate(movement.y, 0, movement.x, Space.Self);
+			Entity.transform.Translate(movement.y, 0, movement.x, Space.Self);
 		}
 	}
 
@@ -79,11 +82,11 @@ namespace Controllers {
 				EditorGUILayout.PropertyField(fieldProperty, true);
 				Environment env = (Environment) field.GetValue(serializedObject.targetObject);
 				
-				string mappingConfigName = env == Environment.Cave ? "CaveMapping" : "PCMapping";
+				string mappingConfigName = env == Environment.Cave ? "CaveInputBinding" : "PCInputBinding";
 				var mappingProperty = serializedObject.FindProperty(mappingConfigName);
 				InspectorUtils.DrawField(targetType.GetField(mappingConfigName), mappingProperty, serializedObject.targetObject);
 				GUI.enabled = true;
-			} else if(!typeof(InputMapping).IsAssignableFrom(field.FieldType)) {
+			} else if(!typeof(InputBinding).IsAssignableFrom(field.FieldType)) {
 				EditorGUILayout.PropertyField(fieldProperty, true);
 			}
 		}

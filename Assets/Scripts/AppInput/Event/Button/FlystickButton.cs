@@ -1,6 +1,6 @@
 using System;
+using AppInput.Binding;
 using AppInput.Event.Interfaces;
-using AppInput.Mapping;
 using UnityEngine;
 
 namespace AppInput.Event.Button {
@@ -12,11 +12,11 @@ namespace AppInput.Event.Button {
 		public void Init() {
 			Lzwp.input.flysticks[(int) Hand].GetButton(Button).OnPress += () => {
 				Pressed = true;
-				OnPress();
+				OnPress?.Invoke();
 			};
 			Lzwp.input.flysticks[(int) Hand].GetButton(Button).OnRelease += () => {
 				Pressed = false;
-				OnRelease();
+				OnRelease?.Invoke();
 			};
 		}
 	}

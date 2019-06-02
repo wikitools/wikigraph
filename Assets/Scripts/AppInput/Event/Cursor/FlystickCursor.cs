@@ -1,7 +1,7 @@
 using System;
+using AppInput.Binding;
 using AppInput.Event.Button;
 using AppInput.Event.Interfaces;
-using AppInput.Mapping;
 using Inspector;
 using UnityEditor;
 using UnityEngine;

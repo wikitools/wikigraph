@@ -1,18 +1,18 @@
-using AppInput.Mapping;
+using AppInput.Binding;
 using Controllers;
 using UnityEngine;
 
 namespace AppInput {
 	public abstract class InputEnvironment {
 		protected InputConfig Config;
-		protected InputMapping Mapping;
+		protected InputBinding Binding;
+		protected InputController Entity;
 
-		public InputEnvironment(InputConfig config, InputMapping mapping) {
+		public InputEnvironment(InputConfig config, InputBinding binding, InputController entity) {
 			Config = config;
-			Mapping = mapping;
+			Binding = binding;
+			Entity = entity;
 		}
-
-		public abstract Vector2 GetRotation();
 
 		public abstract Vector2 GetMovement();
 	}

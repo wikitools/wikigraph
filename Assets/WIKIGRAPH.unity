@@ -201,34 +201,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1afe824797e1453ca533cadd8934bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Cave: {fileID: 508853209}
+  Entity: {fileID: 508853209}
   Config:
-    RotationSpeed: 10
+    RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}
     RotationButton: 0
     MovementSpeed: 0.1
-  Environment: 1
-  PCMapping:
+  Environment: 0
+  PCInputBinding:
     RotationInput:
       IsButtonActivated: 1
       Button:
-        ButtonType: 0
+        ButtonType: 1
         MouseButton: 0
         KeyboardButton: 0
-    Btn:
+    ForwardMovement:
       ButtonType: 0
       MouseButton: 0
-      KeyboardButton: 0
-  CaveMapping:
+      KeyboardButton: 273
+    BackwardMovement:
+      ButtonType: 0
+      MouseButton: 0
+      KeyboardButton: 274
+    RightMovement:
+      ButtonType: 0
+      MouseButton: 0
+      KeyboardButton: 275
+    LeftMovement:
+      ButtonType: 0
+      MouseButton: 0
+      KeyboardButton: 276
+  CaveInputBinding:
     Rot:
       Hand: 0
       Button: 0
     Crs:
-      IsButtonActivated: 1
+      IsButtonActivated: 0
       Hand: 0
       Cursor: 0
       Button:
-        Hand: 1
+        Hand: 0
         Button: 0
 --- !u!114 &68664596
 MonoBehaviour:

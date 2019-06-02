@@ -2,9 +2,12 @@ using System;
 using AppInput.Event.Interfaces;
 using Inspector;
 using UnityEditor;
+using UnityEngine;
 
-namespace AppInput.Mapping {
-	public abstract class InputMapping: CustomInspectorProperty, InputPoller, InputInitializer {
+namespace AppInput.Binding {
+	public abstract class InputBinding: CustomInspectorProperty, InputPoller, InputInitializer {
+		public abstract void OnRotate(Action<Vector2> callback);
+		
 		public void DrawInInspector(SerializedProperty property) {
 			EditorGUILayout.PropertyField(property, false);
 			if (!property.isExpanded) return;
@@ -27,7 +30,7 @@ namespace AppInput.Mapping {
 		private void CallFieldsOfType<T>(Action<T> function) where T: class {
 			foreach (var field in GetType().GetFields()) {
 				if (typeof(T).IsAssignableFrom(field.FieldType))
-					function(field as T);
+					function(field.GetValue(this) as T);
 			}
 		}
 	}

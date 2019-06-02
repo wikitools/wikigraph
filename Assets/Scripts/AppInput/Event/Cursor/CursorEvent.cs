@@ -28,7 +28,7 @@ namespace AppInput.Event.Cursor {
 				if(!button.Pressed)
 					return;
 			}
-			OnMove(GetCursorPosition() - LastMousePos);
+			OnMove?.Invoke(GetCursorPosition() - LastMousePos);
 			LastMousePos = Input.mousePosition;
 		}
 		
