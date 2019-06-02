@@ -4,8 +4,6 @@ using UnityEngine;
 
 namespace Services {
 	public class GameObjectPool {
-		private readonly Logger<GameObjectPool> LOGGER = new Logger<GameObjectPool>();
-
 		private readonly GameObject prefab;
 		private readonly GameObject elementContainer;
 		private const int LOAD_NUMBER = 100;

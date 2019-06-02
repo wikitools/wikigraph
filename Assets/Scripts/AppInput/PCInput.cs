@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AppInput {
 	public class PCInput: InputEnvironment {
-		private Vector3 lastMousePos = Vector3.zero;
+		private Vector2 lastMousePos = Vector2.zero;
 
 		private int mainAxisDirection, crossAxisDirection;
 
@@ -15,7 +15,7 @@ namespace AppInput {
 			if (Input.GetMouseButtonDown((int) Config.RotationButton)) {
 				lastMousePos = Input.mousePosition;
 			} else if (Input.GetMouseButton((int) Config.RotationButton)) {
-				mousePosDelta = (Input.mousePosition - lastMousePos) * Config.RotationSpeed * Time.deltaTime;
+				mousePosDelta = ((Vector2) Input.mousePosition - lastMousePos) * Config.RotationSpeed * Time.deltaTime;
 				Utils.clamp(ref mousePosDelta, -Config.MaxRotationSpeed, Config.MaxRotationSpeed);
 				lastMousePos = Input.mousePosition;
 			}

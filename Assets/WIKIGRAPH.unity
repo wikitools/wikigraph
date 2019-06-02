@@ -207,16 +207,29 @@ MonoBehaviour:
     MaxRotationSpeed: {x: 10, y: 10}
     RotationButton: 0
     MovementSpeed: 0.1
-  Environment: 0
+  Environment: 1
   PCMapping:
-    RotationButton:
-      ButtonType: 1
+    RotationInput:
+      IsButtonActivated: 1
+      Button:
+        ButtonType: 0
+        MouseButton: 0
+        KeyboardButton: 0
+    Btn:
+      ButtonType: 0
       MouseButton: 0
       KeyboardButton: 0
   CaveMapping:
     Rot:
       Hand: 0
       Button: 0
+    Crs:
+      IsButtonActivated: 1
+      Hand: 0
+      Cursor: 0
+      Button:
+        Hand: 1
+        Button: 0
 --- !u!114 &68664596
 MonoBehaviour:
   m_ObjectHideFlags: 0

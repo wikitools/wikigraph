@@ -1,36 +1,34 @@
 using System;
+using AppInput.Event.Interfaces;
 using Inspector;
 using UnityEditor;
 using UnityEngine;
 
 namespace AppInput.Event.Button {
 	[Serializable]
-	public class PCButtonEvent: ButtonEvent, CustomInspectorProperty {
+	public class PCButton: ButtonEvent, CustomInspectorProperty, InputPoller {
 		public ButtonType ButtonType;
 		public MouseButton MouseButton;
 		public KeyCode KeyboardButton;
 
-		public PCButtonEvent(MouseButton mouseButton) {
-			ButtonType = ButtonType.Mouse;
-			MouseButton = mouseButton;
-		}
-
-		public PCButtonEvent(KeyCode keyboardButton) {
-			ButtonType = ButtonType.Keyboard;
-			KeyboardButton = keyboardButton;
-		}
-
-		public void Update() {
-			if (OnPressed != null && (ButtonType == ButtonType.Mouse ? Input.GetMouseButtonDown((int) MouseButton) : Input.GetKeyDown(KeyboardButton))) {
-				OnPressed();
+		public void CheckForInput() {
+			if (OnPress != null && (ButtonType == ButtonType.Mouse ? Input.GetMouseButtonDown((int) MouseButton) : Input.GetKeyDown(KeyboardButton))) {
+				Pressed = true;
+				OnPress();
+			}
+			if (OnRelease != null && (ButtonType == ButtonType.Mouse ? Input.GetMouseButtonUp((int) MouseButton) : Input.GetKeyUp(KeyboardButton))) {
+				Pressed = false;
+				OnRelease();
 			}
 		}
 
 		public void DrawInInspector(SerializedProperty property) {
 			EditorGUILayout.PropertyField(property, false);
 			if (property.isExpanded) {
+				EditorGUI.indentLevel++;
 				EditorGUILayout.PropertyField(property.FindPropertyRelative("ButtonType"), false);
 				EditorGUILayout.PropertyField(property.FindPropertyRelative(ButtonType == ButtonType.Mouse ? "MouseButton" : "KeyboardButton"), false);
+				EditorGUI.indentLevel--;
 			}
 		}
 	}
