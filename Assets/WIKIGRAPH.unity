@@ -213,6 +213,10 @@ MonoBehaviour:
       ButtonType: 1
       MouseButton: 0
       KeyboardButton: 0
+  CaveMapping:
+    Rot:
+      Hand: 0
+      Button: 0
 --- !u!114 &68664596
 MonoBehaviour:
   m_ObjectHideFlags: 0

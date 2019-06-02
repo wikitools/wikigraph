@@ -1,5 +1,5 @@
 using System;
-using Interfaces;
+using Inspector;
 using UnityEditor;
 using UnityEngine;
 
@@ -26,11 +26,11 @@ namespace AppInput.Event.Button {
 			}
 		}
 
-		public void DrawInInspector(SerializedProperty prop) {
-			EditorGUILayout.PropertyField(prop, false);
-			if (prop.isExpanded) {
-				EditorGUILayout.PropertyField(prop.FindPropertyRelative("buttonType"), false);
-				EditorGUILayout.PropertyField(prop.FindPropertyRelative(ButtonType == ButtonType.Mouse ? "mouseButton" : "keyboardButton"), false);
+		public void DrawInInspector(SerializedProperty property) {
+			EditorGUILayout.PropertyField(property, false);
+			if (property.isExpanded) {
+				EditorGUILayout.PropertyField(property.FindPropertyRelative("ButtonType"), false);
+				EditorGUILayout.PropertyField(property.FindPropertyRelative(ButtonType == ButtonType.Mouse ? "MouseButton" : "KeyboardButton"), false);
 			}
 		}
 	}
@@ -42,6 +42,7 @@ namespace AppInput.Event.Button {
 	}
 
 	public enum ButtonType {
-		Keyboard, Mouse
+		Keyboard = 0, 
+		Mouse = 1
 	}
 }

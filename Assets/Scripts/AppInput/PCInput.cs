@@ -1,3 +1,4 @@
+using AppInput.Mapping;
 using Controllers;
 using UnityEngine;
 
@@ -7,15 +8,15 @@ namespace AppInput {
 
 		private int mainAxisDirection, crossAxisDirection;
 
-		public PCInput(InputConfig config) : base(config) { }
+		public PCInput(InputConfig config, PCInputMapping mapping) : base(config, mapping) { }
 
 		public override Vector2 GetRotation() {
 			Vector2 mousePosDelta = Vector3.zero;
-			if (Input.GetMouseButtonDown((int) config.RotationButton)) {
+			if (Input.GetMouseButtonDown((int) Config.RotationButton)) {
 				lastMousePos = Input.mousePosition;
-			} else if (Input.GetMouseButton((int) config.RotationButton)) {
-				mousePosDelta = (Input.mousePosition - lastMousePos) * config.RotationSpeed * Time.deltaTime;
-				Utils.clamp(ref mousePosDelta, -config.MaxRotationSpeed, config.MaxRotationSpeed);
+			} else if (Input.GetMouseButton((int) Config.RotationButton)) {
+				mousePosDelta = (Input.mousePosition - lastMousePos) * Config.RotationSpeed * Time.deltaTime;
+				Utils.clamp(ref mousePosDelta, -Config.MaxRotationSpeed, Config.MaxRotationSpeed);
 				lastMousePos = Input.mousePosition;
 			}
 			return mousePosDelta;
@@ -24,7 +25,7 @@ namespace AppInput {
 		public override Vector2 GetMovement() {
 			CheckAxisDirection(ref mainAxisDirection, KeyCode.UpArrow, KeyCode.DownArrow);
 			CheckAxisDirection(ref crossAxisDirection, KeyCode.RightArrow, KeyCode.LeftArrow);
-			return new Vector2(mainAxisDirection * config.MovementSpeed, crossAxisDirection * config.MovementSpeed);
+			return new Vector2(mainAxisDirection * Config.MovementSpeed, crossAxisDirection * Config.MovementSpeed);
 		}
 
 		private void CheckAxisDirection(ref int state, KeyCode forward, KeyCode backward) {
