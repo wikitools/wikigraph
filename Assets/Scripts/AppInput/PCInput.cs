@@ -1,17 +1,15 @@
+using Controllers;
 using UnityEngine;
 
 namespace AppInput {
 	public class PCInput: InputEnvironment {
-		private InputConfig config;
 		private Vector3 lastMousePos = Vector3.zero;
 
 		private int mainAxisDirection, crossAxisDirection;
 
-		public PCInput(InputConfig config) {
-			this.config = config;
-		}
+		public PCInput(InputConfig config) : base(config) { }
 
-		public Vector2 GetRotation() {
+		public override Vector2 GetRotation() {
 			Vector2 mousePosDelta = Vector3.zero;
 			if (Input.GetMouseButtonDown((int) config.RotationButton)) {
 				lastMousePos = Input.mousePosition;
@@ -23,7 +21,7 @@ namespace AppInput {
 			return mousePosDelta;
 		}
 
-		public Vector2 GetMovement() {
+		public override Vector2 GetMovement() {
 			CheckAxisDirection(ref mainAxisDirection, KeyCode.UpArrow, KeyCode.DownArrow);
 			CheckAxisDirection(ref crossAxisDirection, KeyCode.RightArrow, KeyCode.LeftArrow);
 			return new Vector2(mainAxisDirection * config.MovementSpeed, crossAxisDirection * config.MovementSpeed);

@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using Model;
 
-namespace Services {
+namespace Services.DataFiles {
 	public class DataFileReader : IDisposable {
 		private readonly Logger<DataFileReader> LOGGER = new Logger<DataFileReader>();
 

@@ -1,7 +1,7 @@
 using System;
 using Model;
 
-namespace Services {
+namespace Services.DataFiles {
 	public class NodeLoader: IDisposable {
 		private DataFileReader fileReader;
 
