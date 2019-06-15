@@ -3,6 +3,7 @@ using System.Reflection;
 using AppInput;
 using AppInput.Binding;
 using AppInput.Event.Button;
+using AppInput.Processor;
 using Inspector;
 using UnityEditor;
 using UnityEngine;
@@ -16,14 +17,16 @@ namespace Controllers {
 		public PcInputBinding PCInputBinding;
 		public CaveInputBinding CaveInputBinding;
 
-		private InputEnvironment input;
+		private InputProcessor input;
 		private InputBinding binding;
 
 		void Start() {
-			input = Environment == Environment.PC ? (InputEnvironment) new PCInput(Config, PCInputBinding, this) : new CaveInput(Config, CaveInputBinding, this);
+			input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) : new CaveInputProcessor(Config, CaveInputBinding, this);
 			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
 			
 			// TODO: need to wait for Lzwp lib initialization
+			// TODO: let user choose the main flystick
+			CaveInputBinding.SetPrimaryFlystick(0);
 			binding.Init();
 		}
 

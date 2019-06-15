@@ -233,15 +233,18 @@ MonoBehaviour:
       KeyboardButton: 276
   CaveInputBinding:
     Rot:
-      Hand: 0
+      Instance: 0
       Button: 0
     Crs:
       IsButtonActivated: 0
-      Hand: 0
+      Instance: 0
       Cursor: 0
       Button:
-        Hand: 0
+        Instance: 0
         Button: 0
+  Flysticks:
+  - {fileID: 327208667}
+  - {fileID: 2060724263}
 --- !u!114 &68664596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,6 +328,11 @@ Prefab:
 --- !u!4 &327208666 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4072682885746650, guid: b6165818436e3294c9f7ce5e53106f44,
+    type: 2}
+  m_PrefabInternal: {fileID: 327208665}
+--- !u!1 &327208667 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1390819586400066, guid: b6165818436e3294c9f7ce5e53106f44,
     type: 2}
   m_PrefabInternal: {fileID: 327208665}
 --- !u!1001 &467407752
@@ -612,5 +620,10 @@ Prefab:
 --- !u!4 &2060724262 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4072682885746650, guid: b6165818436e3294c9f7ce5e53106f44,
+    type: 2}
+  m_PrefabInternal: {fileID: 2060724261}
+--- !u!1 &2060724263 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1390819586400066, guid: b6165818436e3294c9f7ce5e53106f44,
     type: 2}
   m_PrefabInternal: {fileID: 2060724261}

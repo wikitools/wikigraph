@@ -2,11 +2,11 @@ using AppInput.Binding;
 using Controllers;
 using UnityEngine;
 
-namespace AppInput {
-	public class PCInput: InputEnvironment {
+namespace AppInput.Processor {
+	public class PCInputProcessor: InputProcessor {
 		private int mainAxisDirection, crossAxisDirection;
 
-		public PCInput(InputConfig config, PcInputBinding binding, InputController entity) : base(config, binding, entity) {
+		public PCInputProcessor(InputConfig config, PcInputBinding binding, InputController controller) : base(config, binding, controller) {
 			binding.OnRotate(OnRotate);
 			binding.ForwardMovement.OnPress += () => mainAxisDirection = 1;
 			binding.ForwardMovement.OnRelease += () => mainAxisDirection = 0;
@@ -21,7 +21,7 @@ namespace AppInput {
 		void OnRotate(Vector2 rawRotation) {
 			Vector2 rotation = Config.RotationSpeed * Time.deltaTime * rawRotation;
 			Utils.clamp(ref rotation, -Config.MaxRotationSpeed, Config.MaxRotationSpeed);
-			Entity.Rotate(rotation);
+			Controller.Rotate(rotation);
 		}
 
 		public override Vector2 GetMovement() {

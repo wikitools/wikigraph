@@ -9,7 +9,7 @@ using UnityEngine;
 namespace AppInput.Event.Cursor {
 	[Serializable]
 	public class FlystickCursor: CursorEvent, CustomInspectorProperty, InputPoller, InputInitializer {
-		public FlystickHand Hand;
+		public FlystickInstance Instance;
 		public CursorType Cursor;
 		public FlystickButton Button;
 
@@ -18,7 +18,7 @@ namespace AppInput.Event.Cursor {
 		}
 
 		protected override Vector2 GetCursorPosition() {
-			var flystick = Lzwp.input.flysticks[(int) Hand];
+			var flystick = Lzwp.input.flysticks[CaveInputBinding.FlystickBinding[Instance]];
 			if(Cursor == CursorType.Joystick) {
 				return new Vector2(flystick.joysticks[0], flystick.joysticks[1]);
 			}
