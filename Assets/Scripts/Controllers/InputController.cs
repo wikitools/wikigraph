@@ -39,7 +39,6 @@ namespace Controllers {
 	public class InputConfig {
 		public float RotationSpeed;
 		public Vector2 MaxRotationSpeed;
-		public MouseButton RotationButton;
 
 		public float MovementSpeed;
 	}

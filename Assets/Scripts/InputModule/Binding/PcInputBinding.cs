@@ -2,6 +2,7 @@ using System;
 using InputModule.Event;
 using InputModule.Event.Button;
 using InputModule.Event.Cursor;
+using InputModule.Event.Pointer;
 using UnityEngine;
 
 namespace InputModule.Binding {
@@ -11,5 +12,7 @@ namespace InputModule.Binding {
 
 		public PCButtonAxis MainMovementAxis;
 		public PCButtonAxis CrossMovementAxis;
+
+		public PCPointer NodePointer;
 	}
 }

@@ -5,7 +5,7 @@ using InputModule.Event.Interfaces;
 
 namespace InputModule.Event {
 	[Serializable]
-	public class FlystickButtonAxis: ButtonPair, InputInitializer {
+	public class FlystickButtonAxis: ButtonPair, InputInitializer, FlystickInput {
 		public FlystickButton PositiveButton;
 		public FlystickButton NegativeButton;
 

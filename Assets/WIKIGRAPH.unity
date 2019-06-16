@@ -205,7 +205,6 @@ MonoBehaviour:
   Config:
     RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}
-    RotationButton: 0
     MovementSpeed: 0.1
   Environment: 0
   PCInputBinding:
@@ -235,6 +234,13 @@ MonoBehaviour:
         ButtonType: 0
         MouseButton: 0
         KeyboardButton: 276
+    NodePointer:
+      IsButtonActivated: 0
+      ActivationType: 0
+      Button:
+        ButtonType: 0
+        MouseButton: 0
+        KeyboardButton: 0
   CaveInputBinding:
     Rot:
       Instance: 0
@@ -242,7 +248,6 @@ MonoBehaviour:
     Crs:
       IsButtonActivated: 0
       Instance: 0
-      Cursor: 0
       Button:
         Instance: 0
         Button: 0
@@ -492,7 +497,7 @@ Prefab:
     - target: {fileID: 20117000374543444, guid: bf1ac880dbe997a46acfe269bbb72014,
         type: 2}
       propertyPath: m_ClearFlags
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bf1ac880dbe997a46acfe269bbb72014, type: 2}
