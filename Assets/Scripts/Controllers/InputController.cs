@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using AppInput;
-using AppInput.Binding;
-using AppInput.Event.Button;
-using AppInput.Processor;
+using InputModule;
+using InputModule.Binding;
+using InputModule.Event.Button;
+using InputModule.Processor;
 using Inspector;
 using UnityEditor;
 using UnityEngine;
@@ -30,18 +30,8 @@ namespace Controllers {
 			binding.Init();
 		}
 
-		public void Rotate(Vector2 rawRotation) {
-			Vector2 rotation = Config.RotationSpeed * Time.deltaTime * rawRotation;
-			Utils.clamp(ref rotation, -Config.MaxRotationSpeed, Config.MaxRotationSpeed);
-			Entity.transform.Rotate(new Vector3(-rotation.y, 0, 0), Space.Self);
-			Entity.transform.Rotate(new Vector3(0, rotation.x, 0), Space.World);
-		}
-
 		void Update() {
 			binding.CheckForInput();
-
-			Vector2 movement = input.GetMovement();
-			Entity.transform.Translate(movement.y, 0, movement.x, Space.Self);
 		}
 	}
 

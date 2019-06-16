@@ -1,23 +1,22 @@
 using System;
 using System.Collections.Generic;
-using AppInput.Event.Button;
-using AppInput.Event.Cursor;
+using InputModule.Event.Button;
+using InputModule.Event.Cursor;
 using Services;
 using UnityEngine;
 
-namespace AppInput.Binding {
+namespace InputModule.Binding {
 	[Serializable]
-	public class CaveInputBinding: InputBinding {
+	public class CaveInputBinding : InputBinding {
 		private static readonly Logger<CaveInputBinding> LOGGER = new Logger<CaveInputBinding>();
-		
+
 		public FlystickButton Rot;
 		public FlystickCursor Crs;
 
-		public static Dictionary<FlystickInstance, int> FlystickBinding;
+		private static Dictionary<FlystickInstance, int> FlystickBinding = new Dictionary<FlystickInstance, int>();
+		public static LzwpInput.Flystick Flystick(FlystickInstance instance) => Lzwp.input.flysticks[FlystickBinding[instance]];
 		public LzwpInput.Flystick MainFlystick => Lzwp.input.flysticks[FlystickBinding[FlystickInstance.Primary]];
 		public LzwpInput.Flystick SecondaryFlystick => Lzwp.input.flysticks[FlystickBinding[FlystickInstance.Secondary]];
-		public override void OnRotate(Action<Vector2> callback) {
-		}
 
 		public static void SetPrimaryFlystick(int primaryFlystickId) {
 			if (primaryFlystickId != 0 && primaryFlystickId != 1) {

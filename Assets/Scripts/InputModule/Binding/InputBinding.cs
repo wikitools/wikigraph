@@ -1,22 +1,18 @@
 using System;
-using AppInput.Event.Interfaces;
+using InputModule.Event.Interfaces;
 using Inspector;
 using UnityEditor;
 using UnityEngine;
 
-namespace AppInput.Binding {
+namespace InputModule.Binding {
 	public abstract class InputBinding: CustomInspectorProperty, InputPoller, InputInitializer {
-		public abstract void OnRotate(Action<Vector2> callback);
-		
 		public void DrawInInspector(SerializedProperty property) {
-			EditorGUILayout.PropertyField(property, false);
-			if (!property.isExpanded) return;
-			EditorGUI.indentLevel++;
-			foreach (var field in GetType().GetFields()) {
-				var fieldProperty = property.FindPropertyRelative(field.Name);
-				InspectorUtils.DrawField(field, fieldProperty, this);
-			}
-			EditorGUI.indentLevel--;
+			InspectorUtils.DrawObject(property, () => {
+				foreach (var field in GetType().GetFields()) {
+					var fieldProperty = property.FindPropertyRelative(field.Name);
+					InspectorUtils.DrawField(field, fieldProperty, this);
+				}
+			});
 		}
 
 		public void CheckForInput() {

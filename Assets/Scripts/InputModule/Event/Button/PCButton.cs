@@ -1,12 +1,12 @@
 using System;
-using AppInput.Event.Interfaces;
+using InputModule.Event.Interfaces;
 using Inspector;
 using UnityEditor;
 using UnityEngine;
 
-namespace AppInput.Event.Button {
+namespace InputModule.Event.Button {
 	[Serializable]
-	public class PCButton: ButtonEvent, CustomInspectorProperty, InputPoller {
+	public class PCButton: ButtonInput, CustomInspectorProperty, InputPoller {
 		public ButtonType ButtonType;
 		public MouseButton MouseButton;
 		public KeyCode KeyboardButton;
@@ -23,13 +23,10 @@ namespace AppInput.Event.Button {
 		}
 
 		public void DrawInInspector(SerializedProperty property) {
-			EditorGUILayout.PropertyField(property, false);
-			if (property.isExpanded) {
-				EditorGUI.indentLevel++;
+			InspectorUtils.DrawObject(property, () => {
 				EditorGUILayout.PropertyField(property.FindPropertyRelative("ButtonType"), false);
 				EditorGUILayout.PropertyField(property.FindPropertyRelative(ButtonType == ButtonType.Mouse ? "MouseButton" : "KeyboardButton"), false);
-				EditorGUI.indentLevel--;
-			}
+			});
 		}
 	}
 

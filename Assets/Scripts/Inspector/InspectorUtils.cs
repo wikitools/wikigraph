@@ -12,5 +12,14 @@ namespace Inspector {
 				EditorGUILayout.PropertyField(fieldProperty, true);
 			}
 		}
+
+		public static void DrawObject(SerializedProperty objectProperty, Action drawContent) {
+			EditorGUILayout.PropertyField(objectProperty, false);
+			if (objectProperty.isExpanded) {
+				EditorGUI.indentLevel++;
+				drawContent();
+				EditorGUI.indentLevel--;
+			}
+		}
 	}
 }

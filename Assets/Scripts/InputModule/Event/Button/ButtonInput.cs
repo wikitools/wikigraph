@@ -1,7 +1,7 @@
 using System;
 
-namespace AppInput.Event.Button {
-	public abstract class ButtonEvent {
+namespace InputModule.Event.Button {
+	public abstract class ButtonInput {
 		public Action OnPress;
 		public Action OnRelease;
 

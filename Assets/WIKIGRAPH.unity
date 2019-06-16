@@ -215,22 +215,26 @@ MonoBehaviour:
         ButtonType: 1
         MouseButton: 0
         KeyboardButton: 0
-    ForwardMovement:
-      ButtonType: 0
-      MouseButton: 0
-      KeyboardButton: 273
-    BackwardMovement:
-      ButtonType: 0
-      MouseButton: 0
-      KeyboardButton: 274
-    RightMovement:
-      ButtonType: 0
-      MouseButton: 0
-      KeyboardButton: 275
-    LeftMovement:
-      ButtonType: 0
-      MouseButton: 0
-      KeyboardButton: 276
+    MainMovementAxis:
+      ReverseAxisDirection: 0
+      PositiveButton:
+        ButtonType: 0
+        MouseButton: 0
+        KeyboardButton: 273
+      NegativeButton:
+        ButtonType: 0
+        MouseButton: 0
+        KeyboardButton: 274
+    CrossMovementAxis:
+      ReverseAxisDirection: 0
+      PositiveButton:
+        ButtonType: 0
+        MouseButton: 0
+        KeyboardButton: 275
+      NegativeButton:
+        ButtonType: 0
+        MouseButton: 0
+        KeyboardButton: 276
   CaveInputBinding:
     Rot:
       Instance: 0
@@ -242,9 +246,6 @@ MonoBehaviour:
       Button:
         Instance: 0
         Button: 0
-  Flysticks:
-  - {fileID: 327208667}
-  - {fileID: 2060724263}
 --- !u!114 &68664596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,11 +329,6 @@ Prefab:
 --- !u!4 &327208666 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4072682885746650, guid: b6165818436e3294c9f7ce5e53106f44,
-    type: 2}
-  m_PrefabInternal: {fileID: 327208665}
---- !u!1 &327208667 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1390819586400066, guid: b6165818436e3294c9f7ce5e53106f44,
     type: 2}
   m_PrefabInternal: {fileID: 327208665}
 --- !u!1001 &467407752
@@ -620,10 +616,5 @@ Prefab:
 --- !u!4 &2060724262 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4072682885746650, guid: b6165818436e3294c9f7ce5e53106f44,
-    type: 2}
-  m_PrefabInternal: {fileID: 2060724261}
---- !u!1 &2060724263 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1390819586400066, guid: b6165818436e3294c9f7ce5e53106f44,
     type: 2}
   m_PrefabInternal: {fileID: 2060724261}

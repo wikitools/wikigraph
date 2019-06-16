@@ -1,13 +1,13 @@
 using System;
-using AppInput.Event.Button;
-using AppInput.Event.Interfaces;
+using InputModule.Event.Button;
+using InputModule.Event.Interfaces;
 using Inspector;
 using UnityEditor;
 using UnityEngine;
 
-namespace AppInput.Event.Cursor {
+namespace InputModule.Event.Cursor {
 	[Serializable]
-	public class PCCursor: CursorEvent, CustomInspectorProperty, InputPoller, InputInitializer {
+	public class PCCursor: CursorInput, CustomInspectorProperty, InputPoller, InputInitializer {
 		public PCButton Button;
 
 		public void DrawInInspector(SerializedProperty property) {
