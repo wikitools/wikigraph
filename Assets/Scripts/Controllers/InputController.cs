@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using InputModule;
 using InputModule.Binding;
-using InputModule.Event.Button;
 using InputModule.Processor;
 using Inspector;
 using UnityEditor;
@@ -19,12 +17,15 @@ namespace Controllers {
 
 		private InputProcessor input;
 		private InputBinding binding;
+		
+		public GraphController Graph { get; private set; }
 
 		void Start() {
+			Graph = GetComponent<GraphController>();
+
 			input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) : new CaveInputProcessor(Config, CaveInputBinding, this);
 			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
 			
-			// TODO: need to wait for Lzwp lib initialization
 			// TODO: let user choose the main flystick
 			CaveInputBinding.SetPrimaryFlystick(0);
 			binding.Init();

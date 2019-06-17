@@ -1,6 +1,6 @@
-using System.Linq;
 using InputModule.Event.Button;
 using InputModule.Event.Interfaces;
+using InputModule.Event.Pointer;
 using Inspector;
 using UnityEditor;
 
@@ -20,10 +20,13 @@ namespace InputModule.Event {
 		
 		public void DrawInInspector(SerializedProperty property) {
 			InspectorUtils.DrawObject(property, () => {
+				EditorGUILayout.PropertyField(property.FindPropertyRelative("IsButtonActivated"), false);
 				if (typeof(FlystickInput).IsAssignableFrom(GetType())) {
 					EditorGUILayout.PropertyField(property.FindPropertyRelative("Instance"), false);
 				}
-				EditorGUILayout.PropertyField(property.FindPropertyRelative("IsButtonActivated"), false);
+				if (IsButtonActivated && typeof(PointerInput).IsAssignableFrom(GetType())) {
+					EditorGUILayout.PropertyField(property.FindPropertyRelative("ActivationType"), false);
+				}
 				if (IsButtonActivated) {
 					var buttonProperty = property.FindPropertyRelative("Button");
 					InspectorUtils.DrawField(GetType().GetField("Button"), buttonProperty, this);

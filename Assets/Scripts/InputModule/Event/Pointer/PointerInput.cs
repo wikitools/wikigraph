@@ -10,12 +10,19 @@ namespace InputModule.Event.Pointer {
 		protected abstract Ray GetPointerRay();
 
 		public override void Init() {
-			Action onActivation = ActivationType == PointerActivationType.Press ? ActivationButton.OnPress : ActivationButton.OnRelease;
-			onActivation += () => OnPointed(GetPointerRay());
+			if(!IsButtonActivated) return;
+			if (ActivationType == PointerActivationType.Press) {
+				ActivationButton.OnPress += () => OnPointed(GetPointerRay());
+			} else {
+				ActivationButton.OnRelease += () => OnPointed(GetPointerRay());
+			}
 		}
 
 		public new void CheckForInput() {
 			base.CheckForInput();
+			if (!IsButtonActivated) {
+				OnPointed(GetPointerRay());
+			}
 		}
 	}
 	

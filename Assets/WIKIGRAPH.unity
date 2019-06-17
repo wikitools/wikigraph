@@ -238,8 +238,8 @@ MonoBehaviour:
       IsButtonActivated: 0
       ActivationType: 0
       Button:
-        ButtonType: 0
-        MouseButton: 0
+        ButtonType: 1
+        MouseButton: 1
         KeyboardButton: 0
   CaveInputBinding:
     Rot:
