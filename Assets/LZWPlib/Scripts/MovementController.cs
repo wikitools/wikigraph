@@ -443,7 +443,7 @@ public class MovementController : MonoBehaviour
                 WalkingPhysics_Update();
         }
 
-        if (Input.GetButtonDown("Jump"))
+        if (UnityEngine.Input.GetButtonDown("Jump"))
             CheckDblJump();
 
         UpdateViewRotation();
@@ -522,9 +522,9 @@ public class MovementController : MonoBehaviour
     Vector3 GetKeyboardMoveInput()
     {
         return new Vector3(
-            Input.GetAxis("Horizontal"),
-            Input.GetKey(config.flying.keyboardAndMouse.flyUpKey) || Input.GetKey(config.flying.keyboardAndMouse.flyUpKeyAlt) ? 1f : (Input.GetKey(config.flying.keyboardAndMouse.flyDownKey) ? -1f : 0),
-            Input.GetAxis("Vertical")
+            UnityEngine.Input.GetAxis("Horizontal"),
+            UnityEngine.Input.GetKey(config.flying.keyboardAndMouse.flyUpKey) || UnityEngine.Input.GetKey(config.flying.keyboardAndMouse.flyUpKeyAlt) ? 1f : (UnityEngine.Input.GetKey(config.flying.keyboardAndMouse.flyDownKey) ? -1f : 0),
+            UnityEngine.Input.GetAxis("Vertical")
         );
     }
 
@@ -576,7 +576,7 @@ public class MovementController : MonoBehaviour
     void CheckIfWantToJump()
     {
         if (config.walking.jumpingEnabled && !jump && !isJumping)
-            jump = Input.GetButtonDown("Jump");
+            jump = UnityEngine.Input.GetButtonDown("Jump");
     }
 
     void FlystickButtonPress(LzwpInput.Flystick.ButtonID btn, int flystickIdx)
@@ -597,14 +597,14 @@ public class MovementController : MonoBehaviour
     void RotateView(bool horizontalRotation = true, bool verticalRotation = true)
     {
         // mouse - rotation
-        if (Input.GetMouseButton(1))
+        if (UnityEngine.Input.GetMouseButton(1))
         {
             if (horizontalRotation)
-                rotationY += Input.GetAxis("Mouse X") * config.general.keyboardAndMouse.mouseRotationSpeed;
+                rotationY += UnityEngine.Input.GetAxis("Mouse X") * config.general.keyboardAndMouse.mouseRotationSpeed;
 
             if (verticalRotation)
             {
-                rotationX -= Input.GetAxis("Mouse Y") * config.general.keyboardAndMouse.mouseRotationSpeed;
+                rotationX -= UnityEngine.Input.GetAxis("Mouse Y") * config.general.keyboardAndMouse.mouseRotationSpeed;
                 rotationX = Mathf.Clamp(rotationX, -90, 90);
             }
         }
@@ -655,10 +655,10 @@ public class MovementController : MonoBehaviour
         // keyboard - movement
 
         float speed = config.flying.keyboardAndMouse.NormalMoveSpeed;
-        isRunning = Input.GetKey(config.general.keyboardAndMouse.moveFasterKey) || Input.GetKey(config.general.keyboardAndMouse.moveFasterKeyAlt);
+        isRunning = UnityEngine.Input.GetKey(config.general.keyboardAndMouse.moveFasterKey) || UnityEngine.Input.GetKey(config.general.keyboardAndMouse.moveFasterKeyAlt);
         if (isRunning)
             speed *= config.flying.keyboardAndMouse.MoveFasterMultiplier;
-        else if (Input.GetKey(config.general.keyboardAndMouse.moveSlowerKey) || Input.GetKey(config.general.keyboardAndMouse.moveSlowerKeyAlt))
+        else if (UnityEngine.Input.GetKey(config.general.keyboardAndMouse.moveSlowerKey) || UnityEngine.Input.GetKey(config.general.keyboardAndMouse.moveSlowerKeyAlt))
             speed *= config.flying.keyboardAndMouse.MoveSlowerMultiplier;
 
         Vector3 inp = GetKeyboardMoveInput();
@@ -713,7 +713,7 @@ public class MovementController : MonoBehaviour
 
     void WalkingCC_FixedUpdate()
     {
-        isRunning = Input.GetKey(config.general.keyboardAndMouse.moveFasterKey) || Input.GetKey(config.general.keyboardAndMouse.moveFasterKeyAlt);
+        isRunning = UnityEngine.Input.GetKey(config.general.keyboardAndMouse.moveFasterKey) || UnityEngine.Input.GetKey(config.general.keyboardAndMouse.moveFasterKeyAlt);
         currentSpeed = config.walking.characterControllerWalkingType.walkSpeed;
         if (isRunning)
             currentSpeed *= config.walking.runSpeedMultiplier;
@@ -793,7 +793,7 @@ public class MovementController : MonoBehaviour
     {
         GroundCheck();
 
-        isRunning = Input.GetKey(config.general.keyboardAndMouse.moveFasterKey) || Input.GetKey(config.general.keyboardAndMouse.moveFasterKeyAlt);
+        isRunning = UnityEngine.Input.GetKey(config.general.keyboardAndMouse.moveFasterKey) || UnityEngine.Input.GetKey(config.general.keyboardAndMouse.moveFasterKeyAlt);
         currentSpeed = config.walking.physicsBasedWalkingType.walkSpeed;
         if (isRunning)
             currentSpeed *= config.walking.runSpeedMultiplier;
