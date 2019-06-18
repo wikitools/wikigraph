@@ -14,5 +14,6 @@ namespace InputModule.Binding {
 		public PCButtonAxis CrossMovementAxis;
 
 		public PCPointer NodePointer;
+		public PCPointer NodeChooser;
 	}
 }

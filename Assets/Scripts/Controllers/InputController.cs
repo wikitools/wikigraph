@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace Controllers {
 	public class InputController : MonoBehaviour {
-		public GameObject Entity;
 		public InputConfig Config;
 
 		public Environment Environment;
@@ -18,10 +17,12 @@ namespace Controllers {
 		private InputProcessor input;
 		private InputBinding binding;
 		
-		public GraphController Graph { get; private set; }
+		public NodeController NodeController { get; private set; }
+		public CameraController CameraController { get; private set; }
 
 		void Start() {
-			Graph = GetComponent<GraphController>();
+			NodeController = GetComponent<NodeController>();
+			CameraController = GetComponent<CameraController>();
 
 			input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) : new CaveInputProcessor(Config, CaveInputBinding, this);
 			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;

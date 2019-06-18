@@ -3,7 +3,6 @@ using Model;
 using Services;
 using Services.DataFiles;
 using UnityEngine;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace Controllers {
@@ -16,8 +15,12 @@ namespace Controllers {
 		public GameObject PoolNodeContainer;
 		public int NodePreloadNumber;
 		public float WorldRadius;
+		
+		public NodeController NodeController { get; private set; }
 	
 		void Start () {
+			NodeController = GetComponent<NodeController>();
+			
 			nodeLoader = new NodeLoader();
 			nodePool = new GameObjectPool(NodePrefab, NodePreloadNumber, PoolNodeContainer);
 		
@@ -29,9 +32,7 @@ namespace Controllers {
 		private void LoadNode(uint id) {
 			Node node = nodeLoader.LoadNode(id);
 			GameObject nodeGO = nodePool.Spawn();
-			nodeGO.transform.parent = transform;
-			nodeGO.transform.position = Random.insideUnitSphere * WorldRadius;
-			nodeGO.GetComponentInChildren<Text>().text = node.Title;
+			NodeController.InitializeNode(node, ref nodeGO, Random.insideUnitSphere * WorldRadius);
 			nodes[node] = nodeGO;
 		}
 	
