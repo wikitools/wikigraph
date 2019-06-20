@@ -5,8 +5,6 @@ namespace Services.DataFiles {
 	public class NodeLoader: IDisposable {
 		private DataFileReader fileReader;
 
-		public const ushort NODE_TYPE_DIVIDER = 2;
-
 		private static class INFO {
 			public const ushort NODE_NUMBER_SIZE = 3;
 		}
@@ -24,8 +22,8 @@ namespace Services.DataFiles {
 			public const ushort ID_SIZE = 3;
 		}
 
-		public NodeLoader() {
-			fileReader = new DataFileReader();
+		public NodeLoader(string dataFilePostfix = "") {
+			fileReader = new DataFileReader(dataFilePostfix);
 		}
 
 		public Node LoadNode(uint id) {

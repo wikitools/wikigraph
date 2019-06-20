@@ -14,7 +14,6 @@ namespace Services.DataFiles {
 		
 		private readonly string DATA_FILE_PATH = Path.Combine("Assets", "Data");
 		private const string DATA_FILE_EXTENSION = "wg";
-		private readonly bool ARE_FILES_LITTLE_ENDIAN = false; // BitConverter.IsLittleEndian;
 
 		public DataFileReader(string dataFilePostfix = "") {
 			foreach (DataFileType type in Enum.GetValues(typeof(DataFileType))) {
@@ -48,7 +47,7 @@ namespace Services.DataFiles {
 		}
 
 		public string ReadString(DataFileType file, long offset, int length) {
-			byte[] bytes = readBytes(file, offset, length, false);
+			byte[] bytes = readBytes(file, offset, length);
 			return Encoding.UTF8.GetString(bytes);
 		}
 
@@ -57,19 +56,19 @@ namespace Services.DataFiles {
 		}
 
 		private void loadDataFile(DataFileType type, string dataFilePostfix) {
-			var filePath = Path.Combine(DATA_FILE_PATH + dataFilePostfix, $"{type.ToString().ToLower()}.{DATA_FILE_EXTENSION}");
+			var filePath = Path.Combine(DATA_FILE_PATH, $"{type.ToString().ToLower() + dataFilePostfix}.{DATA_FILE_EXTENSION}");
 			var stream = new FileStream(filePath, FileMode.Open, FileSystemRights.Read, FileShare.Read, 4096, FileOptions.RandomAccess);
 			streams[type] = new DataFile { Stream = stream, Length = new FileInfo(filePath).Length };
 		}
 
-		private byte[] readBytes(DataFileType file, long offset, int count, bool checkEndianness = true) {
+		private byte[] readBytes(DataFileType file, long offset, int count) {
 			byte[] bytes = new byte[count];
 			streams[file].Stream.Position = offset;
 			int bytesRead = streams[file].Stream.Read(bytes, 0, count);
 			if (bytesRead < count) {
 				LOGGER.Warning($"DataFileReader bytes requested: {count}, bytes read: {bytesRead}");
 			}
-			return !checkEndianness || ARE_FILES_LITTLE_ENDIAN ? bytes : bytes.Reverse().ToArray();
+			return bytes;
 		}
 
 		public void Dispose() {

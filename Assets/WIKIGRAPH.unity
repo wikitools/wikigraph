@@ -183,6 +183,8 @@ GameObject:
   - component: {fileID: 68664599}
   - component: {fileID: 68664596}
   - component: {fileID: 68664595}
+  - component: {fileID: 68664597}
+  - component: {fileID: 68664598}
   m_Layer: 0
   m_Name: GRAPH
   m_TagString: Untagged
@@ -201,11 +203,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1afe824797e1453ca533cadd8934bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Entity: {fileID: 508853209}
   Config:
     RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}
-    MovementSpeed: 0.1
+    MovementSpeed: 0.5
   Environment: 0
   PCInputBinding:
     RotationInput:
@@ -241,6 +242,13 @@ MonoBehaviour:
         ButtonType: 1
         MouseButton: 1
         KeyboardButton: 0
+    NodeChooser:
+      IsButtonActivated: 1
+      ActivationType: 0
+      Button:
+        ButtonType: 1
+        MouseButton: 0
+        KeyboardButton: 0
   CaveInputBinding:
     Rot:
       Instance: 0
@@ -264,8 +272,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NodePrefab: {fileID: 1534031500408350, guid: 4fca75af5504140b6814370e66ce13db, type: 2}
   PoolNodeContainer: {fileID: 56673547}
-  NodePreloadNumber: 10
-  WorldRadius: 10
+  NodePreloadNumber: 1000
+  WorldRadius: 50
+  NodeLoadedLimit: 500
+  LoadTestNodeSet: 1
+--- !u!114 &68664597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 68664594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fda04db351c04ea8ba6dca3b9048189c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NodeColors:
+    Default: {r: 0.3529412, g: 0.6039216, b: 0.83137256, a: 1}
+    Highlighted: {r: 0.9843137, g: 0.63529414, b: 0.20784314, a: 1}
+  NodeSprites:
+    Article: {fileID: 21300000, guid: c9e091e761d45432b9905191be9a2a68, type: 3}
+    Category: {fileID: 21300000, guid: 897d60d10f7304274bfd85f90db7dcca, type: 3}
+--- !u!114 &68664598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 68664594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ca8e3aa6fd4a638c0bc6a1c830709e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Entity: {fileID: 508853209}
+  smoothTime: 0.9
 --- !u!224 &68664599
 RectTransform:
   m_ObjectHideFlags: 0

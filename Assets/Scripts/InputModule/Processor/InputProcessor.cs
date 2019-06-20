@@ -13,5 +13,23 @@ namespace InputModule.Processor {
 			Binding = binding;
 			Controller = controller;
 		}
+
+		protected void OnNodeChosen(Ray ray) {
+			RaycastHit raycastHit;
+			if (RaycastNode(ray, out raycastHit)) {
+				Controller.NodeController.ActiveNode = raycastHit.collider.gameObject;
+			}
+		}
+
+		protected void OnNodePointed(Ray ray) {
+			RaycastHit raycastHit;
+			if (RaycastNode(ray, out raycastHit)) {
+				Controller.NodeController.UpdateNodeHighlight(raycastHit.collider.gameObject);
+			} else {
+				Controller.NodeController.UpdateNodeHighlight(null);
+			}
+		}
+		
+		private bool RaycastNode(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Node"));
 	}
 }
