@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Model;
 using Services;
 using Services.DataFiles;
@@ -15,16 +16,18 @@ namespace Controllers {
 		public GameObject PoolNodeContainer;
 		public int NodePreloadNumber;
 		public float WorldRadius;
+		public int NodeLoadedLimit;
+		public bool LoadTestNodeSet;
 		
 		public NodeController NodeController { get; private set; }
 	
 		void Start () {
 			NodeController = GetComponent<NodeController>();
 			
-			nodeLoader = new NodeLoader();
+			nodeLoader = new NodeLoader(LoadTestNodeSet ? "-test" : "");
 			nodePool = new GameObjectPool(NodePrefab, NodePreloadNumber, PoolNodeContainer);
-		
-			for (uint i = 0; i < nodeLoader.GetNodeNumber(); i++) {
+			
+			for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
 				LoadNode(i);
 			}
 		}

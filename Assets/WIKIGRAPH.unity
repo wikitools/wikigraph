@@ -206,7 +206,7 @@ MonoBehaviour:
   Config:
     RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}
-    MovementSpeed: 0.1
+    MovementSpeed: 0.5
   Environment: 0
   PCInputBinding:
     RotationInput:
@@ -272,8 +272,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NodePrefab: {fileID: 1534031500408350, guid: 4fca75af5504140b6814370e66ce13db, type: 2}
   PoolNodeContainer: {fileID: 56673547}
-  NodePreloadNumber: 10
-  WorldRadius: 10
+  NodePreloadNumber: 1000
+  WorldRadius: 50
+  NodeLoadedLimit: 500
+  LoadTestNodeSet: 1
 --- !u!114 &68664597
 MonoBehaviour:
   m_ObjectHideFlags: 0
