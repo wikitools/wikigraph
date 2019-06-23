@@ -41,14 +41,6 @@ namespace Controllers {
 			node.GetComponentInChildren<Text>().enabled = highlight;
 			node.GetComponentInChildren<Image>().color = highlight ? NodeColors.Highlighted : NodeColors.Default;
 		}
-		
-		void Awake() {
-			GraphController = GetComponent<GraphController>();
-		}
-
-		private void Start() {
-			GraphController.OnActiveNodeChanged += OnActiveNodeChanged;
-		}
 
 		void OnActiveNodeChanged(Node? node) {
 			foreach (Transform child in GraphController.Containers.ConnectionsContainer.transform) {
@@ -56,10 +48,18 @@ namespace Controllers {
 			}
 			if(node == null) return;
 			foreach (var child in node.Value.Children) {
+				GraphController.LoadNode(child);
 				var childObj = GraphController.GetObjectFromId(child);
-				if(childObj != null)
-					CreateNodeConnection(GraphController.NodeObjectMap[node.Value], childObj);
+				CreateNodeConnection(GraphController.NodeObjectMap[node.Value], childObj);
 			}
+		}
+		
+		void Awake() {
+			GraphController = GetComponent<GraphController>();
+		}
+
+		private void Start() {
+			GraphController.OnActiveNodeChanged += OnActiveNodeChanged;
 		}
 
 		void Update() {

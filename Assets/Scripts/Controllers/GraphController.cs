@@ -72,7 +72,8 @@ namespace Controllers {
 			return NodeObjectMap[node];
 		}
 
-		private void LoadNode(uint id) {
+		public void LoadNode(uint id) {
+			if(IdNodeMap.ContainsKey(id)) return;
 			Node node = nodeLoader.LoadNode(id);
 			IdNodeMap[id] = node;
 			GameObject nodeGO = nodePool.Spawn();

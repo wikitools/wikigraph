@@ -282,9 +282,9 @@ MonoBehaviour:
     ConnectionsContainer: {fileID: 1131386829}
     NodePoolContainer: {fileID: 56673547}
   NodePreloadNumber: 1000
-  WorldRadius: 10
+  WorldRadius: 50
   NodeLoadedLimit: 500
-  LoadTestNodeSet: 1
+  LoadTestNodeSet: 0
 --- !u!114 &68664597
 MonoBehaviour:
   m_ObjectHideFlags: 0
