@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 namespace InputModule.Processor {
 	public class PCInputProcessor: InputProcessor {
-		private readonly Logger<PCInputProcessor> LOGGER = new Logger<PCInputProcessor>();
 
 		public PCInputProcessor(InputConfig config, PcInputBinding binding, InputController controller) : base(config, binding, controller) {
 			binding.RotationInput.OnMove += OnRotate;

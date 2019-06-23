@@ -46,6 +46,22 @@ namespace Controllers {
 			GraphController = GetComponent<GraphController>();
 		}
 
+		private void Start() {
+			GraphController.OnActiveNodeChanged += OnActiveNodeChanged;
+		}
+
+		void OnActiveNodeChanged(Node? node) {
+			foreach (Transform child in GraphController.Containers.ConnectionsContainer.transform) {
+				Destroy(child.gameObject);
+			}
+			if(node == null) return;
+			foreach (var child in node.Value.Children) {
+				var childObj = GraphController.GetObjectFromId(child);
+				if(childObj != null)
+					CreateNodeConnection(GraphController.NodeObjectMap[node.Value], childObj);
+			}
+		}
+
 		void Update() {
 		}
 	}

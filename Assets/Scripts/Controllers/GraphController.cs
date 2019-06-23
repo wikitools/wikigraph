@@ -8,6 +8,8 @@ using Random = UnityEngine.Random;
 
 namespace Controllers {
 	public class GraphController : MonoBehaviour {
+		private readonly Logger<GraphController> LOGGER = new Logger<GraphController>();
+		
 		private NodeLoader nodeLoader;
 		private GameObjectPool nodePool;
 		public Dictionary<Node, GameObject> NodeObjectMap { get; } = new Dictionary<Node, GameObject>();
@@ -22,18 +24,60 @@ namespace Controllers {
 		public int NodeLoadedLimit;
 		public bool LoadTestNodeSet;
 
-		public GraphMode GraphMode { get; set; } = GraphMode.FREE_FLIGHT;
-		//public Action<GraphMode> OnModeChanged;
-		
+		private GraphMode graphMode = GraphMode.FREE_FLIGHT;
+		public GraphMode GraphMode {
+			get { return graphMode; }
+			set {
+				graphMode = value;
+				if (graphMode == GraphMode.FREE_FLIGHT)
+					ActiveNode = null;
+			}
+		}
+
 		public GameObject LastHighlightedNode { get; set; }
 		
 		private GameObject activeNode;
 		public GameObject ActiveNode {
 			get { return activeNode; }
 			set {
+				if(activeNode == value) return;
 				activeNode = value;
 				GraphMode = activeNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
+				OnActiveNodeChanged(GetNodeFromObject(activeNode));
 			}
+		}
+		public Action<Node?> OnActiveNodeChanged;
+
+		public Node? GetNodeFromObject(GameObject gameObject) {
+			if (gameObject == null) return null;
+			var name = gameObject.name;
+			uint id;
+			if (!uint.TryParse(name, out id) || !IdNodeMap.ContainsKey(id)) {
+				LOGGER.Warning($"GameObject name {name} is not a node id");
+				return null;
+			}
+			return IdNodeMap[id];
+		}
+
+		public GameObject GetObjectFromId(uint id) {
+			if (!IdNodeMap.ContainsKey(id)) {
+				LOGGER.Warning($"Id {id} is not a node id or is not loaded");
+				return null;
+			}
+			var node = IdNodeMap[id];
+			if (!NodeObjectMap.ContainsKey(node)) {
+				LOGGER.Warning("Node is not loaded");
+				return null;
+			}
+			return NodeObjectMap[node];
+		}
+
+		private void LoadNode(uint id) {
+			Node node = nodeLoader.LoadNode(id);
+			IdNodeMap[id] = node;
+			GameObject nodeGO = nodePool.Spawn();
+			NodeController.InitializeNode(node, ref nodeGO, Random.insideUnitSphere * WorldRadius);
+			NodeObjectMap[node] = nodeGO;
 		}
 		
 		public NodeController NodeController { get; private set; }
@@ -49,14 +93,6 @@ namespace Controllers {
 			for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
 				LoadNode(i);
 			}
-		}
-
-		private void LoadNode(uint id) {
-			Node node = nodeLoader.LoadNode(id);
-			IdNodeMap[id] = node;
-			GameObject nodeGO = nodePool.Spawn();
-			NodeController.InitializeNode(node, ref nodeGO, Random.insideUnitSphere * WorldRadius);
-			NodeObjectMap[node] = nodeGO;
 		}
 	
 		void Update () {
