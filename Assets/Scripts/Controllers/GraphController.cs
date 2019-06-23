@@ -8,13 +8,14 @@ using Random = UnityEngine.Random;
 
 namespace Controllers {
 	public class GraphController : MonoBehaviour {
-		
 		private NodeLoader nodeLoader;
 		private GameObjectPool nodePool;
 	
 		public GameObject NodePrefab;
 		public GameObject ConnectionPrefab;
 		public GraphContainers Containers;
+
+		public GameObject Infographic; //TODO: move
 		
 		public int NodePreloadNumber;
 		public float WorldRadius;

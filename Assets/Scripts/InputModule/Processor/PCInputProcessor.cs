@@ -14,6 +14,8 @@ namespace InputModule.Processor {
 			binding.ExitNodeTraverseMode.OnPress += () => Controller.GraphController.GraphMode = GraphMode.FREE_FLIGHT;
 			binding.MainMovementAxis.OnMove += dir => OnMove(new Vector2(dir, 0));
 			binding.CrossMovementAxis.OnMove += dir => OnMove(new Vector2(0, dir));
+
+			binding.InfographicToggle.OnPress += () => Controller.GraphController.Infographic.SetActive(!Controller.GraphController.Infographic.activeSelf);
 		}
 
 		private void OnMove(Vector2 direction) {
