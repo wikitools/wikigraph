@@ -19,11 +19,15 @@ namespace Controllers {
 		
 		public NodeController NodeController { get; private set; }
 		public CameraController CameraController { get; private set; }
+		public GraphController GraphController { get; private set; }
 
-		void Start() {
+		void Awake() {
 			NodeController = GetComponent<NodeController>();
 			CameraController = GetComponent<CameraController>();
+			GraphController = GetComponent<GraphController>();
+		}
 
+		void Start() {
 			input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) : new CaveInputProcessor(Config, CaveInputBinding, this);
 			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
 			

@@ -17,7 +17,7 @@ namespace InputModule.Processor {
 		protected void OnNodeChosen(Ray ray) {
 			RaycastHit raycastHit;
 			if (RaycastNode(ray, out raycastHit)) {
-				Controller.NodeController.ActiveNode = raycastHit.collider.gameObject;
+				Controller.GraphController.ActiveNode = raycastHit.collider.gameObject;
 			}
 		}
 

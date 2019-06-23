@@ -12,11 +12,13 @@ namespace InputModule.Processor {
 			binding.RotationInput.OnMove += OnRotate;
 			binding.NodePointer.OnPointed += OnNodePointed;
 			binding.NodeChooser.OnPointed += OnNodeChosen;
+			binding.ExitNodeTraverseMode.OnPress += () => Controller.GraphController.GraphMode = GraphMode.FREE_FLIGHT;
 			binding.MainMovementAxis.OnMove += dir => OnMove(new Vector2(dir, 0));
 			binding.CrossMovementAxis.OnMove += dir => OnMove(new Vector2(0, dir));
 		}
 
 		private void OnMove(Vector2 direction) {
+			if(Controller.GraphController.GraphMode == GraphMode.NODE_TRAVERSE) return;
 			direction *= Config.MovementSpeed;
 			Controller.CameraController.Entity.transform.Translate(direction.y, 0, direction.x, Space.Self);
 		}

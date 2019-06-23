@@ -7,26 +7,34 @@ namespace Controllers {
 	public class NodeController: MonoBehaviour {
 		public NodeColors NodeColors;
 		public NodeSprites NodeSprites;
-		
-		private GameObject lastHighlightedNode;
-		public GameObject ActiveNode { get; set; }
+
+		public GraphController GraphController { get; private set; }
 
 		public void InitializeNode(Node model, ref GameObject gameObject, Vector3 position) {
-			gameObject.transform.parent = transform;
+			gameObject.transform.parent = GraphController.Containers.NodeContainer.transform;
 			gameObject.transform.position = position;
 			gameObject.GetComponentInChildren<Text>().text = model.Title;
 			var nodeImage = gameObject.GetComponentInChildren<Image>();
 			nodeImage.sprite = model.Type == NodeType.ARTICLE ? NodeSprites.Article : NodeSprites.Category;
 			nodeImage.color = NodeColors.Default;
+			gameObject.name = model.ID.ToString();
+		}
+
+		public GameObject CreateNodeConnection(GameObject from, GameObject to) {
+			GameObject connection = Instantiate(GraphController.ConnectionPrefab);
+			connection.transform.parent = GraphController.Containers.ConnectionsContainer.transform;
+			var line = connection.GetComponent<LineRenderer>();
+			line.SetPositions(new [] {from.transform.position, to.transform.position});
+			return connection;
 		}
 
 		public void UpdateNodeHighlight(GameObject newHighlight) {
-			if(newHighlight == lastHighlightedNode) return;
-			if(lastHighlightedNode != null)
-				ChangeNodeHighlight(lastHighlightedNode, false);
-			lastHighlightedNode = newHighlight;
-			if(lastHighlightedNode != null)
-				ChangeNodeHighlight(lastHighlightedNode, true);
+			if(newHighlight == GraphController.LastHighlightedNode) return;
+			if(GraphController.LastHighlightedNode != null)
+				ChangeNodeHighlight(GraphController.LastHighlightedNode, false);
+			GraphController.LastHighlightedNode = newHighlight;
+			if(GraphController.LastHighlightedNode != null)
+				ChangeNodeHighlight(GraphController.LastHighlightedNode, true);
 		}
 
 		private void ChangeNodeHighlight(GameObject node, bool highlight) {
@@ -34,8 +42,8 @@ namespace Controllers {
 			node.GetComponentInChildren<Image>().color = highlight ? NodeColors.Highlighted : NodeColors.Default;
 		}
 		
-		void Start() {
-			
+		void Awake() {
+			GraphController = GetComponent<GraphController>();
 		}
 
 		void Update() {

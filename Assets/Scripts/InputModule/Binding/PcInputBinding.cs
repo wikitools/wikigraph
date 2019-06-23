@@ -15,5 +15,6 @@ namespace InputModule.Binding {
 
 		public PCPointer NodePointer;
 		public PCPointer NodeChooser;
+		public PCButton ExitNodeTraverseMode;
 	}
 }
