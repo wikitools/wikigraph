@@ -49,8 +49,8 @@ namespace Controllers {
 			if(node == null) return;
 			foreach (var child in node.Value.Children) {
 				GraphController.LoadNode(child);
-				var childObj = GraphController.GetObjectFromId(child);
-				CreateNodeConnection(GraphController.NodeObjectMap[node.Value], childObj);
+				var childObj = GraphController.Graph.GetObjectFromId(child);
+				CreateNodeConnection(GraphController.Graph.NodeObjectMap[node.Value], childObj);
 			}
 		}
 		
