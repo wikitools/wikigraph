@@ -27,7 +27,7 @@ namespace Services.DataFiles {
 		}
 
 		public Node LoadNode(uint id) {
-			var node = new Node {ID = id};
+			var node = new Node {ID = id, State = NodeState.LOADED};
 			node.Type = id < fileReader.ReadInt24(DataFileType.INFO, INFO.NODE_NUMBER_SIZE) ? NodeType.CATEGORY : NodeType.ARTICLE;
 			long nodeMapFilePos = id * MAP.LINE_SIZE;
 			loadNodeConnections(ref node, nodeMapFilePos);

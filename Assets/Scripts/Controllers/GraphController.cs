@@ -14,7 +14,7 @@ namespace Controllers {
 	
 		public GameObject NodePrefab;
 		public GameObject ConnectionPrefab;
-		public Containers Containers;
+		public GraphContainers Containers;
 		
 		public int NodePreloadNumber;
 		public float WorldRadius;
@@ -81,7 +81,7 @@ namespace Controllers {
 	}
 
 	[Serializable]
-	public class Containers {
+	public class GraphContainers {
 		public GameObject NodeContainer;
 		public GameObject ConnectionsContainer;
 		public GameObject NodePoolContainer;
