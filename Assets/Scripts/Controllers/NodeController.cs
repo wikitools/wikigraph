@@ -11,7 +11,7 @@ namespace Controllers {
 		public GraphController GraphController { get; private set; }
 
 		public void InitializeNode(Node model, ref GameObject gameObject, Vector3 position) {
-			gameObject.transform.parent = GraphController.Containers.NodeContainer.transform;
+			gameObject.transform.parent = GraphController.Nodes.Container.transform;
 			gameObject.transform.position = position;
 			gameObject.GetComponentInChildren<Text>().text = model.Title;
 			var nodeImage = gameObject.GetComponentInChildren<Image>();
@@ -21,8 +21,7 @@ namespace Controllers {
 		}
 
 		public GameObject CreateNodeConnection(GameObject from, GameObject to) {
-			GameObject connection = Instantiate(GraphController.ConnectionPrefab);
-			connection.transform.parent = GraphController.Containers.ConnectionsContainer.transform;
+			GameObject connection = Instantiate(GraphController.Connections.Prefab, GraphController.Connections.Container.transform, true);
 			var line = connection.GetComponent<LineRenderer>();
 			line.SetPositions(new [] {from.transform.position, to.transform.position});
 			return connection;
@@ -43,7 +42,7 @@ namespace Controllers {
 		}
 
 		void OnActiveNodeChanged(Node? node) {
-			foreach (Transform child in GraphController.Containers.ConnectionsContainer.transform) {
+			foreach (Transform child in GraphController.Connections.Container.transform) {
 				Destroy(child.gameObject);
 			}
 			if(node == null) return;

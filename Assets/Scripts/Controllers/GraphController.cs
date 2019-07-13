@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Model;
 using Services;
 using Services.DataFiles;
@@ -10,14 +9,13 @@ namespace Controllers {
 	public class GraphController : MonoBehaviour {
 		private NodeLoader nodeLoader;
 		private GameObjectPool nodePool;
-	
-		public GameObject NodePrefab;
-		public GameObject ConnectionPrefab;
-		public GraphContainers Containers;
+		private GameObjectPool connectionPool;
+		
+		public GraphObject Nodes;
+		public GraphObject Connections;
 
 		public GameObject Infographic; //TODO: move
 		
-		public int NodePreloadNumber;
 		public float WorldRadius;
 		public int NodeLoadedLimit;
 		public bool LoadTestNodeSet;
@@ -65,7 +63,8 @@ namespace Controllers {
 	
 		void Start () {
 			nodeLoader = new NodeLoader(LoadTestNodeSet ? "-test" : "");
-			nodePool = new GameObjectPool(NodePrefab, NodePreloadNumber, Containers.NodePoolContainer);
+			nodePool = new GameObjectPool(Nodes.Prefab, Nodes.PreloadNumber, Nodes.Container.transform.Find("Pool").gameObject);
+			connectionPool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.Container.transform.Find("Pool").gameObject);
 			
 			for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
 				LoadNode(i);
@@ -82,10 +81,10 @@ namespace Controllers {
 	}
 
 	[Serializable]
-	public class GraphContainers {
-		public GameObject NodeContainer;
-		public GameObject ConnectionsContainer;
-		public GameObject NodePoolContainer;
+	public class GraphObject {
+		public GameObject Container;
+		public GameObject Prefab;
+		public int PreloadNumber;
 	}
 
 	public enum GraphMode {
