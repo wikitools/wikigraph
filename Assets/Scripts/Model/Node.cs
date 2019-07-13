@@ -13,7 +13,7 @@ namespace Model {
 	}
 
 	public enum NodeState {
-		LOADED, ACTIVE, DISABLED
+		ACTIVE, SELECTED, DISABLED
 	}
 
 	public enum NodeType {

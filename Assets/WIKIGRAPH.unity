@@ -295,18 +295,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bd07bf4532f44e11a59fc9959a9b177, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Nodes:
-    Container: {fileID: 2007395970}
-    Prefab: {fileID: 1534031500408350, guid: 4fca75af5504140b6814370e66ce13db, type: 2}
-    PreloadNumber: 600
-  Connections:
-    Container: {fileID: 1131386829}
-    Prefab: {fileID: 1767645766449916, guid: 3732550bef55849b3a12da07e1f24ebd, type: 2}
-    PreloadNumber: 50
   Infographic: {fileID: 1042168899}
   WorldRadius: 50
-  NodeLoadedLimit: 500
-  LoadTestNodeSet: 0
 --- !u!114 &68664597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,6 +314,12 @@ MonoBehaviour:
   NodeSprites:
     Article: {fileID: 21300000, guid: c9e091e761d45432b9905191be9a2a68, type: 3}
     Category: {fileID: 21300000, guid: 897d60d10f7304274bfd85f90db7dcca, type: 3}
+  Nodes:
+    Container: {fileID: 2007395970}
+    Prefab: {fileID: 1534031500408350, guid: 4fca75af5504140b6814370e66ce13db, type: 2}
+    PreloadNumber: 600
+  NodeLoadedLimit: 500
+  LoadTestNodeSet: 0
 --- !u!114 &68664598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,6 +364,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2590be701e1a48d09cd999b783c968c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Connections:
+    Container: {fileID: 1131386829}
+    Prefab: {fileID: 1767645766449916, guid: 3732550bef55849b3a12da07e1f24ebd, type: 2}
+    PreloadNumber: 20
+  ActiveConnections: []
 --- !u!1001 &327208665
 Prefab:
   m_ObjectHideFlags: 0
