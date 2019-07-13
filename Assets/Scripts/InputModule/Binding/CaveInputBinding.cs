@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using InputModule.Event.Button;
 using InputModule.Event.Cursor;
+using InputModule.Event.Pointer;
 using Services;
 using UnityEngine;
 
@@ -10,8 +11,10 @@ namespace InputModule.Binding {
 	public class CaveInputBinding : InputBinding {
 		private static readonly Logger<CaveInputBinding> LOGGER = new Logger<CaveInputBinding>();
 
-		public FlystickButton Rot;
-		public FlystickCursor Rotation;
+		public FlystickCursor MovementJoystick;
+		public FlystickPointer NodePointer;
+		public FlystickPointer NodeChooser;
+		public FlystickButton ExitNodeTraverseMode;
 
 		private static Dictionary<FlystickInstance, int> FlystickBinding = new Dictionary<FlystickInstance, int>();
 		public static LzwpInput.Flystick Flystick(FlystickInstance instance) => Lzwp.input.flysticks[FlystickBinding[instance]];

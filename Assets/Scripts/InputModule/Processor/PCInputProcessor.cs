@@ -9,11 +9,12 @@ namespace InputModule.Processor {
 
 		public PCInputProcessor(InputConfig config, PcInputBinding binding, InputController controller) : base(config, binding, controller) {
 			binding.RotationInput.OnMove += OnRotate;
-			binding.NodePointer.OnPointed += OnNodePointed;
-			binding.NodeChooser.OnPointed += OnNodeChosen;
-			binding.ExitNodeTraverseMode.OnPress += () => Controller.GraphController.GraphMode = GraphMode.FREE_FLIGHT;
 			binding.MainMovementAxis.OnMove += dir => OnMove(new Vector2(dir, 0));
 			binding.CrossMovementAxis.OnMove += dir => OnMove(new Vector2(0, dir));
+			
+			binding.NodePointer.OnPointed += OnNodePointed;
+			binding.NodeChooser.OnPointed += OnNodeChosen;
+			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
 
 			binding.InfographicToggle.OnPress += () => Controller.GraphController.Infographic.SetActive(!Controller.GraphController.Infographic.activeSelf);
 		}

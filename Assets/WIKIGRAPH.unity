@@ -211,6 +211,7 @@ MonoBehaviour:
   PCInputBinding:
     RotationInput:
       IsButtonActivated: 1
+      MainAxisOnly: 0
       Button:
         ButtonType: 1
         MouseButton: 0
@@ -258,15 +259,30 @@ MonoBehaviour:
       MouseButton: 0
       KeyboardButton: 105
   CaveInputBinding:
-    Rot:
-      Instance: 0
-      Button: 0
-    Crs:
+    MovementJoystick:
       IsButtonActivated: 0
+      MainAxisOnly: 1
       Instance: 0
       Button:
         Instance: 0
         Button: 0
+    NodePointer:
+      IsButtonActivated: 0
+      ActivationType: 0
+      Instance: 0
+      Button:
+        Instance: 0
+        Button: 0
+    NodeChooser:
+      IsButtonActivated: 1
+      ActivationType: 0
+      Instance: 0
+      Button:
+        Instance: 0
+        Button: 0
+    ExitNodeTraverseMode:
+      Instance: 0
+      Button: 1
 --- !u!114 &68664596
 MonoBehaviour:
   m_ObjectHideFlags: 0
