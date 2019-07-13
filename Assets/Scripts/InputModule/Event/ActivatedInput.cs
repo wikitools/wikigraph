@@ -1,4 +1,5 @@
 using InputModule.Event.Button;
+using InputModule.Event.Cursor;
 using InputModule.Event.Interfaces;
 using InputModule.Event.Pointer;
 using Inspector;
@@ -21,12 +22,12 @@ namespace InputModule.Event {
 		public void DrawInInspector(SerializedProperty property) {
 			InspectorUtils.DrawObject(property, () => {
 				EditorGUILayout.PropertyField(property.FindPropertyRelative("IsButtonActivated"), false);
-				if (typeof(FlystickInput).IsAssignableFrom(GetType())) {
+				if(typeof(CursorInput).IsAssignableFrom(GetType()))
+					EditorGUILayout.PropertyField(property.FindPropertyRelative("MainAxisOnly"), false);
+				if (typeof(FlystickInput).IsAssignableFrom(GetType()))
 					EditorGUILayout.PropertyField(property.FindPropertyRelative("Instance"), false);
-				}
-				if (IsButtonActivated && typeof(PointerInput).IsAssignableFrom(GetType())) {
+				if (IsButtonActivated && typeof(PointerInput).IsAssignableFrom(GetType()))
 					EditorGUILayout.PropertyField(property.FindPropertyRelative("ActivationType"), false);
-				}
 				if (IsButtonActivated) {
 					var buttonProperty = property.FindPropertyRelative("Button");
 					InspectorUtils.DrawField(GetType().GetField("Button"), buttonProperty, this);

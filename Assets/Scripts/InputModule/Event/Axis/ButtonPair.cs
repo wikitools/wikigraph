@@ -24,7 +24,7 @@ namespace InputModule.Event.Axis {
 		}
 
 		public void CheckForInput() {
-			if(AxisState != 0) OnMove(AxisState);
+			if(AxisState != 0) OnMove?.Invoke(AxisState);
 		}
 
 		public void DrawInInspector(SerializedProperty property) {

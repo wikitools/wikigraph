@@ -14,10 +14,14 @@ namespace InputModule.Processor {
 			Controller = controller;
 		}
 
-		protected void OnNodeChosen(Ray ray) {
+		protected Transform EntityTransform => Controller.CameraController.Entity.transform;
+		
+		protected void ExitNodeTraverseMode() => Controller.GraphController.GraphMode = GraphMode.FREE_FLIGHT;
+
+		protected void OnNodeChooserMoved(Ray ray) {
 			RaycastHit raycastHit;
 			if (RaycastNode(ray, out raycastHit)) {
-				Controller.NodeController.ActiveNode = raycastHit.collider.gameObject;
+				Controller.GraphController.ActiveNode = raycastHit.collider.gameObject;
 			}
 		}
 
