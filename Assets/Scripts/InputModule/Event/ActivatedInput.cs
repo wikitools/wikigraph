@@ -23,6 +23,7 @@ namespace InputModule.Event {
 				EditorGUILayout.PropertyField(property.FindPropertyRelative("IsButtonActivated"), false);
 				EditorGUILayout.PropertyField(property.FindPropertyRelative("MainAxisOnly"), false);
 				if (typeof(FlystickInput).IsAssignableFrom(GetType())) {
+					EditorGUILayout.PropertyField(property.FindPropertyRelative("TakeMainAxis"), false);
 					EditorGUILayout.PropertyField(property.FindPropertyRelative("Instance"), false);
 				}
 				if (IsButtonActivated && typeof(PointerInput).IsAssignableFrom(GetType())) {
