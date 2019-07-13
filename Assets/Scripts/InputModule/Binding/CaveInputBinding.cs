@@ -11,7 +11,7 @@ namespace InputModule.Binding {
 		private static readonly Logger<CaveInputBinding> LOGGER = new Logger<CaveInputBinding>();
 
 		public FlystickButton Rot;
-		public FlystickCursor Crs;
+		public FlystickCursor Rotation;
 
 		private static Dictionary<FlystickInstance, int> FlystickBinding = new Dictionary<FlystickInstance, int>();
 		public static LzwpInput.Flystick Flystick(FlystickInstance instance) => Lzwp.input.flysticks[FlystickBinding[instance]];
