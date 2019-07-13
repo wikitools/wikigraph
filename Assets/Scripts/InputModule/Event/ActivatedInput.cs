@@ -22,6 +22,7 @@ namespace InputModule.Event {
 			InspectorUtils.DrawObject(property, () => {
 				EditorGUILayout.PropertyField(property.FindPropertyRelative("IsButtonActivated"), false);
 				if (typeof(FlystickInput).IsAssignableFrom(GetType())) {
+					EditorGUILayout.PropertyField(property.FindPropertyRelative("TakeMainAxis"), false);
 					EditorGUILayout.PropertyField(property.FindPropertyRelative("Instance"), false);
 				}
 				if (IsButtonActivated && typeof(PointerInput).IsAssignableFrom(GetType())) {
