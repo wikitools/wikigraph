@@ -14,6 +14,8 @@ namespace InputModule.Processor {
 			Controller = controller;
 		}
 
+		protected Transform EntityTransform => Controller.CameraController.Entity.transform;
+
 		protected void OnNodeChosen(Ray ray) {
 			RaycastHit raycastHit;
 			if (RaycastNode(ray, out raycastHit)) {
