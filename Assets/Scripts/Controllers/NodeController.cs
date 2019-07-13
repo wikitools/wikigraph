@@ -8,60 +8,34 @@ namespace Controllers {
 		public NodeColors NodeColors;
 		public NodeSprites NodeSprites;
 
-		public GraphController GraphController { get; private set; }
+		private GraphController graphController;
 
-		public void InitializeNode(Node model, ref GameObject gameObject, Vector3 position) {
-			gameObject.transform.parent = GraphController.Nodes.Container.transform;
-			gameObject.transform.position = position;
-			gameObject.GetComponentInChildren<Text>().text = model.Title;
-			var nodeImage = gameObject.GetComponentInChildren<Image>();
+		public void InitializeNode(Node model, ref GameObject nodeObject, Vector3 position) {
+			nodeObject.transform.parent = graphController.Nodes.Container.transform;
+			nodeObject.transform.position = position;
+			nodeObject.GetComponentInChildren<Text>().text = model.Title;
+			var nodeImage = nodeObject.GetComponentInChildren<Image>();
 			nodeImage.sprite = model.Type == NodeType.ARTICLE ? NodeSprites.Article : NodeSprites.Category;
 			nodeImage.color = NodeColors.Default;
-			gameObject.name = model.ID.ToString();
-		}
-
-		public GameObject CreateNodeConnection(GameObject from, GameObject to) {
-			GameObject connection = Instantiate(GraphController.Connections.Prefab, GraphController.Connections.Container.transform, true);
-			var line = connection.GetComponent<LineRenderer>();
-			line.SetPositions(new [] {from.transform.position, to.transform.position});
-			return connection;
+			nodeObject.name = model.ID.ToString();
 		}
 
 		public void UpdateNodeHighlight(GameObject newHighlight) {
-			if(newHighlight == GraphController.LastHighlightedNode) return;
-			if(GraphController.LastHighlightedNode != null)
-				ChangeNodeHighlight(GraphController.LastHighlightedNode, false);
-			GraphController.LastHighlightedNode = newHighlight;
-			if(GraphController.LastHighlightedNode != null)
-				ChangeNodeHighlight(GraphController.LastHighlightedNode, true);
+			if(newHighlight == graphController.LastHighlightedNode) return;
+			if(graphController.LastHighlightedNode != null)
+				ChangeNodeHighlight(graphController.LastHighlightedNode, false);
+			graphController.LastHighlightedNode = newHighlight;
+			if(graphController.LastHighlightedNode != null)
+				ChangeNodeHighlight(graphController.LastHighlightedNode, true);
 		}
 
 		private void ChangeNodeHighlight(GameObject node, bool highlight) {
 			node.GetComponentInChildren<Text>().enabled = highlight;
 			node.GetComponentInChildren<Image>().color = highlight ? NodeColors.Highlighted : NodeColors.Default;
 		}
-
-		void OnActiveNodeChanged(Node? node) {
-			foreach (Transform child in GraphController.Connections.Container.transform) {
-				Destroy(child.gameObject);
-			}
-			if(node == null) return;
-			foreach (var child in node.Value.Children) {
-				GraphController.LoadNode(child);
-				var childObj = GraphController.Graph.GetObjectFromId(child);
-				CreateNodeConnection(GraphController.Graph.NodeObjectMap[node.Value], childObj);
-			}
-		}
 		
 		void Awake() {
-			GraphController = GetComponent<GraphController>();
-		}
-
-		private void Start() {
-			GraphController.OnActiveNodeChanged += OnActiveNodeChanged;
-		}
-
-		void Update() {
+			graphController = GetComponent<GraphController>();
 		}
 	}
 	
