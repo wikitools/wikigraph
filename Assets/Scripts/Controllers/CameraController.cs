@@ -16,8 +16,8 @@ namespace Controllers {
 
 		void Update() {
 			if (GraphController.GraphMode == GraphMode.NODE_TRAVERSE) {
-				if (NodeController.ActiveNode != null) {
-					Vector3 targetPosition = GraphController.Graph.NodeObjectMap[NodeController.ActiveNode.Value].transform.TransformPoint(new Vector3(0, 3, 0));
+				if (NodeController.SelectedNode != null) {
+					Vector3 targetPosition = GraphController.Graph.NodeObjectMap[NodeController.SelectedNode.Value].transform.TransformPoint(new Vector3(0, 3, 0));
 					Entity.transform.position = Vector3.SmoothDamp(Entity.transform.position, targetPosition, ref velocity, smoothTime);
 				}
 			}

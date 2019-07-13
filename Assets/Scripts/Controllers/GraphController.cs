@@ -19,7 +19,7 @@ namespace Controllers {
 			set {
 				graphMode = value;
 				if (graphMode == GraphMode.FREE_FLIGHT)
-					nodeController.ActiveNode = null;
+					nodeController.SelectedNode = null;
 			}
 		}
 		
@@ -35,8 +35,8 @@ namespace Controllers {
 		public GameObjectPool Pool;
 		public int PreloadNumber;
 
-		private static readonly string POOL_GO_NAME = "Pool";
-		public GameObject PoolContainer => Container.transform.Find(POOL_GO_NAME).gameObject;
+		private static readonly string POOL_OBJECT_NAME = "Pool";
+		public GameObject PoolContainer => Container.transform.Find(POOL_OBJECT_NAME).gameObject;
 	}
 
 	public enum GraphMode {

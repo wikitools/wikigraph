@@ -18,10 +18,23 @@ namespace Model {
 		public static bool operator !=(Node one, Node two) {
 			return !(one == two);
 		}
+		
+		public bool Equals(Node other) {
+			return ID == other.ID;
+		}
+
+		public override bool Equals(object obj) {
+			if (ReferenceEquals(null, obj)) return false;
+			return obj is Node && Equals((Node) obj);
+		}
+
+		public override int GetHashCode() {
+			return (int) ID;
+		}
 	}
 
 	public enum NodeState {
-		ACTIVE, SELECTED, DISABLED
+		ACTIVE, SELECTED, HIGHLIGHTED, DISABLED
 	}
 
 	public enum NodeType {

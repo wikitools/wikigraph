@@ -20,28 +20,38 @@ namespace Controllers {
 
 		private GraphController graphController;
 		
-		private Node? LastHighlightedNode { get; set; }
-		
-		private Node? activeNode;
-		public Node? ActiveNode {
-			get { return activeNode; }
+		private Node? highlightedNode;
+		public Node? HighlightedNode {
+			get { return highlightedNode; }
 			set {
-				if(activeNode == value) return;
-				activeNode = value;
-				graphController.GraphMode = activeNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
-				OnActiveNodeChanged?.Invoke(activeNode);
+				if(highlightedNode == value || value.HasValue && value.Value.State == NodeState.DISABLED) return;
+				if (highlightedNode != null) SetNodeState(highlightedNode.Value, NodeState.ACTIVE);
+				highlightedNode = value;
+				if (highlightedNode != null) SetNodeState(highlightedNode.Value, NodeState.HIGHLIGHTED);
 			}
 		}
 
-		public Action<Node?> OnActiveNodeChanged;
+		private Node? selectedNode;
+		public Node? SelectedNode {
+			get { return selectedNode; }
+			set {
+				if(selectedNode == value) return;
+				selectedNode = value;
+				OnNodeSelectChanged(selectedNode);
+				graphController.GraphMode = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
+				OnSelectedNodeChanged?.Invoke(selectedNode);
+			}
+		}
+
+		public Action<Node?> OnSelectedNodeChanged;
 
 		public void LoadNode(uint id) {
 			if(GraphController.Graph.IdNodeMap.ContainsKey(id)) return;
 			Node node = nodeLoader.LoadNode(id);
 			GraphController.Graph.IdNodeMap[id] = node;
-			GameObject nodeGO = Nodes.Pool.Spawn();
-			InitializeNode(node, ref nodeGO, Random.insideUnitSphere * graphController.WorldRadius);
-			GraphController.Graph.NodeObjectMap[node] = nodeGO;
+			GameObject nodeObject = Nodes.Pool.Spawn();
+			InitializeNode(node, ref nodeObject, Random.insideUnitSphere * graphController.WorldRadius);
+			GraphController.Graph.NodeObjectMap[node] = nodeObject;
 		}
 
 		public void InitializeNode(Node model, ref GameObject nodeObject, Vector3 position) {
@@ -50,31 +60,38 @@ namespace Controllers {
 			nodeObject.GetComponentInChildren<Text>().text = model.Title;
 			var nodeImage = nodeObject.GetComponentInChildren<Image>();
 			nodeImage.sprite = model.Type == NodeType.ARTICLE ? NodeSprites.Article : NodeSprites.Category;
-			nodeImage.color = NodeColors.Default;
+			nodeImage.color = NodeColors.Active;
 			nodeObject.name = model.ID.ToString();
 		}
 
-		public void UpdateNodeHighlight(Node? newHighlight) {
-			if(newHighlight == LastHighlightedNode) return;
-			if(LastHighlightedNode != null)
-				ChangeNodeHighlight(LastHighlightedNode.Value, false);
-			LastHighlightedNode = newHighlight;
-			if(newHighlight != null)
-				ChangeNodeHighlight(newHighlight.Value, true);
-		}
-
-		private void ChangeNodeHighlight(Node node, bool highlight) {
-			var nodeGO = GraphController.Graph.NodeObjectMap[node];
-			nodeGO.GetComponentInChildren<Text>().enabled = highlight;
-			nodeGO.GetComponentInChildren<Image>().color = highlight ? NodeColors.Highlighted : NodeColors.Default;
-		}
-
-		void OnActiveNodeChangedC(Node? node) {
-			if (node == null) {
-				foreach (var nodeGO in GraphController.Graph.NodeObjectMap.Values) {
-					
+		private void OnNodeSelectChanged(Node? selectedNode) {
+			if (selectedNode == null) {
+				SetAllNodesAs(NodeState.ACTIVE);
+			} else {
+				SetAllNodesAs(NodeState.DISABLED);
+				var modNode = selectedNode.Value;
+				SetNodeState(modNode, NodeState.SELECTED);
+				foreach (var childId in modNode.Children) {
+					LoadNode(childId);
+					var child = GraphController.Graph.IdNodeMap[childId];
+					SetNodeState(child, NodeState.ACTIVE);
 				}
 			}
+		}
+
+		private void SetAllNodesAs(NodeState state) {
+			foreach (var node in GraphController.Graph.NodeObjectMap.Keys) {
+				var modNode = node;
+				SetNodeState(node, state);
+			}
+		}
+
+		private void SetNodeState(Node node, NodeState state) {
+			node.State = state;
+			var nodeObject = GraphController.Graph.NodeObjectMap[node];
+			nodeObject.GetComponentInChildren<Text>().enabled = node.State == NodeState.SELECTED;
+			nodeObject.GetComponentInChildren<Image>().color = node.State == NodeState.SELECTED || node.State == NodeState.HIGHLIGHTED ? 
+				NodeColors.Selected : node.State == NodeState.ACTIVE ? NodeColors.Active : NodeColors.Disabled;
 		}
 		
 		void Awake() {
@@ -87,7 +104,6 @@ namespace Controllers {
 			for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
 				LoadNode(i);
 			}
-			OnActiveNodeChanged += OnActiveNodeChangedC;
 		}
 
 		private void OnDestroy() {
@@ -97,8 +113,9 @@ namespace Controllers {
 	
 	[Serializable]
 	public class NodeColors {
-		public Color Default;
-		public Color Highlighted;
+		public Color Active;
+		public Color Selected;
+		public Color Disabled;
 	}
 	
 	[Serializable]

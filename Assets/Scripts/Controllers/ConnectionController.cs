@@ -8,7 +8,6 @@ namespace Controllers {
 	public class ConnectionController: MonoBehaviour {
 		public GraphObject Connections;
 
-		private GraphController graphController;
 		private NodeController nodeController;
 		
 		public List<GameObject> ActiveConnections { get; } = new List<GameObject>();
@@ -20,10 +19,9 @@ namespace Controllers {
 			ActiveConnections.Clear();
 			if(node == null) return;
 			foreach (var child in node.Value.Children) {
-				nodeController.LoadNode(child);
-				GameObject connectionGO = Connections.Pool.Spawn();
+				GameObject connectionObject = Connections.Pool.Spawn();
 				var childObj = GraphController.Graph.GetObjectFromId(child);
-				InitializeConnection(ref connectionGO, GraphController.Graph.NodeObjectMap[node.Value], childObj);
+				InitializeConnection(ref connectionObject, GraphController.Graph.NodeObjectMap[node.Value], childObj);
 			}
 		}
 
@@ -35,13 +33,12 @@ namespace Controllers {
 		}
 		
 		void Awake() {
-			graphController = GetComponent<GraphController>();
 			nodeController = GetComponent<NodeController>();
 		}
 
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
-			nodeController.OnActiveNodeChanged += OnActiveNodeChanged;
+			nodeController.OnSelectedNodeChanged += OnActiveNodeChanged;
 		}
 	}
 }

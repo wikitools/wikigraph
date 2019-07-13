@@ -21,17 +21,13 @@ namespace InputModule.Processor {
 		protected void OnNodeChooserMoved(Ray ray) {
 			RaycastHit raycastHit;
 			if (RaycastNode(ray, out raycastHit)) {
-				Controller.NodeController.ActiveNode = GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject);
+				Controller.NodeController.SelectedNode = GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject);
 			}
 		}
 
 		protected void OnNodePointed(Ray ray) {
 			RaycastHit raycastHit;
-			if (RaycastNode(ray, out raycastHit)) {
-				Controller.NodeController.UpdateNodeHighlight(GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject));
-			} else {
-				Controller.NodeController.UpdateNodeHighlight(null);
-			}
+			Controller.NodeController.HighlightedNode = RaycastNode(ray, out raycastHit) ? GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject) : null;
 		}
 		
 		private bool RaycastNode(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Node"));
