@@ -11,30 +11,21 @@ namespace Controllers {
 		
 		public static Graph Graph { get; } = new Graph();
 		
+		private NodeController nodeController;
+		
 		private GraphMode graphMode = GraphMode.FREE_FLIGHT;
 		public GraphMode GraphMode {
 			get { return graphMode; }
 			set {
 				graphMode = value;
 				if (graphMode == GraphMode.FREE_FLIGHT)
-					ActiveNode = null;
+					nodeController.ActiveNode = null;
 			}
 		}
-
-		public GameObject LastHighlightedNode { get; set; }
 		
-		private GameObject activeNode;
-		public GameObject ActiveNode {
-			get { return activeNode; }
-			set {
-				if(activeNode == value) return;
-				activeNode = value;
-				GraphMode = activeNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
-				OnActiveNodeChanged?.Invoke(Graph.GetNodeFromObject(activeNode));
-			}
+		void Awake() {
+			nodeController = GetComponent<NodeController>();
 		}
-
-		public Action<Node?> OnActiveNodeChanged;
 	}
 
 	[Serializable]
@@ -44,7 +35,7 @@ namespace Controllers {
 		public GameObjectPool Pool;
 		public int PreloadNumber;
 
-		public static readonly string POOL_GO_NAME = "Pool";
+		private static readonly string POOL_GO_NAME = "Pool";
 		public GameObject PoolContainer => Container.transform.Find(POOL_GO_NAME).gameObject;
 	}
 

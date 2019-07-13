@@ -19,6 +19,21 @@ namespace Controllers {
 		private NodeLoader nodeLoader;
 
 		private GraphController graphController;
+		
+		private Node? LastHighlightedNode { get; set; }
+		
+		private Node? activeNode;
+		public Node? ActiveNode {
+			get { return activeNode; }
+			set {
+				if(activeNode == value) return;
+				activeNode = value;
+				graphController.GraphMode = activeNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
+				OnActiveNodeChanged?.Invoke(activeNode);
+			}
+		}
+
+		public Action<Node?> OnActiveNodeChanged;
 
 		public void LoadNode(uint id) {
 			if(GraphController.Graph.IdNodeMap.ContainsKey(id)) return;
@@ -39,18 +54,27 @@ namespace Controllers {
 			nodeObject.name = model.ID.ToString();
 		}
 
-		public void UpdateNodeHighlight(GameObject newHighlight) {
-			if(newHighlight == graphController.LastHighlightedNode) return;
-			if(graphController.LastHighlightedNode != null)
-				ChangeNodeHighlight(graphController.LastHighlightedNode, false);
-			graphController.LastHighlightedNode = newHighlight;
-			if(graphController.LastHighlightedNode != null)
-				ChangeNodeHighlight(graphController.LastHighlightedNode, true);
+		public void UpdateNodeHighlight(Node? newHighlight) {
+			if(newHighlight == LastHighlightedNode) return;
+			if(LastHighlightedNode != null)
+				ChangeNodeHighlight(LastHighlightedNode.Value, false);
+			LastHighlightedNode = newHighlight;
+			if(newHighlight != null)
+				ChangeNodeHighlight(newHighlight.Value, true);
 		}
 
-		private void ChangeNodeHighlight(GameObject node, bool highlight) {
-			node.GetComponentInChildren<Text>().enabled = highlight;
-			node.GetComponentInChildren<Image>().color = highlight ? NodeColors.Highlighted : NodeColors.Default;
+		private void ChangeNodeHighlight(Node node, bool highlight) {
+			var nodeGO = GraphController.Graph.NodeObjectMap[node];
+			nodeGO.GetComponentInChildren<Text>().enabled = highlight;
+			nodeGO.GetComponentInChildren<Image>().color = highlight ? NodeColors.Highlighted : NodeColors.Default;
+		}
+
+		void OnActiveNodeChangedC(Node? node) {
+			if (node == null) {
+				foreach (var nodeGO in GraphController.Graph.NodeObjectMap.Values) {
+					
+				}
+			}
 		}
 		
 		void Awake() {
@@ -63,6 +87,7 @@ namespace Controllers {
 			for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
 				LoadNode(i);
 			}
+			OnActiveNodeChanged += OnActiveNodeChangedC;
 		}
 
 		private void OnDestroy() {

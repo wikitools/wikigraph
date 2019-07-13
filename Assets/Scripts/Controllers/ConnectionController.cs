@@ -41,7 +41,7 @@ namespace Controllers {
 
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
-			graphController.OnActiveNodeChanged += OnActiveNodeChanged;
+			nodeController.OnActiveNodeChanged += OnActiveNodeChanged;
 		}
 	}
 }
