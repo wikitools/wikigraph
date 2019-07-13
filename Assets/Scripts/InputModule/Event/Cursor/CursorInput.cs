@@ -25,9 +25,9 @@ namespace InputModule.Event.Cursor {
 		
 			Action<float>[] axisAction = {OnXAxisMove, OnYAxisMove};
 			int mainAxis = Mathf.Abs(movement.x) >= Mathf.Abs(movement.y) ? 0 : 1;
-			axisAction[mainAxis].Invoke(movement[mainAxis]);
+			axisAction[mainAxis]?.Invoke(movement[mainAxis]);
 			if (!MainAxisOnly)
-				axisAction[(mainAxis + 1) % 2].Invoke(movement[(mainAxis + 1) % 2]);
+				axisAction[(mainAxis + 1) % 2]?.Invoke(movement[(mainAxis + 1) % 2]);
 			OnMove?.Invoke(movement);
 		}
 	}
