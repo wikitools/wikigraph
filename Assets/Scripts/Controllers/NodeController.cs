@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Model;
 using Services;
 using Services.DataFiles;
@@ -9,7 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace Controllers {
 	public class NodeController: MonoBehaviour {
-		public NodeColors NodeColors;
+		public NodeColor[] NodeColors;
 		public NodeSprites NodeSprites;
 		
 		public GraphPooledObject Nodes;
@@ -26,9 +27,11 @@ namespace Controllers {
 			get { return highlightedNode; }
 			set {
 				if(IgnoreNodeValueChange(highlightedNode, value)) return;
-				if (highlightedNode != null) SetNodeState(highlightedNode, NodeState.ACTIVE);
+				if (highlightedNode != null && highlightedNode.State != NodeState.SELECTED) 
+					SetNodeState(highlightedNode, NodeState.ACTIVE);
 				highlightedNode = value;
-				if (highlightedNode != null) SetNodeState(highlightedNode, NodeState.HIGHLIGHTED);
+				if (highlightedNode != null && highlightedNode.State != NodeState.SELECTED) 
+					SetNodeState(highlightedNode, NodeState.HIGHLIGHTED);
 			}
 		}
 
@@ -63,7 +66,7 @@ namespace Controllers {
 			nodeObject.GetComponentInChildren<Text>().text = model.Title;
 			var nodeImage = nodeObject.GetComponentInChildren<Image>();
 			nodeImage.sprite = model.Type == NodeType.ARTICLE ? NodeSprites.Article : NodeSprites.Category;
-			nodeImage.color = NodeColors.Active;
+			nodeImage.color = NodeColors.First(node => node.State == NodeState.ACTIVE).Color;
 			nodeObject.name = model.ID.ToString();
 		}
 
@@ -92,8 +95,7 @@ namespace Controllers {
 			node.State = state;
 			var nodeObject = GraphController.Graph.NodeObjectMap[node];
 			nodeObject.GetComponentInChildren<Text>().enabled = node.State == NodeState.SELECTED;
-			nodeObject.GetComponentInChildren<Image>().color = node.State == NodeState.SELECTED || node.State == NodeState.HIGHLIGHTED ? 
-				NodeColors.Selected : node.State == NodeState.ACTIVE ? NodeColors.Active : NodeColors.Disabled;
+			nodeObject.GetComponentInChildren<Image>().color = NodeColors.First(nodeColor => nodeColor.State == state).Color;
 		}
 		
 		void Awake() {
@@ -114,10 +116,9 @@ namespace Controllers {
 	}
 	
 	[Serializable]
-	public class NodeColors {
-		public Color Active;
-		public Color Selected;
-		public Color Disabled;
+	public class NodeColor {
+		public NodeState State;
+		public Color Color;
 	}
 	
 	[Serializable]
