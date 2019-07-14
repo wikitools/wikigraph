@@ -42,7 +42,7 @@ namespace Controllers {
 				if(IgnoreNodeValueChange(selectedNode, value)) return;
 				selectedNode = value;
 				OnNodeSelectChanged(selectedNode);
-				graphController.GraphMode = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
+				graphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
 				OnSelectedNodeChanged?.Invoke(selectedNode);
 			}
 		}
@@ -108,6 +108,9 @@ namespace Controllers {
 			for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
 				LoadNode(i);
 			}
+			graphController.GraphMode.OnValueChanged += mode => {
+				if (mode == GraphMode.FREE_FLIGHT) SelectedNode = null;
+			};
 		}
 
 		private void OnDestroy() {

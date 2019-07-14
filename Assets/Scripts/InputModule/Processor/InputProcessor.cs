@@ -16,7 +16,7 @@ namespace InputModule.Processor {
 
 		protected Transform EntityTransform => Controller.CameraController.Entity.transform;
 		
-		protected void ExitNodeTraverseMode() => Controller.GraphController.GraphMode = GraphMode.FREE_FLIGHT;
+		protected void ExitNodeTraverseMode() => Controller.GraphController.GraphMode.Value = GraphMode.FREE_FLIGHT;
 
 		protected void OnNodeChooserMoved(Ray ray) {
 			RaycastHit raycastHit;

@@ -20,7 +20,7 @@ namespace InputModule.Processor {
 		}
 
 		private void OnMove(Vector2 direction) {
-			if(Controller.GraphController.GraphMode == GraphMode.NODE_TRAVERSE) return;
+			if(Controller.GraphController.GraphMode.Value == GraphMode.NODE_TRAVERSE) return;
 			direction *= Config.MovementSpeed;
 			EntityTransform.Translate(direction.y, 0, direction.x, Space.Self);
 		}
