@@ -14,7 +14,7 @@ namespace InputModule.Event.Cursor {
 
 		public override void Init() {
 			if (IsButtonActivated)
-				ActivationButton.OnPress += () => LastMousePos = GetCursorPosition();
+				ActivationButton.OnPress += () => LastMousePos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
 		}
 
 		protected override Vector2 GetCursorPosition() {
