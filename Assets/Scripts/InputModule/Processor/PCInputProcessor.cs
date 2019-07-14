@@ -17,6 +17,7 @@ namespace InputModule.Processor {
 			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
 
 			binding.InfographicToggle.OnPress += () => Controller.GraphController.Infographic.SetActive(!Controller.GraphController.Infographic.activeSelf);
+			binding.ConnectionModeToggle.OnPress += () => Controller.GraphController.SwitchConnectionMode();
 		}
 
 		private void OnMove(Vector2 direction) {

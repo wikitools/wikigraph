@@ -10,14 +10,13 @@ namespace Controllers {
 		
 		public static Graph Graph { get; } = new Graph();
 		
-		private NodeController nodeController;
-		
 		public ObservableProperty<GraphMode> GraphMode = new ObservableProperty<GraphMode>(Controllers.GraphMode.FREE_FLIGHT);
 
 		public ObservableProperty<ConnectionMode> ConnectionMode = new ObservableProperty<ConnectionMode>(Controllers.ConnectionMode.CHILDREN);
-		
-		void Awake() {
-			nodeController = GetComponent<NodeController>();
+
+		public void SwitchConnectionMode() {
+			if(GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT) return;
+			ConnectionMode.Value = ConnectionMode.Value == Controllers.ConnectionMode.PARENTS ? Controllers.ConnectionMode.CHILDREN : Controllers.ConnectionMode.PARENTS;
 		}
 	}
 

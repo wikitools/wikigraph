@@ -17,8 +17,6 @@ namespace Controllers {
 		
 		public int NodeLoadedLimit;
 		public bool LoadTestNodeSet;
-		
-		private NodeLoader nodeLoader;
 
 		private GraphController graphController;
 		
@@ -26,7 +24,7 @@ namespace Controllers {
 		public Node HighlightedNode {
 			get { return highlightedNode; }
 			set {
-				if(IgnoreNodeValueChange(highlightedNode, value)) return;
+				if(highlightedNode == value || NewNodeDisabled(value)) return;
 				if (highlightedNode != null && highlightedNode.State != NodeState.SELECTED) 
 					SetNodeState(highlightedNode, NodeState.ACTIVE);
 				highlightedNode = value;
@@ -39,15 +37,19 @@ namespace Controllers {
 		public Node SelectedNode {
 			get { return selectedNode; }
 			set {
-				if(IgnoreNodeValueChange(selectedNode, value)) return;
+				if(NewNodeDisabled(value)) return;
+				if (selectedNode == value) {
+					graphController.SwitchConnectionMode();
+					return;
+				}
 				selectedNode = value;
-				OnNodeSelectChanged(selectedNode);
+				UpdateNodeStates();
 				graphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
 				OnSelectedNodeChanged?.Invoke(selectedNode);
 			}
 		}
 
-		private bool IgnoreNodeValueChange(Node oldVal, Node newVal) => oldVal == newVal || newVal != null && newVal.State == NodeState.DISABLED;
+		private bool NewNodeDisabled(Node newVal) => newVal != null && newVal.State == NodeState.DISABLED;
 
 		public Action<Node> OnSelectedNodeChanged;
 
@@ -70,17 +72,15 @@ namespace Controllers {
 			nodeObject.name = model.ID.ToString();
 		}
 
-		private void OnNodeSelectChanged(Node selectedNode) {
+		private void UpdateNodeStates() {
 			if (selectedNode == null) {
 				SetAllNodesAs(NodeState.ACTIVE);
 			} else {
 				SetAllNodesAs(NodeState.DISABLED);
-				var modNode = selectedNode;
-				SetNodeState(modNode, NodeState.SELECTED);
-				foreach (var childId in modNode.Children) {
-					LoadNode(childId);
-					var child = GraphController.Graph.IdNodeMap[childId];
-					SetNodeState(child, NodeState.ACTIVE);
+				SetNodeState(selectedNode, NodeState.SELECTED);
+				foreach (var connection in connectionController.GetActiveNodeConnections()) {
+					LoadNode(connection.ID);
+					SetNodeState(connection, NodeState.ACTIVE);
 				}
 			}
 		}
@@ -97,9 +97,15 @@ namespace Controllers {
 			nodeObject.GetComponentInChildren<Text>().enabled = node.State == NodeState.SELECTED;
 			nodeObject.GetComponentInChildren<Image>().color = NodeColors.First(nodeColor => nodeColor.State == state).Color;
 		}
+
+		#region MonoBehaviour
+		
+		private NodeLoader nodeLoader;
+		private ConnectionController connectionController;
 		
 		void Awake() {
 			graphController = GetComponent<GraphController>();
+			connectionController = GetComponent<ConnectionController>();
 		}
 
 		private void Start() {
@@ -111,11 +117,14 @@ namespace Controllers {
 			graphController.GraphMode.OnValueChanged += mode => {
 				if (mode == GraphMode.FREE_FLIGHT) SelectedNode = null;
 			};
+			graphController.ConnectionMode.OnValueChanged += mode => UpdateNodeStates();
 		}
 
 		private void OnDestroy() {
 			nodeLoader.Dispose();
 		}
+		
+		#endregion
 	}
 	
 	[Serializable]

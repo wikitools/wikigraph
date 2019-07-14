@@ -1,3 +1,5 @@
+using Controllers;
+
 namespace Model {
 	public class Node {
 		public uint[] Children;
@@ -10,6 +12,8 @@ namespace Model {
 		
 		public NodeType Type;
 		public NodeState State;
+
+		public uint[] GetConnections(ConnectionMode type) => type == ConnectionMode.PARENTS ? Parents : Children;
 
 		public static bool operator ==(Node one, Node two) {
 			return ReferenceEquals(one, null) ? ReferenceEquals(two, null) : one.Equals(two);

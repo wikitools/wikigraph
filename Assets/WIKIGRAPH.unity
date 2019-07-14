@@ -259,6 +259,10 @@ MonoBehaviour:
       ButtonType: 0
       MouseButton: 0
       KeyboardButton: 105
+    ConnectionModeToggle:
+      ButtonType: 0
+      MouseButton: 0
+      KeyboardButton: 99
   CaveInputBinding:
     MovementJoystick:
       IsButtonActivated: 0
