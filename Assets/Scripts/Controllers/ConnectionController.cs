@@ -12,16 +12,16 @@ namespace Controllers {
 		
 		public List<GameObject> ActiveConnections { get; } = new List<GameObject>();
 
-		void OnActiveNodeChanged(Node? node) {
+		void OnActiveNodeChanged(Node node) {
 			foreach (var connection in ActiveConnections) {
 				Connections.Pool.Despawn(connection);
 			}
 			ActiveConnections.Clear();
 			if(node == null) return;
-			foreach (var child in node.Value.Children) {
+			foreach (var child in node.Children) {
 				GameObject connectionObject = Connections.Pool.Spawn();
 				var childObj = GraphController.Graph.GetObjectFromId(child);
-				InitializeConnection(ref connectionObject, GraphController.Graph.NodeObjectMap[node.Value], childObj);
+				InitializeConnection(ref connectionObject, GraphController.Graph.NodeObjectMap[node], childObj);
 			}
 		}
 

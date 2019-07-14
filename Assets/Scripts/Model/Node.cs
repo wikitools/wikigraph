@@ -1,5 +1,5 @@
 namespace Model {
-	public struct Node {
+	public class Node {
 		public uint[] Children;
 		public uint[] Parents;
 		
@@ -12,7 +12,7 @@ namespace Model {
 		public NodeState State;
 
 		public static bool operator ==(Node one, Node two) {
-			return one.ID == two.ID;
+			return ReferenceEquals(one, null) ? ReferenceEquals(two, null) : one.Equals(two);
 		}
 
 		public static bool operator !=(Node one, Node two) {
@@ -20,11 +20,12 @@ namespace Model {
 		}
 		
 		public bool Equals(Node other) {
+			if (ReferenceEquals(other, null)) return false;
 			return ID == other.ID;
 		}
 
 		public override bool Equals(object obj) {
-			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(obj, null)) return false;
 			return obj is Node && Equals((Node) obj);
 		}
 

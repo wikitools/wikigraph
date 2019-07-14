@@ -9,7 +9,7 @@ namespace Services {
 		public Dictionary<Node, GameObject> NodeObjectMap { get; } = new Dictionary<Node, GameObject>();
 		public Dictionary<uint, Node> IdNodeMap { get; } = new Dictionary<uint, Node>();
 		
-		public Node? GetNodeFromObject(GameObject gameObject) {
+		public Node GetNodeFromObject(GameObject gameObject) {
 			if (gameObject == null) return null;
 			var name = gameObject.name;
 			uint id;

@@ -20,22 +20,22 @@ namespace Controllers {
 
 		private GraphController graphController;
 		
-		private Node? highlightedNode;
-		public Node? HighlightedNode {
+		private Node highlightedNode;
+		public Node HighlightedNode {
 			get { return highlightedNode; }
 			set {
-				if(highlightedNode == value || value.HasValue && value.Value.State == NodeState.DISABLED) return;
-				if (highlightedNode != null) SetNodeState(highlightedNode.Value, NodeState.ACTIVE);
+				if(IgnoreNodeValueChange(highlightedNode, value)) return;
+				if (highlightedNode != null) SetNodeState(highlightedNode, NodeState.ACTIVE);
 				highlightedNode = value;
-				if (highlightedNode != null) SetNodeState(highlightedNode.Value, NodeState.HIGHLIGHTED);
+				if (highlightedNode != null) SetNodeState(highlightedNode, NodeState.HIGHLIGHTED);
 			}
 		}
 
-		private Node? selectedNode;
-		public Node? SelectedNode {
+		private Node selectedNode;
+		public Node SelectedNode {
 			get { return selectedNode; }
 			set {
-				if(selectedNode == value) return;
+				if(IgnoreNodeValueChange(selectedNode, value)) return;
 				selectedNode = value;
 				OnNodeSelectChanged(selectedNode);
 				graphController.GraphMode = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
@@ -43,7 +43,9 @@ namespace Controllers {
 			}
 		}
 
-		public Action<Node?> OnSelectedNodeChanged;
+		private bool IgnoreNodeValueChange(Node oldVal, Node newVal) => oldVal == newVal || newVal != null && newVal.State == NodeState.DISABLED;
+
+		public Action<Node> OnSelectedNodeChanged;
 
 		public void LoadNode(uint id) {
 			if(GraphController.Graph.IdNodeMap.ContainsKey(id)) return;
@@ -64,12 +66,12 @@ namespace Controllers {
 			nodeObject.name = model.ID.ToString();
 		}
 
-		private void OnNodeSelectChanged(Node? selectedNode) {
+		private void OnNodeSelectChanged(Node selectedNode) {
 			if (selectedNode == null) {
 				SetAllNodesAs(NodeState.ACTIVE);
 			} else {
 				SetAllNodesAs(NodeState.DISABLED);
-				var modNode = selectedNode.Value;
+				var modNode = selectedNode;
 				SetNodeState(modNode, NodeState.SELECTED);
 				foreach (var childId in modNode.Children) {
 					LoadNode(childId);
@@ -81,7 +83,6 @@ namespace Controllers {
 
 		private void SetAllNodesAs(NodeState state) {
 			foreach (var node in GraphController.Graph.NodeObjectMap.Keys) {
-				var modNode = node;
 				SetNodeState(node, state);
 			}
 		}
