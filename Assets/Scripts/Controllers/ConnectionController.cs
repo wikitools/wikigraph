@@ -10,7 +10,7 @@ namespace Controllers {
 	public class ConnectionController: MonoBehaviour {
 		public GraphPooledObject Connections;
 		
-		public List<GameObject> ActiveConnections { get; } = new List<GameObject>();
+		private List<GameObject> ActiveConnections { get; } = new List<GameObject>();
 
 		public Node[] GetActiveNodeConnections() {
 			if (nodeController.SelectedNode == null) return null;
@@ -20,27 +20,27 @@ namespace Controllers {
 			}).ToArray();
 		}
 
-		private void OnActiveNodeChanged(Node node) {
+		private void UpdateConnections() {
 			foreach (var connection in ActiveConnections) {
 				Connections.Pool.Despawn(connection);
 			}
 			ActiveConnections.Clear();
-			if(node == null) return;
+			if(nodeController.SelectedNode == null) return;
 			foreach (var connection in GetActiveNodeConnections()) {
 				GameObject connectionObject = Connections.Pool.Spawn();
 				var childObj = GraphController.Graph.NodeObjectMap[connection];
-				InitializeConnection(ref connectionObject, GraphController.Graph.NodeObjectMap[node], childObj);
+				InitializeConnection(ref connectionObject, GraphController.Graph.NodeObjectMap[nodeController.SelectedNode], childObj);
 			}
 		}
 
-		public void InitializeConnection(ref GameObject connectionObject, GameObject from, GameObject to) {
+		private void InitializeConnection(ref GameObject connectionObject, GameObject from, GameObject to) {
 			connectionObject.transform.parent = Connections.Container.transform;
 			var line = connectionObject.GetComponent<LineRenderer>();
 			line.SetPositions(new [] {from.transform.position, to.transform.position});
 			ActiveConnections.Add(connectionObject);
 		}
 
-		#region MonoBehaviour
+		#region Mono Behaviour
 
 		private NodeController nodeController;
 		private GraphController graphController;
@@ -52,8 +52,8 @@ namespace Controllers {
 
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
-			nodeController.OnSelectedNodeChanged += OnActiveNodeChanged;
-			graphController.ConnectionMode.OnValueChanged += mode => OnActiveNodeChanged(nodeController.SelectedNode);
+			nodeController.OnSelectedNodeChanged += mode => UpdateConnections();
+			graphController.ConnectionMode.OnValueChanged += mode => UpdateConnections();
 		}
 
 		#endregion

@@ -20,6 +20,8 @@ namespace Controllers {
 
 		private GraphController graphController;
 		
+		#region Highlighted Node
+		
 		private Node highlightedNode;
 		public Node HighlightedNode {
 			get { return highlightedNode; }
@@ -32,6 +34,10 @@ namespace Controllers {
 					SetNodeState(highlightedNode, NodeState.HIGHLIGHTED);
 			}
 		}
+		
+		#endregion
+		
+		#region Selected Node
 
 		private Node selectedNode;
 		public Node SelectedNode {
@@ -49,9 +55,15 @@ namespace Controllers {
 			}
 		}
 
+		public Action<Node> OnSelectedNodeChanged;
+		
+		#endregion
+
 		private bool NewNodeDisabled(Node newVal) => newVal != null && newVal.State == NodeState.DISABLED;
 
-		public Action<Node> OnSelectedNodeChanged;
+		#region Node Loading
+		
+		private NodeLoader nodeLoader;
 
 		public void LoadNode(uint id) {
 			if(GraphController.Graph.IdNodeMap.ContainsKey(id)) return;
@@ -71,6 +83,10 @@ namespace Controllers {
 			nodeImage.color = NodeColors.First(node => node.State == NodeState.ACTIVE).Color;
 			nodeObject.name = model.ID.ToString();
 		}
+		
+		#endregion
+
+		#region Node States
 
 		private void UpdateNodeStates() {
 			if (selectedNode == null) {
@@ -98,11 +114,12 @@ namespace Controllers {
 			nodeObject.GetComponentInChildren<Image>().color = NodeColors.First(nodeColor => nodeColor.State == state).Color;
 		}
 
-		#region MonoBehaviour
+		#endregion
 		
-		private NodeLoader nodeLoader;
+		#region Mono Behaviour
+		
 		private ConnectionController connectionController;
-		
+		 
 		void Awake() {
 			graphController = GetComponent<GraphController>();
 			connectionController = GetComponent<ConnectionController>();
