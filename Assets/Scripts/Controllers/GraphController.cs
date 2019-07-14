@@ -1,5 +1,4 @@
 ﻿using System;
-using Model;
 using Services;
 using UnityEngine;
 
@@ -11,44 +10,38 @@ namespace Controllers {
 		
 		public static Graph Graph { get; } = new Graph();
 		
-		private GraphMode graphMode = GraphMode.FREE_FLIGHT;
-		public GraphMode GraphMode {
-			get { return graphMode; }
-			set {
-				graphMode = value;
-				if (graphMode == GraphMode.FREE_FLIGHT)
-					ActiveNode = null;
-			}
-		}
+		public ObservableProperty<GraphMode> GraphMode = new ObservableProperty<GraphMode>(Controllers.GraphMode.FREE_FLIGHT);
 
-		public GameObject LastHighlightedNode { get; set; }
-		
-		private GameObject activeNode;
-		public GameObject ActiveNode {
-			get { return activeNode; }
-			set {
-				if(activeNode == value) return;
-				activeNode = value;
-				GraphMode = activeNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
-				OnActiveNodeChanged?.Invoke(Graph.GetNodeFromObject(activeNode));
-			}
-		}
+		public ObservableProperty<ConnectionMode> ConnectionMode = new ObservableProperty<ConnectionMode>(Controllers.ConnectionMode.CHILDREN);
 
-		public Action<Node?> OnActiveNodeChanged;
+		public void SwitchConnectionMode() {
+			if(GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT) return;
+			ConnectionMode.Value = ConnectionMode.Value == Controllers.ConnectionMode.PARENTS ? Controllers.ConnectionMode.CHILDREN : Controllers.ConnectionMode.PARENTS;
+		}
 	}
 
-	[Serializable]
-	public class GraphObject {
-		public GameObject Container;
-		public GameObject Prefab;
-		public GameObjectPool Pool;
-		public int PreloadNumber;
+	public class ObservableProperty<T> {
+		private T value;
+		public T Value {
+			get { return value; }
+			set {
+				this.value = value;
+				OnValueChanged?.Invoke(value);
+			}
+		}
 
-		public static readonly string POOL_GO_NAME = "Pool";
-		public GameObject PoolContainer => Container.transform.Find(POOL_GO_NAME).gameObject;
+		public Action<T> OnValueChanged;
+
+		public ObservableProperty(T value) {
+			Value = value;
+		}
 	}
 
 	public enum GraphMode {
 		FREE_FLIGHT, NODE_TRAVERSE
+	}
+
+	public enum ConnectionMode {
+		PARENTS, CHILDREN
 	}
 }

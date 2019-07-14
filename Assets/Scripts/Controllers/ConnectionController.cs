@@ -1,38 +1,49 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Model;
 using Services;
+using Services.ObjectPool;
 using UnityEngine;
 
 namespace Controllers {
 	public class ConnectionController: MonoBehaviour {
-		public GraphObject Connections;
-
-		private GraphController graphController;
-		private NodeController nodeController;
+		public GraphPooledObject Connections;
 		
-		public List<GameObject> ActiveConnections { get; } = new List<GameObject>();
+		private List<GameObject> ActiveConnections { get; } = new List<GameObject>();
 
-		void OnActiveNodeChanged(Node? node) {
+		public Node[] GetActiveNodeConnections() {
+			if (nodeController.SelectedNode == null) return null;
+			return nodeController.SelectedNode.GetConnections(graphController.ConnectionMode.Value).Select(id => {
+				nodeController.LoadNode(id); //TODO handle loading in separate controller
+				return GraphController.Graph.IdNodeMap[id];
+			}).ToArray();
+		}
+
+		private void UpdateConnections() {
 			foreach (var connection in ActiveConnections) {
 				Connections.Pool.Despawn(connection);
 			}
 			ActiveConnections.Clear();
-			if(node == null) return;
-			foreach (var child in node.Value.Children) {
-				nodeController.LoadNode(child);
-				GameObject connectionGO = Connections.Pool.Spawn();
-				var childObj = GraphController.Graph.GetObjectFromId(child);
-				InitializeConnection(ref connectionGO, GraphController.Graph.NodeObjectMap[node.Value], childObj);
+			if(nodeController.SelectedNode == null) return;
+			foreach (var connection in GetActiveNodeConnections()) {
+				GameObject connectionObject = Connections.Pool.Spawn();
+				var childObj = GraphController.Graph.NodeObjectMap[connection];
+				InitializeConnection(ref connectionObject, GraphController.Graph.NodeObjectMap[nodeController.SelectedNode], childObj);
 			}
 		}
 
-		public void InitializeConnection(ref GameObject connectionObject, GameObject from, GameObject to) {
+		private void InitializeConnection(ref GameObject connectionObject, GameObject from, GameObject to) {
 			connectionObject.transform.parent = Connections.Container.transform;
 			var line = connectionObject.GetComponent<LineRenderer>();
 			line.SetPositions(new [] {from.transform.position, to.transform.position});
 			ActiveConnections.Add(connectionObject);
 		}
+
+		#region Mono Behaviour
+
+		private NodeController nodeController;
+		private GraphController graphController;
 		
 		void Awake() {
 			graphController = GetComponent<GraphController>();
@@ -41,7 +52,10 @@ namespace Controllers {
 
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
-			graphController.OnActiveNodeChanged += OnActiveNodeChanged;
+			nodeController.OnSelectedNodeChanged += mode => UpdateConnections();
+			graphController.ConnectionMode.OnValueChanged += mode => UpdateConnections();
 		}
+
+		#endregion
 	}
 }

@@ -18,5 +18,6 @@ namespace InputModule.Binding {
 		public PCButton ExitNodeTraverseMode;
 		
 		public PCButton InfographicToggle;
+		public PCButton ConnectionModeToggle;
 	}
 }
