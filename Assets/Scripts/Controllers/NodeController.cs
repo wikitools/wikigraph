@@ -2,6 +2,7 @@ using System;
 using Model;
 using Services;
 using Services.DataFiles;
+using Services.ObjectPool;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -11,7 +12,7 @@ namespace Controllers {
 		public NodeColors NodeColors;
 		public NodeSprites NodeSprites;
 		
-		public GraphObject Nodes;
+		public GraphPooledObject Nodes;
 		
 		public int NodeLoadedLimit;
 		public bool LoadTestNodeSet;

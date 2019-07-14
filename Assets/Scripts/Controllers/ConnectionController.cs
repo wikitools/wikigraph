@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using Model;
 using Services;
+using Services.ObjectPool;
 using UnityEngine;
 
 namespace Controllers {
 	public class ConnectionController: MonoBehaviour {
-		public GraphObject Connections;
+		public GraphPooledObject Connections;
 
 		private NodeController nodeController;
 		
