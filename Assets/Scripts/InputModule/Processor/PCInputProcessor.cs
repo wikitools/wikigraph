@@ -28,7 +28,7 @@ namespace InputModule.Processor {
 
 		void OnRotate(Vector2 rawRotation) {
 			Vector2 rotation = Config.RotationSpeed * Time.deltaTime * rawRotation;
-			Utils.clamp(ref rotation, -Config.MaxRotationSpeed, Config.MaxRotationSpeed);
+			Utils.Clamp(ref rotation, -Config.MaxRotationSpeed, Config.MaxRotationSpeed);
 			EntityTransform.Rotate(new Vector3(-rotation.y, 0, 0), Space.Self);
 			EntityTransform.Rotate(new Vector3(0, rotation.x, 0), Space.World);
 		}
