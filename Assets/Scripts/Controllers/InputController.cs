@@ -53,6 +53,7 @@ namespace Controllers {
 		Cave = 1
 	}
 
+	#if UNITY_EDITOR
 	[CustomEditor(typeof(InputController))]
 	[CanEditMultipleObjects]
 	public class InputConfigEditor : Editor {
@@ -88,4 +89,5 @@ namespace Controllers {
 			}
 		}
 	}
+	#endif
 }

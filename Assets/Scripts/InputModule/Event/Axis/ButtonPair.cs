@@ -27,6 +27,7 @@ namespace InputModule.Event.Axis {
 			if(AxisState != 0) OnMove?.Invoke(AxisState);
 		}
 
+		#if UNITY_EDITOR
 		public void DrawInInspector(SerializedProperty property) {
 			InspectorUtils.DrawObject(property, () => {
 				EditorGUILayout.PropertyField(property.FindPropertyRelative("ReverseAxisDirection"), false);
@@ -34,5 +35,6 @@ namespace InputModule.Event.Axis {
 				InspectorUtils.DrawField(GetType().GetField("NegativeButton"), property.FindPropertyRelative("NegativeButton"), this);
 			});
 		}
+		#endif
 	}
 }
