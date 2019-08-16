@@ -13,7 +13,7 @@ namespace InputModule.Processor {
 			binding.CrossMovementAxis.OnMove += dir => OnMove(new Vector2(0, dir));
 			
 			binding.NodePointer.OnPointed += OnNodePointed;
-			binding.NodeChooser.OnPointed += OnNodeChooserMoved;
+			binding.NodeChooser.OnPointed += OnNodeChosen;
 			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
 
 			binding.InfographicToggle.OnPress += () => Controller.GraphController.Infographic.SetActive(!Controller.GraphController.Infographic.activeSelf);

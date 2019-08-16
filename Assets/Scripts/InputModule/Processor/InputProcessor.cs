@@ -18,7 +18,7 @@ namespace InputModule.Processor {
 		
 		protected void ExitNodeTraverseMode() => Controller.GraphController.GraphMode.Value = GraphMode.FREE_FLIGHT;
 
-		protected void OnNodeChooserMoved(Ray ray) {
+		protected void OnNodeChosen(Ray ray) {
 			RaycastHit raycastHit;
 			if (RaycastNode(ray, out raycastHit)) {
 				Controller.NodeController.SelectedNode = GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject);

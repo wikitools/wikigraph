@@ -110,7 +110,7 @@ namespace Controllers {
 		private void SetNodeState(Node node, NodeState state) {
 			node.State = state;
 			var nodeObject = GraphController.Graph.NodeObjectMap[node];
-			nodeObject.GetComponentInChildren<Text>().enabled = node.State == NodeState.SELECTED;
+			nodeObject.GetComponentInChildren<Text>().enabled = node.State == NodeState.SELECTED || node.State == NodeState.HIGHLIGHTED;
 			nodeObject.GetComponentInChildren<Image>().color = NodeColors.First(nodeColor => nodeColor.State == state).Color;
 		}
 
