@@ -13,7 +13,7 @@ namespace InputModule.Processor {
 			binding.CrossMovementAxis.OnMove += dir => OnMove(new Vector2(0, dir));
 			
 			binding.NodePointer.OnPointed += OnNodePointed;
-			binding.NodeChooser.OnPointed += OnNodeChooserMoved;
+			binding.NodeChooser.OnPointed += OnNodeChosen;
 			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
 
 			binding.InfographicToggle.OnPress += () => Controller.GraphController.Infographic.SetActive(!Controller.GraphController.Infographic.activeSelf);
@@ -28,7 +28,7 @@ namespace InputModule.Processor {
 
 		void OnRotate(Vector2 rawRotation) {
 			Vector2 rotation = Config.RotationSpeed * Time.deltaTime * rawRotation;
-			Utils.clamp(ref rotation, -Config.MaxRotationSpeed, Config.MaxRotationSpeed);
+			Utils.Clamp(ref rotation, -Config.MaxRotationSpeed, Config.MaxRotationSpeed);
 			EntityTransform.Rotate(new Vector3(-rotation.y, 0, 0), Space.Self);
 			EntityTransform.Rotate(new Vector3(0, rotation.x, 0), Space.World);
 		}
