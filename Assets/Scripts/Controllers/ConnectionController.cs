@@ -34,9 +34,11 @@ namespace Controllers {
 		}
 
 		private void InitializeConnection(ref GameObject connectionObject, GameObject from, GameObject to) {
+			var basePosition = from.transform.position;
+			connectionObject.transform.position = basePosition;
 			connectionObject.transform.parent = Connections.Container.transform;
 			var line = connectionObject.GetComponent<LineRenderer>();
-			line.SetPositions(new [] {from.transform.position, to.transform.position});
+			line.SetPositions(new [] {Vector3.zero, to.transform.position - basePosition});
 			ActiveConnections.Add(connectionObject);
 		}
 
