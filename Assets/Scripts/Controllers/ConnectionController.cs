@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Model;
 using Services;
+using Services.Connection;
 using Services.ObjectPool;
 using UnityEngine;
 
@@ -38,7 +39,9 @@ namespace Controllers {
 			connectionObject.transform.position = basePosition;
 			connectionObject.transform.parent = Connections.Container.transform;
 			var line = connectionObject.GetComponent<LineRenderer>();
-			line.SetPositions(new [] {Vector3.zero, to.transform.position - basePosition});
+			Connection connectionModel = ConnectionService.GenerateConnection(basePosition, to.transform.position);
+			line.positionCount = connectionModel.SegmentPoints.Length;
+			line.SetPositions(connectionModel.SegmentPoints);
 			ActiveConnections.Add(connectionObject);
 		}
 
