@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 #pragma warning disable 618
@@ -28,7 +27,7 @@ namespace Controllers {
 		
 		[RPC]
 		private void setHighlightedNode(string id) {
-			NodeController.HighlightedNode = id == null ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
+			NodeController.HighlightedNode = id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
 		}
 		
 		public void SetSelectedNode(string id) {

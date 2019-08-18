@@ -27,7 +27,7 @@ namespace InputModule.Processor {
 
 		protected void OnNodePointed(Ray ray) {
 			RaycastHit raycastHit;
-			Controller.NetworkController.SetHighlightedNode(RaycastNode(ray, out raycastHit) ? raycastHit.collider.gameObject.name : null);
+			Controller.NetworkController.SetHighlightedNode(RaycastNode(ray, out raycastHit) ? raycastHit.collider.gameObject.name : "");
 		}
 		
 		private bool RaycastNode(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Node"));
