@@ -3,12 +3,10 @@ using UnityEngine;
 #pragma warning disable 618
 namespace Controllers {
 	public class NetworkController: MonoBehaviour {
-		public InputController InputController { get; private set; }
-		public GraphController GraphController { get; private set; }
-		public NodeController NodeController { get; private set; }
-		
 		private NetworkView NetworkView;
 		private RPCMode RPCMode = RPCMode.AllBuffered;
+
+		private static readonly int PORT = 25000;
 
 		private Environment Environment => InputController.Environment;
 
@@ -47,11 +45,23 @@ namespace Controllers {
 			return Environment == Environment.PC && !Application.isEditor || Environment == Environment.Cave && !Lzwp.sync.isMaster;
 		}
 		
+		public InputController InputController { get; private set; }
+		public GraphController GraphController { get; private set; }
+		public NodeController NodeController { get; private set; }
+		
 		private void Awake() {
 			InputController = GetComponent<InputController>();
-			NetworkView = GetComponent<NetworkView>();
 			NodeController = GetComponent<NodeController>();
 			GraphController = GetComponent<GraphController>();
+			
+			NetworkView = GetComponent<NetworkView>();
+			if (Environment == Environment.PC) {
+				if (Application.isEditor) {
+					Network.InitializeServer(1, PORT);
+				} else {
+					Network.Connect("localhost", PORT);
+				}
+			}
 		}
 	}
 }
