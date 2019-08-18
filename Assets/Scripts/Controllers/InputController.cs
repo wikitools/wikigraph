@@ -41,6 +41,10 @@ namespace Controllers {
 
 		void Update() {
 			binding.CheckForInput();
+			
+			if (Environment == Environment.PC && Input.GetKeyDown(KeyCode.Delete)) {
+				Application.Quit();
+			}
 		}
 	}
 
