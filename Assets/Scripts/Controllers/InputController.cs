@@ -27,7 +27,11 @@ namespace Controllers {
 		}
 
 		void Start() {
-			InputProcessor input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) : new CaveInputProcessor(Config, CaveInputBinding, this);
+			if(!NetworkController.IsServer())
+				return;
+			InputProcessor input = Environment == Environment.PC ? 
+				(InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) : 
+				new CaveInputProcessor(Config, CaveInputBinding, this);
 			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
 			
 			// TODO: let user choose the main flystick

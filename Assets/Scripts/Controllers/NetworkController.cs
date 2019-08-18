@@ -9,7 +9,7 @@ namespace Controllers {
 		public NodeController NodeController { get; private set; }
 		
 		private NetworkView NetworkView;
-		private RPCMode RPCMode;
+		private RPCMode RPCMode = RPCMode.AllBuffered;
 
 		private Environment Environment => InputController.Environment;
 
@@ -40,11 +40,11 @@ namespace Controllers {
 			NodeController.SelectedNode = id == null ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
 		}
 
-		private bool isServer() {
+		public bool IsServer() {
 			return Environment == Environment.PC || Lzwp.sync.isMaster;
 		}
 
-		private bool isClient() {
+		public bool IsClient() {
 			return Environment == Environment.PC || !Lzwp.sync.isMaster;
 		}
 		
@@ -53,16 +53,6 @@ namespace Controllers {
 			NetworkView = GetComponent<NetworkView>();
 			NodeController = GetComponent<NodeController>();
 			GraphController = GetComponent<GraphController>();
-		}
-	}
-
-	public sealed class RPCType {
-		public static readonly RPCType GRAPH_MODE = new RPCType("setGraphMode");
-
-		public String Name;
-
-		public RPCType(string name) {
-			Name = name;
 		}
 	}
 }
