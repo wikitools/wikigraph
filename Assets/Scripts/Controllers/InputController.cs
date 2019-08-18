@@ -40,6 +40,8 @@ namespace Controllers {
 		}
 
 		void Update() {
+			if(!NetworkController.IsServer())
+				return;
 			binding.CheckForInput();
 			
 			if (Environment == Environment.PC && Input.GetKeyDown(KeyCode.Delete)) {

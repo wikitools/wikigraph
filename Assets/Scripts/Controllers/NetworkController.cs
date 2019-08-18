@@ -40,11 +40,11 @@ namespace Controllers {
 		}
 
 		public bool IsServer() {
-			return Environment == Environment.PC || Lzwp.sync.isMaster;
+			return Environment == Environment.PC && Application.isEditor || Environment == Environment.Cave && Lzwp.sync.isMaster;
 		}
 
 		public bool IsClient() {
-			return Environment == Environment.PC || !Lzwp.sync.isMaster;
+			return Environment == Environment.PC && !Application.isEditor || Environment == Environment.Cave && !Lzwp.sync.isMaster;
 		}
 		
 		private void Awake() {

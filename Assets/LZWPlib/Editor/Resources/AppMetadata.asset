@@ -13,20 +13,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: WikiGraph
   aliases: []
-  tags:
-  - Wikipedia
-  authors:
-  - "Stanis\u0142aw G\xF3ra"
-  - "Jan Kruczy\u0144ski"
-  - "Miko\u0142aj Mirko"
-  - Mateusz Janicki
-  descriptionShort: "Aplikacja pozwalaj\u0105ca na poruszanie si\u0119 po tr\xF3jwymiarowym
-    grafie z\u0142o\u017Conym z podstron Wikipedii"
+  tags: []
+  authors: []
+  descriptionShort: 
   descriptionLong: 
   tools:
   - Unity 2018.1.9f2
   LzwpLibVersion: 2.8 (mock)
-  appGUID: AA8C66D14364438C896A4E92B30E3886
+  appGUID: AA6DC8672F654EDA8AD677570D57F5C5
   buildGUID: 
   defaultConfig:
     obstacleWallWarningScaleMultiplier: 1
