@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.11357183, g: 0.19203451, b: 0.23066843, a: 1}
+  m_IndirectSpecularColor: {r: 0.11356916, g: 0.19202209, b: 0.2306638, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -186,6 +186,8 @@ GameObject:
   - component: {fileID: 68664597}
   - component: {fileID: 68664598}
   - component: {fileID: 68664600}
+  - component: {fileID: 68664601}
+  - component: {fileID: 68664602}
   m_Layer: 0
   m_Name: GRAPH
   m_TagString: Untagged
@@ -328,7 +330,7 @@ MonoBehaviour:
     Container: {fileID: 2007395970}
     Prefab: {fileID: 1534031500408350, guid: 4fca75af5504140b6814370e66ce13db, type: 2}
     PreloadNumber: 600
-  NodeLoadedLimit: 500
+  NodeLoadedLimit: 200
   LoadTestNodeSet: 0
 --- !u!114 &68664598
 MonoBehaviour:
@@ -378,6 +380,29 @@ MonoBehaviour:
     Container: {fileID: 1131386829}
     Prefab: {fileID: 1767645766449916, guid: 3732550bef55849b3a12da07e1f24ebd, type: 2}
     PreloadNumber: 20
+--- !u!114 &68664601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 68664594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21673b02b17646938904bf8be7ebdaa5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!148 &68664602
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 68664594}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 68664599}
+  m_ViewID:
+    m_ID: 4
+    m_Type: 1
 --- !u!1001 &327208665
 Prefab:
   m_ObjectHideFlags: 0

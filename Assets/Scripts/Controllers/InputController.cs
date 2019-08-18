@@ -16,12 +16,12 @@ namespace Controllers {
 
 		private InputBinding binding;
 		
-		public NodeController NodeController { get; private set; }
+		public NetworkController NetworkController { get; private set; }
 		public CameraController CameraController { get; private set; }
 		public GraphController GraphController { get; private set; }
 
 		void Awake() {
-			NodeController = GetComponent<NodeController>();
+			NetworkController = GetComponent<NetworkController>();
 			CameraController = GetComponent<CameraController>();
 			GraphController = GetComponent<GraphController>();
 		}
