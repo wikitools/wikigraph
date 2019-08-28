@@ -7,13 +7,12 @@ namespace InputModule.Processor {
 		protected InputConfig Config;
 		protected InputBinding Binding;
 		protected InputController Controller;
-        protected HistoryController History;
 
-		public InputProcessor(InputConfig config, InputBinding binding, InputController controller, HistoryController history) {
+
+		public InputProcessor(InputConfig config, InputBinding binding, InputController controller) {
 			Config = config;
 			Binding = binding;
 			Controller = controller;
-            History = history;
 
 		}
 
@@ -21,15 +20,15 @@ namespace InputModule.Processor {
 		
 		protected void ExitNodeTraverseMode() => Controller.GraphController.GraphMode.Value = GraphMode.FREE_FLIGHT;
 
-        protected void Redo() { Debug.Log("Button pressed Redo!"); History.Redo(1); }
-        protected void Undo() { Debug.Log("Button pressed Undo!"); History.Undo(1); }
+        protected void Redo() { Debug.Log("Button pressed Redo!"); Controller.HistoryController.Redo(1); }
+        protected void Undo() { Debug.Log("Button pressed Undo!"); Controller.HistoryController.Undo(1); }
 
         protected void OnNodeChosen(Ray ray) {
 			RaycastHit raycastHit;
             if (RaycastNode(ray, out raycastHit)) {
-                History.InsertInUnDoRedoForJump(Controller.NodeController.SelectedNode, GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject));
+                Controller.HistoryController.InsertInUnDoRedoForJump(Controller.NodeController.SelectedNode, GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject));
                 Controller.NodeController.SelectedNode = GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject);
-
+                Debug.Log("Selected: "+ Controller.NodeController.SelectedNode.ID +" | " + Controller.NodeController.SelectedNode.Title);
             }
 		}
 

@@ -29,7 +29,7 @@ namespace Controllers {
 		}
 
 		void Start() {
-			InputProcessor input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this, HistoryController) : new CaveInputProcessor(Config, CaveInputBinding, this, HistoryController);
+			InputProcessor input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) : new CaveInputProcessor(Config, CaveInputBinding, this);
 			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
 			
 			// TODO: let user choose the main flystick
