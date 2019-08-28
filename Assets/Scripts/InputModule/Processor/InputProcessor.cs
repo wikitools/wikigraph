@@ -28,7 +28,9 @@ namespace InputModule.Processor {
 			RaycastHit raycastHit;
             if (RaycastNode(ray, out raycastHit)) {
                 History.InsertInUnDoRedoForJump(Controller.NodeController.SelectedNode, GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject));
-			}
+                Controller.NodeController.SelectedNode = GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject);
+
+            }
 		}
 
 		protected void OnNodePointed(Ray ray) {

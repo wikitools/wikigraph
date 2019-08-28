@@ -17,7 +17,6 @@ namespace Services.History
             _prevNode = prevNode;
             _targetNode = targetNode;
             nodeController = controller;
-            Execute();
         }
         #region ICommand functions
 
