@@ -19,15 +19,17 @@ namespace Controllers {
 		public NodeController NodeController { get; private set; }
 		public CameraController CameraController { get; private set; }
 		public GraphController GraphController { get; private set; }
+        public HistoryController HistoryController { get; private set; }
 
 		void Awake() {
 			NodeController = GetComponent<NodeController>();
 			CameraController = GetComponent<CameraController>();
 			GraphController = GetComponent<GraphController>();
+            HistoryController = GetComponent<HistoryController>();
 		}
 
 		void Start() {
-			InputProcessor input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) : new CaveInputProcessor(Config, CaveInputBinding, this);
+			InputProcessor input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this, HistoryController) : new CaveInputProcessor(Config, CaveInputBinding, this, HistoryController);
 			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
 			
 			// TODO: let user choose the main flystick

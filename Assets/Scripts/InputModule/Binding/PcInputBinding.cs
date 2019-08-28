@@ -19,5 +19,8 @@ namespace InputModule.Binding {
 		
 		public PCButton InfographicToggle;
 		public PCButton ConnectionModeToggle;
+
+        public PCButton Redo;
+        public PCButton Undo;
 	}
 }

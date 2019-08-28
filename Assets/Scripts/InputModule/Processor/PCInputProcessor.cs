@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace InputModule.Processor {
 	public class PCInputProcessor: InputProcessor {
 
-		public PCInputProcessor(InputConfig config, PcInputBinding binding, InputController controller) : base(config, binding, controller) {
+		public PCInputProcessor(InputConfig config, PcInputBinding binding, InputController controller, HistoryController history) : base(config, binding, controller, history) {
 			binding.RotationInput.OnMove += OnRotate;
 			binding.MainMovementAxis.OnMove += dir => OnMove(new Vector2(dir, 0));
 			binding.CrossMovementAxis.OnMove += dir => OnMove(new Vector2(0, dir));
@@ -18,6 +18,9 @@ namespace InputModule.Processor {
 
 			binding.InfographicToggle.OnPress += () => Controller.GraphController.Infographic.SetActive(!Controller.GraphController.Infographic.activeSelf);
 			binding.ConnectionModeToggle.OnPress += () => Controller.GraphController.SwitchConnectionMode();
+
+            binding.Undo.OnPress += Undo;
+            binding.Redo.OnPress += Redo;
 		}
 
 		private void OnMove(Vector2 direction) {
@@ -32,5 +35,7 @@ namespace InputModule.Processor {
 			EntityTransform.Rotate(new Vector3(-rotation.y, 0, 0), Space.Self);
 			EntityTransform.Rotate(new Vector3(0, rotation.x, 0), Space.World);
 		}
-	}
+
+       
+    }
 }

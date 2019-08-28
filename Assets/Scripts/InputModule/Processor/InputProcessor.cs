@@ -7,21 +7,27 @@ namespace InputModule.Processor {
 		protected InputConfig Config;
 		protected InputBinding Binding;
 		protected InputController Controller;
+        protected HistoryController History;
 
-		public InputProcessor(InputConfig config, InputBinding binding, InputController controller) {
+		public InputProcessor(InputConfig config, InputBinding binding, InputController controller, HistoryController history) {
 			Config = config;
 			Binding = binding;
 			Controller = controller;
+            History = history;
+
 		}
 
 		protected Transform EntityTransform => Controller.CameraController.Entity.transform;
 		
 		protected void ExitNodeTraverseMode() => Controller.GraphController.GraphMode.Value = GraphMode.FREE_FLIGHT;
 
-		protected void OnNodeChosen(Ray ray) {
+        protected void Redo() { Debug.Log("Button pressed Redo!"); History.Redo(1); }
+        protected void Undo() { Debug.Log("Button pressed Undo!"); History.Undo(1); }
+
+        protected void OnNodeChosen(Ray ray) {
 			RaycastHit raycastHit;
-			if (RaycastNode(ray, out raycastHit)) {
-				Controller.NodeController.SelectedNode = GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject);
+            if (RaycastNode(ray, out raycastHit)) {
+                History.InsertInUnDoRedoForJump(Controller.NodeController.SelectedNode, GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject));
 			}
 		}
 
@@ -31,5 +37,7 @@ namespace InputModule.Processor {
 		}
 		
 		private bool RaycastNode(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Node"));
+
+
 	}
 }

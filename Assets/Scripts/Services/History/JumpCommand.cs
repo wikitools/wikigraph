@@ -10,7 +10,7 @@ namespace Services.History
     {
         private Model.Node _prevNode;
         private Model.Node _targetNode;
-        public NodeController nodeController { get; private set; }
+        public NodeController nodeController;
 
         public JumpCommand(Model.Node prevNode, Model.Node targetNode, ref NodeController controller)
         {
@@ -23,11 +23,13 @@ namespace Services.History
 
         public void Execute() //do action forward
         {
+            Debug.Log("Executed Redo!");
             nodeController.SelectedNode = _targetNode;
         }
 
         public void UnExecute() //do action backward
         {
+            Debug.Log("Executed Undo!");
             if (_prevNode == null)
             {
                 //TODO - leave node view to free flight
