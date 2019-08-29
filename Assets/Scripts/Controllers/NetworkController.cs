@@ -84,9 +84,6 @@ namespace Controllers {
 					Network.Connect("localhost", PORT);
 				}
 			}
-		}
-
-		private void Start() {
 			NodeSyncParser = new NodeSyncParser(SyncLoadedNodes, SyncUnloadedNodes);
 			if (IsServer()) {
 				NodeController.NodeLoaded += (node, position) => NodeSyncParser.OnNodeLoaded(node.ID, position);
