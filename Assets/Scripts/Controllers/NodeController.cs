@@ -22,6 +22,7 @@ namespace Controllers {
 
 		public Action<Node, Vector3> NodeLoaded;
 		public Action<Node> NodeUnoaded;
+		public Action NodeLoadSessionEnded;
 		
 		#region Highlighted Node
 		
@@ -69,15 +70,18 @@ namespace Controllers {
 		private NodeLoader nodeLoader;
 
 		public void LoadNode(uint id) {
+			LoadNode(id, Random.insideUnitSphere * graphController.WorldRadius);
+		}
+
+		public void LoadNode(uint id, Vector3 position) {
 			if(GraphController.Graph.IdNodeMap.ContainsKey(id)) return;
 			Node node = nodeLoader.LoadNode(id);
 			GraphController.Graph.IdNodeMap[id] = node;
 			GameObject nodeObject = Nodes.Pool.Spawn();
-			Vector3 postition = Random.insideUnitSphere * graphController.WorldRadius;
-			InitializeNode(node, ref nodeObject, postition);
+			InitializeNode(node, ref nodeObject, position);
 			GraphController.Graph.NodeObjectMap[node] = nodeObject;
 			
-			NodeLoaded?.Invoke(node, postition);
+			NodeLoaded?.Invoke(node, position);
 		}
 
 		public void InitializeNode(Node model, ref GameObject nodeObject, Vector3 position) {
@@ -104,6 +108,7 @@ namespace Controllers {
 					LoadNode(connection.ID);
 					SetNodeState(connection, NodeState.ACTIVE);
 				}
+				NodeLoadSessionEnded?.Invoke();
 			}
 		}
 
@@ -137,6 +142,7 @@ namespace Controllers {
 			for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
 				LoadNode(i);
 			}
+			NodeLoadSessionEnded?.Invoke();
 			graphController.GraphMode.OnValueChanged += mode => {
 				if (mode == GraphMode.FREE_FLIGHT) SelectedNode = null;
 			};

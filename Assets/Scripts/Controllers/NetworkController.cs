@@ -14,17 +14,18 @@ namespace Controllers {
 
 		private Environment Environment => InputController.Environment;
 
-		private void SyncLoadedNodes(string nodes) {
-			Synchronize("syncNodes", nodes, true);
+		private void SyncLoadedNodes(string nodeStream) {
+			Synchronize("syncNodes", nodeStream, true);
 		}
 		
-		private void SyncUnloadedNodes(string nodes) {
-			Synchronize("syncNodes", nodes, false);
+		private void SyncUnloadedNodes(string nodeStream) {
+			Synchronize("syncNodes", nodeStream, false);
 		}
 		
 		[RPC]
-		private void syncNodes(string nodes, bool loaded) {
-			
+		private void syncNodes(string nodeStream, bool loaded) {
+			if(loaded) //TODO add node unloading sync once we support it
+				NodeSyncParser.ParseLoadedNodes(nodeStream).ForEach(node => NodeController.LoadNode(node.ID, node.Position));
 		}
 		
 		public void SetGraphMode(GraphMode mode) {
@@ -87,8 +88,11 @@ namespace Controllers {
 
 		private void Start() {
 			NodeSyncParser = new NodeSyncParser(SyncLoadedNodes, SyncUnloadedNodes);
-			NodeController.NodeLoaded += (node, position) => NodeSyncParser.OnNodeLoaded(node.ID, position);
-			NodeController.NodeUnoaded += node => NodeSyncParser.OnNodeUnloaded(node.ID);
+			if (IsServer()) {
+				NodeController.NodeLoaded += (node, position) => NodeSyncParser.OnNodeLoaded(node.ID, position);
+				NodeController.NodeUnoaded += node => NodeSyncParser.OnNodeUnloaded(node.ID);
+				NodeController.NodeLoadSessionEnded += NodeSyncParser.SyncRemainingNodes;
+			}
 		}
 	}
 }

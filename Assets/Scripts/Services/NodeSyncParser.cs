@@ -11,17 +11,17 @@ namespace Services {
 		private readonly HashSet<uint> unloadedNodes = new HashSet<uint>();
 
 		private readonly Action<string> syncLoadedNodes;
-		private readonly Action<string> sendUnloadedNodes;
+		private readonly Action<string> syncUnloadedNodes;
 
-		public NodeSyncParser(Action<string> syncLoadedNodes, Action<string> sendUnloadedNodes) {
+		public NodeSyncParser(Action<string> syncLoadedNodes, Action<string> syncUnloadedNodes) {
 			this.syncLoadedNodes = syncLoadedNodes;
-			this.sendUnloadedNodes = sendUnloadedNodes;
+			this.syncUnloadedNodes = syncUnloadedNodes;
 		}
 
 		public void OnNodeUnloaded(uint id) {
 			unloadedNodes.Add(id);
 			if (unloadedNodes.Count == MAX_NODES_PER_SYNC)
-				sendUnloadedNodes(parseSet(unloadedNodes));
+				syncUnloadedNodes(parseSet(unloadedNodes));
 		}
 
 		public void OnNodeLoaded(uint id, Vector3 position) {
@@ -34,13 +34,21 @@ namespace Services {
 			if(loadedNodes.Count > 0)
 				syncLoadedNodes(parseSet(loadedNodes));
 			if(unloadedNodes.Count > 0)
-				sendUnloadedNodes(parseSet(unloadedNodes));
+				syncUnloadedNodes(parseSet(unloadedNodes));
+		}
+
+		public List<uint> ParseUnloadedNodes(string nodeStream) {
+			return nodeStream.Split(';').Select(uint.Parse).ToList();
+		}
+
+		public List<LoadedNodeSync> ParseLoadedNodes(string nodeStream) {
+			return nodeStream.Split(';').Select(entry => (LoadedNodeSync) entry).ToList();
 		}
 
 		private string parseSet<T>(HashSet<T> set) {
-			string parsedNodes = set.Aggregate("", (sequence, id) => sequence + $"{id} ");
+			string parsedNodes = set.Aggregate("", (sequence, id) => sequence + $"{id};");
 			set.Clear();
-			return parsedNodes;
+			return parsedNodes.Remove(parsedNodes.Length - 1);
 		}
 		
 		public struct LoadedNodeSync {
@@ -54,6 +62,11 @@ namespace Services {
 
 			public override string ToString() {
 				return $"{ID} {Position.x} {Position.y} {Position.z}";
+			}
+
+			public static explicit operator LoadedNodeSync(string stream) {
+				string[] fields = stream.Split(' ');
+				return new LoadedNodeSync(uint.Parse(fields[0]), new Vector3(float.Parse(fields[1]), float.Parse(fields[2]), float.Parse(fields[3])));
 			}
 		}
 	}
