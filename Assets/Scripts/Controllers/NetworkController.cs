@@ -1,17 +1,34 @@
+using System;
+using Services;
 using UnityEngine;
 
 #pragma warning disable 618
 namespace Controllers {
 	public class NetworkController: MonoBehaviour {
+		private readonly RPCMode RPC_MODE = RPCMode.AllBuffered;
+		
 		private NetworkView NetworkView;
-		private RPCMode RPCMode = RPCMode.AllBuffered;
+		private NodeSyncParser NodeSyncParser;
 
 		private static readonly int PORT = 25000;
 
 		private Environment Environment => InputController.Environment;
 
+		private void SyncLoadedNodes(string nodes) {
+			Synchronize("syncNodes", nodes, true);
+		}
+		
+		private void SyncUnloadedNodes(string nodes) {
+			Synchronize("syncNodes", nodes, false);
+		}
+		
+		[RPC]
+		private void syncNodes(string nodes, bool loaded) {
+			
+		}
+		
 		public void SetGraphMode(GraphMode mode) {
-			NetworkView.RPC("setGraphMode", RPCMode, (int) mode);
+			Synchronize("setGraphMode", (int) mode);
 		}
 		
 		[RPC]
@@ -20,7 +37,7 @@ namespace Controllers {
 		}
 		
 		public void SetHighlightedNode(string id) {
-			NetworkView.RPC("setHighlightedNode", RPCMode, id);
+			Synchronize("setHighlightedNode", id);
 		}
 		
 		[RPC]
@@ -29,12 +46,16 @@ namespace Controllers {
 		}
 		
 		public void SetSelectedNode(string id) {
-			NetworkView.RPC("setSelectedNode", RPCMode, id);
+			Synchronize("setSelectedNode", id);
 		}
 		
 		[RPC]
 		private void setSelectedNode(string id) {
 			NodeController.SelectedNode = id == null ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
+		}
+		
+		private void Synchronize(string method, params object[] args) {
+			NetworkView.RPC(method, RPC_MODE, args);
 		}
 
 		public bool IsServer() {
@@ -62,6 +83,12 @@ namespace Controllers {
 					Network.Connect("localhost", PORT);
 				}
 			}
+		}
+
+		private void Start() {
+			NodeSyncParser = new NodeSyncParser(SyncLoadedNodes, SyncUnloadedNodes);
+			NodeController.NodeLoaded += (node, position) => NodeSyncParser.OnNodeLoaded(node.ID, position);
+			NodeController.NodeUnoaded += node => NodeSyncParser.OnNodeUnloaded(node.ID);
 		}
 	}
 }

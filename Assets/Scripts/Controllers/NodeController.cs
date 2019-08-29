@@ -19,6 +19,9 @@ namespace Controllers {
 		public bool LoadTestNodeSet;
 
 		private GraphController graphController;
+
+		public Action<Node, Vector3> NodeLoaded;
+		public Action<Node> NodeUnoaded;
 		
 		#region Highlighted Node
 		
@@ -70,8 +73,11 @@ namespace Controllers {
 			Node node = nodeLoader.LoadNode(id);
 			GraphController.Graph.IdNodeMap[id] = node;
 			GameObject nodeObject = Nodes.Pool.Spawn();
-			InitializeNode(node, ref nodeObject, Random.insideUnitSphere * graphController.WorldRadius);
+			Vector3 postition = Random.insideUnitSphere * graphController.WorldRadius;
+			InitializeNode(node, ref nodeObject, postition);
 			GraphController.Graph.NodeObjectMap[node] = nodeObject;
+			
+			NodeLoaded?.Invoke(node, postition);
 		}
 
 		public void InitializeNode(Node model, ref GameObject nodeObject, Vector3 position) {
