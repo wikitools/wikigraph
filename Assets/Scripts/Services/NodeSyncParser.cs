@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Services {
 	public class NodeSyncParser {
-		private const int MAX_NODES_PER_SYNC = 1000;
+		private const int MAX_NODES_PER_SYNC = 100;
 		
 		private readonly HashSet<LoadedNodeSync> loadedNodes = new HashSet<LoadedNodeSync>();
 		private readonly HashSet<uint> unloadedNodes = new HashSet<uint>();
@@ -30,7 +30,7 @@ namespace Services {
 				syncLoadedNodes(parseSet(loadedNodes));
 		}
 
-		public void SyncRemainingNodes() {
+		public void SyncRemainingNodes() {//TODO need to sync node-sync-end event?
 			if(loadedNodes.Count > 0)
 				syncLoadedNodes(parseSet(loadedNodes));
 			if(unloadedNodes.Count > 0)
@@ -48,6 +48,7 @@ namespace Services {
 		private string parseSet<T>(HashSet<T> set) {
 			string parsedNodes = set.Aggregate("", (sequence, id) => sequence + $"{id};");
 			set.Clear();
+			Debug.Log(parsedNodes.Length);
 			return parsedNodes.Remove(parsedNodes.Length - 1);
 		}
 		

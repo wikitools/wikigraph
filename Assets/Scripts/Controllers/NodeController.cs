@@ -18,8 +18,6 @@ namespace Controllers {
 		public int NodeLoadedLimit;
 		public bool LoadTestNodeSet;
 
-		private GraphController graphController;
-
 		public Action<Node, Vector3> NodeLoaded;
 		public Action<Node> NodeUnoaded;
 		public Action NodeLoadSessionEnded;
@@ -130,19 +128,25 @@ namespace Controllers {
 		#region Mono Behaviour
 		
 		private ConnectionController connectionController;
+		private GraphController graphController;
+		private NetworkController networkController;
 		 
 		void Awake() {
 			graphController = GetComponent<GraphController>();
 			connectionController = GetComponent<ConnectionController>();
+			networkController = GetComponent<NetworkController>();
 		}
 
 		private void Start() {
 			Nodes.Pool = new GameObjectPool(Nodes.Prefab, Nodes.PreloadNumber, Nodes.PoolContainer);
 			nodeLoader = new NodeLoader(LoadTestNodeSet ? "-test" : "");
-			for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
-				LoadNode(i);
+			
+			if (networkController.IsServer()) {
+				for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
+					LoadNode(i);
+				}
+				NodeLoadSessionEnded?.Invoke();
 			}
-			NodeLoadSessionEnded?.Invoke();
 			graphController.GraphMode.OnValueChanged += mode => {
 				if (mode == GraphMode.FREE_FLIGHT) SelectedNode = null;
 			};

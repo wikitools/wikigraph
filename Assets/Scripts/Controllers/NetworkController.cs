@@ -14,6 +14,8 @@ namespace Controllers {
 
 		private Environment Environment => InputController.Environment;
 
+		#region RPC Sync
+		
 		private void SyncLoadedNodes(string nodeStream) {
 			Synchronize("syncNodes", nodeStream, true);
 		}
@@ -59,12 +61,20 @@ namespace Controllers {
 			NetworkView.RPC(method, RPC_MODE, args);
 		}
 
+		#endregion
+
 		public bool IsServer() {
 			return Environment == Environment.PC && Application.isEditor || Environment == Environment.Cave && Lzwp.sync.isMaster;
 		}
 
 		public bool IsClient() {
 			return Environment == Environment.PC && !Application.isEditor || Environment == Environment.Cave && !Lzwp.sync.isMaster;
+		}
+
+		public void CloseClient() {
+			if(Environment != Environment.PC || IsServer())
+				return;
+			Network.Disconnect();
 		}
 		
 		public InputController InputController { get; private set; }

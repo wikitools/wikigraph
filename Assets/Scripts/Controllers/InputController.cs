@@ -29,9 +29,8 @@ namespace Controllers {
 		void Start() {
 			if(!NetworkController.IsServer())
 				return;
-			InputProcessor input = Environment == Environment.PC ? 
-				(InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) : 
-				new CaveInputProcessor(Config, CaveInputBinding, this);
+			InputProcessor input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) 
+				: new CaveInputProcessor(Config, CaveInputBinding, this);
 			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
 			
 			// TODO: let user choose the main flystick
@@ -40,13 +39,14 @@ namespace Controllers {
 		}
 
 		void Update() {
+			if (Environment == Environment.PC && Input.GetKeyDown(KeyCode.Delete)) {
+				NetworkController.CloseClient();
+				Application.Quit();
+			}
+			
 			if(!NetworkController.IsServer())
 				return;
 			binding.CheckForInput();
-			
-			if (Environment == Environment.PC && Input.GetKeyDown(KeyCode.Delete)) {
-				Application.Quit();
-			}
 		}
 	}
 
