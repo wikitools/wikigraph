@@ -297,8 +297,8 @@ MonoBehaviour:
   Nodes:
     Container: {fileID: 2007395970}
     Prefab: {fileID: 1534031500408350, guid: 4fca75af5504140b6814370e66ce13db, type: 2}
-    PreloadNumber: 200
-  NodeLoadedLimit: 200
+    PreloadNumber: 1000
+  NodeLoadedLimit: 1000
   LoadTestNodeSet: 0
 --- !u!114 &68664598
 MonoBehaviour:
@@ -312,7 +312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Entity: {fileID: 1122214240}
-  smoothTime: 0.9
+  SmoothTime: 0.9
 --- !u!224 &68664599
 RectTransform:
   m_ObjectHideFlags: 0

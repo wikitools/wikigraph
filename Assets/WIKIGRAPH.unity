@@ -330,7 +330,7 @@ MonoBehaviour:
     Container: {fileID: 2007395970}
     Prefab: {fileID: 1534031500408350, guid: 4fca75af5504140b6814370e66ce13db, type: 2}
     PreloadNumber: 200
-  NodeLoadedLimit: 200
+  NodeLoadedLimit: 1000
   LoadTestNodeSet: 0
 --- !u!114 &68664598
 MonoBehaviour:
@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Entity: {fileID: 508853209}
-  smoothTime: 0.9
+  SmoothTime: 0.9
 --- !u!224 &68664599
 RectTransform:
   m_ObjectHideFlags: 0
@@ -559,6 +559,11 @@ Prefab:
         type: 2}
       propertyPath: m_ViewID.m_Type
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114960805103881502, guid: 046e8e3d9442d9d49904a240ec65e869,
+        type: 2}
+      propertyPath: screensDrawMode
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 046e8e3d9442d9d49904a240ec65e869, type: 2}

@@ -5,10 +5,11 @@ using UnityEngine;
 
 namespace Services {
 	public class NodeSyncParser {
-		private const int MAX_NODES_PER_SYNC = 100;
+		private const int MAX_CHARS_PER_SYNC = 4096;
+		private const char NODE_DIVIDER = ';';
 		
-		private readonly HashSet<LoadedNodeSync> loadedNodes = new HashSet<LoadedNodeSync>();
-		private readonly HashSet<uint> unloadedNodes = new HashSet<uint>();
+		private string loadedNodeBuffer = "";
+		private string unloadedNodeBuffer = "";
 
 		private readonly Action<string> syncLoadedNodes;
 		private readonly Action<string> syncUnloadedNodes;
@@ -19,37 +20,38 @@ namespace Services {
 		}
 
 		public void OnNodeUnloaded(uint id) {
-			unloadedNodes.Add(id);
-			if (unloadedNodes.Count == MAX_NODES_PER_SYNC)
-				syncUnloadedNodes(parseSet(unloadedNodes));
+			HandleNode(ref unloadedNodeBuffer, $"{id}", syncUnloadedNodes);
 		}
 
 		public void OnNodeLoaded(uint id, Vector3 position) {
-			loadedNodes.Add(new LoadedNodeSync(id, position));
-			if (loadedNodes.Count == MAX_NODES_PER_SYNC)
-				syncLoadedNodes(parseSet(loadedNodes));
+			HandleNode(ref loadedNodeBuffer, $"{new LoadedNodeSync(id, position)}", syncLoadedNodes);
 		}
 
 		public void SyncRemainingNodes() {//TODO need to sync node-sync-end event?
-			if(loadedNodes.Count > 0)
-				syncLoadedNodes(parseSet(loadedNodes));
-			if(unloadedNodes.Count > 0)
-				syncUnloadedNodes(parseSet(unloadedNodes));
+			SyncNodes(syncLoadedNodes, ref loadedNodeBuffer);
+			SyncNodes(syncUnloadedNodes, ref unloadedNodeBuffer);
 		}
 
 		public List<uint> ParseUnloadedNodes(string nodeStream) {
-			return nodeStream.Split(';').Select(uint.Parse).ToList();
+			return nodeStream.Split(NODE_DIVIDER).Select(uint.Parse).ToList();
 		}
 
 		public List<LoadedNodeSync> ParseLoadedNodes(string nodeStream) {
-			return nodeStream.Split(';').Select(entry => (LoadedNodeSync) entry).ToList();
+			return nodeStream.Split(NODE_DIVIDER).Select(entry => (LoadedNodeSync) entry).ToList();
 		}
 
-		private string parseSet<T>(HashSet<T> set) {
-			string parsedNodes = set.Aggregate("", (sequence, id) => sequence + $"{id};");
-			set.Clear();
-			Debug.Log(parsedNodes.Length);
-			return parsedNodes.Remove(parsedNodes.Length - 1);
+		private void HandleNode(ref string buffer, string node, Action<string> syncFunction) {
+			node += NODE_DIVIDER;
+			if (buffer.Length + node.Length > MAX_CHARS_PER_SYNC)
+				SyncNodes(syncFunction, ref buffer);
+			buffer += node;
+		}
+
+		private void SyncNodes(Action<string> syncFunction, ref string buffer) {
+			if(buffer.Length == 0)
+				return;
+			syncFunction(buffer.Remove(buffer.Length - 1));
+			buffer = "";
 		}
 		
 		public struct LoadedNodeSync {
