@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 namespace Services.Connection {
-	public class BezierCurveService {
+	public static class BezierCurveService {
 		private static readonly int BEZIER_SEGMENT_NUMBER_MULTIPLIER = 1;
 
 		public static Vector3[] GenerateBezierCurve(Vector3[] controlPoints) {

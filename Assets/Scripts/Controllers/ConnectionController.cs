@@ -10,6 +10,7 @@ using UnityEngine;
 namespace Controllers {
 	public class ConnectionController: MonoBehaviour {
 		public GraphPooledObject Connections;
+		private ConnectionService connectionService;
 		
 		private List<GameObject> ActiveConnections { get; } = new List<GameObject>();
 
@@ -59,6 +60,8 @@ namespace Controllers {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
 			nodeController.OnSelectedNodeChanged += mode => UpdateConnections();
 			graphController.ConnectionMode.OnValueChanged += mode => UpdateConnections();
+			
+			connectionService = new ConnectionService(ref graphController.ConnectionMode.OnValueChanged);
 		}
 
 		#endregion

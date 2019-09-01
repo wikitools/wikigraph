@@ -97,7 +97,7 @@ namespace Controllers {
 			NodeSyncParser = new NodeSyncParser(SyncLoadedNodes, SyncUnloadedNodes);
 			if (IsServer()) {
 				NodeController.NodeLoaded += (node, position) => NodeSyncParser.OnNodeLoaded(node.ID, position);
-				NodeController.NodeUnoaded += node => NodeSyncParser.OnNodeUnloaded(node.ID);
+				NodeController.NodeUnloaded += node => NodeSyncParser.OnNodeUnloaded(node.ID);
 				NodeController.NodeLoadSessionEnded += NodeSyncParser.SyncRemainingNodes;
 			}
 		}

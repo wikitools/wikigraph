@@ -19,7 +19,7 @@ namespace Controllers {
 		public bool LoadTestNodeSet;
 
 		public Action<Node, Vector3> NodeLoaded;
-		public Action<Node> NodeUnoaded;
+		public Action<Node> NodeUnloaded;
 		public Action NodeLoadSessionEnded;
 		
 		#region Highlighted Node
@@ -46,7 +46,7 @@ namespace Controllers {
 			get { return selectedNode; }
 			set {
 				if(NewNodeDisabled(value)) return;
-				if (selectedNode == value) {
+				if (selectedNode == value && inputController.Environment == Environment.Cave) {
 					graphController.SwitchConnectionMode();
 					return;
 				}
@@ -130,11 +130,13 @@ namespace Controllers {
 		private ConnectionController connectionController;
 		private GraphController graphController;
 		private NetworkController networkController;
+		private InputController inputController;
 		 
 		void Awake() {
 			graphController = GetComponent<GraphController>();
 			connectionController = GetComponent<ConnectionController>();
 			networkController = GetComponent<NetworkController>();
+			inputController = GetComponent<InputController>();
 		}
 
 		private void Start() {
