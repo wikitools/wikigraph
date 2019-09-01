@@ -2,10 +2,10 @@ using System;
 using InputModule.Event.Interfaces;
 using Inspector;
 using UnityEditor;
-using UnityEngine;
 
 namespace InputModule.Binding {
 	public abstract class InputBinding: CustomInspectorProperty, InputPoller, InputInitializer {
+		#if UNITY_EDITOR
 		public void DrawInInspector(SerializedProperty property) {
 			InspectorUtils.DrawObject(property, () => {
 				foreach (var field in GetType().GetFields()) {
@@ -14,6 +14,7 @@ namespace InputModule.Binding {
 				}
 			});
 		}
+		#endif
 
 		public void CheckForInput() {
 			CallFieldsOfType<InputPoller>(field => field.CheckForInput());

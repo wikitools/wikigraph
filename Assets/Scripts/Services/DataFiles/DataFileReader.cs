@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using Model;
+using UnityEngine;
 
 namespace Services.DataFiles {
 	public class DataFileReader : IDisposable {
@@ -12,7 +13,7 @@ namespace Services.DataFiles {
 
 		private Dictionary<DataFileType, DataFile> streams = new Dictionary<DataFileType, DataFile>();
 		
-		private readonly string DATA_FILE_PATH = Path.Combine("Assets", "Data");
+		private readonly string DATA_FILE_PATH = Application.streamingAssetsPath;
 		private const string DATA_FILE_EXTENSION = "wg";
 
 		public DataFileReader(string dataFilePostfix = "") {

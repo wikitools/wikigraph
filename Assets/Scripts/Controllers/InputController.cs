@@ -16,18 +16,21 @@ namespace Controllers {
 
 		private InputBinding binding;
 		
-		public NodeController NodeController { get; private set; }
+		public NetworkController NetworkController { get; private set; }
 		public CameraController CameraController { get; private set; }
 		public GraphController GraphController { get; private set; }
 
 		void Awake() {
-			NodeController = GetComponent<NodeController>();
+			NetworkController = GetComponent<NetworkController>();
 			CameraController = GetComponent<CameraController>();
 			GraphController = GetComponent<GraphController>();
 		}
 
 		void Start() {
-			InputProcessor input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) : new CaveInputProcessor(Config, CaveInputBinding, this);
+			if(!NetworkController.IsServer())
+				return;
+			InputProcessor input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) 
+				: new CaveInputProcessor(Config, CaveInputBinding, this);
 			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
 			
 			// TODO: let user choose the main flystick
@@ -36,6 +39,13 @@ namespace Controllers {
 		}
 
 		void Update() {
+			if (Environment == Environment.PC && Input.GetKeyDown(KeyCode.Delete)) {
+				NetworkController.CloseClient();
+				Application.Quit();
+			}
+			
+			if(!NetworkController.IsServer())
+				return;
 			binding.CheckForInput();
 		}
 	}
@@ -53,6 +63,7 @@ namespace Controllers {
 		Cave = 1
 	}
 
+	#if UNITY_EDITOR
 	[CustomEditor(typeof(InputController))]
 	[CanEditMultipleObjects]
 	public class InputConfigEditor : Editor {
@@ -88,4 +99,5 @@ namespace Controllers {
 			}
 		}
 	}
+	#endif
 }

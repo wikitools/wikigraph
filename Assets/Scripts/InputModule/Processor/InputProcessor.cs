@@ -16,18 +16,18 @@ namespace InputModule.Processor {
 
 		protected Transform EntityTransform => Controller.CameraController.Entity.transform;
 		
-		protected void ExitNodeTraverseMode() => Controller.GraphController.GraphMode.Value = GraphMode.FREE_FLIGHT;
+		protected void ExitNodeTraverseMode() => Controller.NetworkController.SetGraphMode(GraphMode.FREE_FLIGHT);
 
 		protected void OnNodeChosen(Ray ray) {
 			RaycastHit raycastHit;
 			if (RaycastNode(ray, out raycastHit)) {
-				Controller.NodeController.SelectedNode = GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject);
+				Controller.NetworkController.SetSelectedNode(raycastHit.collider.gameObject.name);
 			}
 		}
 
 		protected void OnNodePointed(Ray ray) {
 			RaycastHit raycastHit;
-			Controller.NodeController.HighlightedNode = RaycastNode(ray, out raycastHit) ? GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject) : null;
+			Controller.NetworkController.SetHighlightedNode(RaycastNode(ray, out raycastHit) ? raycastHit.collider.gameObject.name : "");
 		}
 		
 		private bool RaycastNode(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Node"));

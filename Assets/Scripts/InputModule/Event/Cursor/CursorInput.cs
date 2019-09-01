@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
-using Inspector;
-using UnityEditor;
-using UnityEngine;
-using System.Linq;
-using InputModule.Event.Button;
 using InputModule.Event.Interfaces;
+using UnityEngine;
 
 namespace InputModule.Event.Cursor {
 	public abstract class CursorInput: ActivatedInput, InputPoller {
