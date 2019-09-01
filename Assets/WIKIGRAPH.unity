@@ -380,6 +380,8 @@ MonoBehaviour:
     Container: {fileID: 1131386829}
     Prefab: {fileID: 1767645766449916, guid: 3732550bef55849b3a12da07e1f24ebd, type: 2}
     PreloadNumber: 20
+  ChildConnectionColor: {r: 0.30191627, g: 0.20652366, b: 0.8584906, a: 1}
+  ParentConnectionColor: {r: 0.5471407, g: 0.2691349, b: 0.9056604, a: 1}
 --- !u!114 &68664601
 MonoBehaviour:
   m_ObjectHideFlags: 0

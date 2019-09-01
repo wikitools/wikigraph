@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Model;
@@ -10,6 +9,9 @@ using UnityEngine;
 namespace Controllers {
 	public class ConnectionController: MonoBehaviour {
 		public GraphPooledObject Connections;
+		public Color ChildConnectionColor;
+		public Color ParentConnectionColor;
+		
 		private ConnectionService connectionService;
 		
 		private List<GameObject> ActiveConnections { get; } = new List<GameObject>();
@@ -39,7 +41,10 @@ namespace Controllers {
 			var basePosition = from.transform.position;
 			connectionObject.transform.position = basePosition;
 			connectionObject.transform.parent = Connections.Container.transform;
+			
 			var line = connectionObject.GetComponent<LineRenderer>();
+			line.material.color = graphController.ConnectionMode.Value == ConnectionMode.PARENTS ? ParentConnectionColor : ChildConnectionColor;
+			
 			Connection connectionModel = ConnectionService.GenerateConnection(basePosition, to.transform.position);
 			line.positionCount = connectionModel.SegmentPoints.Length;
 			line.SetPositions(connectionModel.SegmentPoints);
