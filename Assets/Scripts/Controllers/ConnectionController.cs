@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Timers;
 using Model;
 using Services;
 using Services.Connection;
@@ -12,39 +11,51 @@ namespace Controllers {
 	public class ConnectionController: MonoBehaviour {
 		public GraphPooledObject Connections;
 		public int MaxVisibleConnections;
+		public int ChangeConnectionNumber;
 		public float ScrollInterval;
 		
 		public Color ChildConnectionColor;
 		public Color ParentConnectionColor;
+
+		public Action<Node> OnConnectionCreated;
+		public Action<Node> OnConnectionRemoved;
 		
 		private ConnectionService connectionService;
 		
-		private List<GameObject> ActiveConnections { get; } = new List<GameObject>();
+		private List<Node> ActiveConnections { get; } = new List<Node>();
+		private Dictionary<Node, GameObject> ConnectionObjectMap = new Dictionary<Node, GameObject>();
+		
 		private int currentVisibleIndex;
 		private int scrollDirection;
 		private float scrollTimer;
-
-		public List<Node> GetActiveNodeConnections() {
-			if (nodeController.SelectedNode == null) return null;
-			return nodeController.SelectedNode.GetConnections(graphController.ConnectionMode.Value).Select(id => {
-				nodeController.LoadNode(id); //TODO handle loading in separate controller
-				return GraphController.Graph.IdNodeMap[id];
-			}).ToList();
-		}
 
 		public void OnScrollInputChanged(int direction) {
 			scrollDirection = direction;
 		}
 
 		private void UpdateVisibleConnections() {
-			if(ActiveConnections.Count <= MaxVisibleConnections)
+			if (ActiveConnections.Count <= MaxVisibleConnections) {
+				ConnectionObjectMap.Values.ToList().ForEach(connection => connection.SetActive(true));
 				return;
-			ActiveConnections.ForEach(connection => connection.SetActive(false));
-			Utils.GetCircularListPart(ActiveConnections, ref currentVisibleIndex, MaxVisibleConnections).ForEach(connection => connection.SetActive(true));
+			}
+			Utils.GetCircularListPart(ActiveConnections, currentVisibleIndex, MaxVisibleConnections).ForEach(UnloadConnection);
+			currentVisibleIndex = Utils.Mod(currentVisibleIndex + scrollDirection * ChangeConnectionNumber, ActiveConnections.Count);
+			Utils.GetCircularListPart(ActiveConnections, currentVisibleIndex, MaxVisibleConnections).ForEach(LoadConnection);
+		}
+
+		private void LoadConnection(Node node) {
+			ConnectionObjectMap[node].SetActive(true);
+			OnConnectionCreated?.Invoke(node);
+		}
+
+		private void UnloadConnection(Node node) {
+			ConnectionObjectMap[node].SetActive(false);
+			OnConnectionRemoved?.Invoke(node);
 		}
 
 		private void LoadConnections() {
-			ActiveConnections.ForEach(connection => Connections.Pool.Despawn(connection));
+			ConnectionObjectMap.Values.ToList().ForEach(connection => Connections.Pool.Despawn(connection));
+			ConnectionObjectMap.Clear();
 			ActiveConnections.Clear();
 			currentVisibleIndex = 0;
 			ResetTimer();
@@ -54,13 +65,23 @@ namespace Controllers {
 				GameObject connectionObject = Connections.Pool.Spawn();
 				var childObj = GraphController.Graph.NodeObjectMap[connection];
 				InitializeConnection(ref connectionObject, GraphController.Graph.NodeObjectMap[nodeController.SelectedNode], childObj);
-				ActiveConnections.Add(connectionObject);
+				ActiveConnections.Add(connection);
+				ConnectionObjectMap.Add(connection, connectionObject);
 			}
 			UpdateVisibleConnections();
 		}
 
+		private List<Node> GetActiveNodeConnections() {
+			if (nodeController.SelectedNode == null) return null;
+			return nodeController.SelectedNode.GetConnections(graphController.ConnectionMode.Value).Select(id => {
+				nodeController.LoadNode(id); //TODO handle loading in separate controller
+				return GraphController.Graph.IdNodeMap[id];
+			}).ToList();
+		}
+
 		private void InitializeConnection(ref GameObject connectionObject, GameObject from, GameObject to) {
 			var basePosition = from.transform.position;
+			connectionObject.SetActive(false);
 			connectionObject.name = to.name;
 			connectionObject.transform.position = basePosition;
 			connectionObject.transform.parent = Connections.Container.transform;
@@ -99,7 +120,6 @@ namespace Controllers {
 			if (scrollDirection != 0) {
 				scrollTimer -= Time.deltaTime * 1000;
 				if (scrollTimer <= 0) {
-					currentVisibleIndex += scrollDirection;
 					UpdateVisibleConnections();
 					ResetTimer();
 				}

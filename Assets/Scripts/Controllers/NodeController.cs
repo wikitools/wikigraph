@@ -46,14 +46,16 @@ namespace Controllers {
 			get { return selectedNode; }
 			set {
 				if(NewNodeDisabled(value)) return;
-				if (selectedNode == value && inputController.Environment == Environment.Cave) {
-					graphController.SwitchConnectionMode();
+				if (selectedNode == value) {
+					if(inputController.Environment == Environment.Cave)
+						graphController.SwitchConnectionMode();
 					return;
 				}
 				selectedNode = value;
 				UpdateNodeStates();
 				graphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
 				OnSelectedNodeChanged?.Invoke(selectedNode);
+				NodeLoadSessionEnded?.Invoke();//can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			}
 		}
 
@@ -102,11 +104,6 @@ namespace Controllers {
 			} else {
 				SetAllNodesAs(NodeState.DISABLED);
 				SetNodeState(selectedNode, NodeState.SELECTED);
-				foreach (var connection in connectionController.GetActiveNodeConnections()) {
-					LoadNode(connection.ID);
-					SetNodeState(connection, NodeState.ACTIVE);
-				}
-				NodeLoadSessionEnded?.Invoke();
 			}
 		}
 
@@ -153,6 +150,9 @@ namespace Controllers {
 				if (mode == GraphMode.FREE_FLIGHT) SelectedNode = null;
 			};
 			graphController.ConnectionMode.OnValueChanged += mode => UpdateNodeStates();
+
+			connectionController.OnConnectionCreated += node => SetNodeState(node, NodeState.ACTIVE);
+			connectionController.OnConnectionRemoved += node => SetNodeState(node, NodeState.DISABLED);
 		}
 
 		private void OnDestroy() {
