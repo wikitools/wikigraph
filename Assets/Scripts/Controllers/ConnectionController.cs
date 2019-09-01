@@ -20,34 +20,43 @@ namespace Controllers {
 		private ConnectionService connectionService;
 		
 		private List<GameObject> ActiveConnections { get; } = new List<GameObject>();
-		private int currentVisibleIndex = 0;
+		private int currentVisibleIndex;
 		private int scrollDirection;
 		private float scrollTimer;
 
 		public List<Node> GetActiveNodeConnections() {
 			if (nodeController.SelectedNode == null) return null;
-			var connections = nodeController.SelectedNode.GetConnections(graphController.ConnectionMode.Value).Select(id => {
+			return nodeController.SelectedNode.GetConnections(graphController.ConnectionMode.Value).Select(id => {
 				nodeController.LoadNode(id); //TODO handle loading in separate controller
 				return GraphController.Graph.IdNodeMap[id];
 			}).ToList();
-			return Utils.GetCurcularListPart(connections, currentVisibleIndex, MaxVisibleConnections);
 		}
 
 		public void OnScrollInputChanged(int direction) {
 			scrollDirection = direction;
 		}
 
-		private void UpdateConnections() {
-			foreach (var connection in ActiveConnections) {
-				Connections.Pool.Despawn(connection);
-			}
+		private void UpdateVisibleConnections() {
+			if(ActiveConnections.Count <= MaxVisibleConnections)
+				return;
+			ActiveConnections.ForEach(connection => connection.SetActive(false));
+			Utils.GetCircularListPart(ActiveConnections, ref currentVisibleIndex, MaxVisibleConnections).ForEach(connection => connection.SetActive(true));
+		}
+
+		private void LoadConnections() {
+			ActiveConnections.ForEach(connection => Connections.Pool.Despawn(connection));
 			ActiveConnections.Clear();
+			currentVisibleIndex = 0;
+			ResetTimer();
+			
 			if(nodeController.SelectedNode == null) return;
 			foreach (var connection in GetActiveNodeConnections()) {
 				GameObject connectionObject = Connections.Pool.Spawn();
 				var childObj = GraphController.Graph.NodeObjectMap[connection];
 				InitializeConnection(ref connectionObject, GraphController.Graph.NodeObjectMap[nodeController.SelectedNode], childObj);
+				ActiveConnections.Add(connectionObject);
 			}
+			UpdateVisibleConnections();
 		}
 
 		private void InitializeConnection(ref GameObject connectionObject, GameObject from, GameObject to) {
@@ -59,13 +68,12 @@ namespace Controllers {
 			var line = connectionObject.GetComponent<LineRenderer>();
 			line.material.color = graphController.ConnectionMode.Value == ConnectionMode.PARENTS ? ParentConnectionColor : ChildConnectionColor;
 			
-			Connection connectionModel = ConnectionService.GenerateConnection(basePosition, to.transform.position);
+			Connection connectionModel = connectionService.GenerateConnection(basePosition, to.transform.position);
 			line.positionCount = connectionModel.SegmentPoints.Length;
 			line.SetPositions(connectionModel.SegmentPoints);
-			ActiveConnections.Add(connectionObject);
 		}
 		
-		private void resetTimer() {
+		private void ResetTimer() {
 			scrollTimer = ScrollInterval * 1000;
 		}
 
@@ -81,11 +89,10 @@ namespace Controllers {
 
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
-			nodeController.OnSelectedNodeChanged += mode => UpdateConnections();
-			graphController.ConnectionMode.OnValueChanged += mode => UpdateConnections();
+			nodeController.OnSelectedNodeChanged += mode => LoadConnections();
+			graphController.ConnectionMode.OnValueChanged += mode => LoadConnections();
 			
-			connectionService = new ConnectionService(ref graphController.ConnectionMode.OnValueChanged);
-			resetTimer();
+			connectionService = new ConnectionService(); 
 		}
 
 		private void Update() {
@@ -93,8 +100,8 @@ namespace Controllers {
 				scrollTimer -= Time.deltaTime * 1000;
 				if (scrollTimer <= 0) {
 					currentVisibleIndex += scrollDirection;
-					UpdateConnections();
-					resetTimer();
+					UpdateVisibleConnections();
+					ResetTimer();
 				}
 			}
 		}

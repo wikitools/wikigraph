@@ -25,6 +25,8 @@ namespace Controllers {
 		public T Value {
 			get { return value; }
 			set {
+				if(value.Equals(this.value))
+					return;
 				this.value = value;
 				OnValueChanged?.Invoke(value);
 			}

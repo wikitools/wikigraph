@@ -12,7 +12,7 @@ public static class Utils {
 		return (x % m + m) % m;
 	}
 
-	public static List<T> GetCurcularListPart<T>(List<T> list, int startIndex, int elementNumber) {
+	public static List<T> GetCircularListPart<T>(List<T> list, ref int startIndex, int elementNumber) {
 		startIndex = Mod(startIndex, list.Count);
 		if (elementNumber > list.Count)
 			elementNumber = list.Count;
