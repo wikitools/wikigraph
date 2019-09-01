@@ -8,6 +8,7 @@ namespace InputModule.Event.Axis {
 	public class ButtonPair: CustomInspectorProperty, InputPoller {
 		public bool ReverseAxisDirection;
 		public Action<int> OnMove;
+		public Action<int> OnInputChange;
 
 		protected int AxisState;
 		
@@ -20,6 +21,8 @@ namespace InputModule.Event.Axis {
 
 		private void OnAxisChange(int direction) {
 			direction *= ReverseAxisDirection ? -1 : 1;
+			if(AxisState != direction)
+				OnInputChange?.Invoke(direction);
 			AxisState = direction;
 		}
 

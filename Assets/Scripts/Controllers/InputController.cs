@@ -19,11 +19,13 @@ namespace Controllers {
 		public NetworkController NetworkController { get; private set; }
 		public CameraController CameraController { get; private set; }
 		public GraphController GraphController { get; private set; }
+		public ConnectionController ConnectionController { get; private set; }
 
 		void Awake() {
 			NetworkController = GetComponent<NetworkController>();
 			CameraController = GetComponent<CameraController>();
 			GraphController = GetComponent<GraphController>();
+			ConnectionController = GetComponent<ConnectionController>();
 		}
 
 		void Start() {

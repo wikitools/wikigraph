@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using Model;
 using Services;
 using Services.Connection;
@@ -9,19 +11,30 @@ using UnityEngine;
 namespace Controllers {
 	public class ConnectionController: MonoBehaviour {
 		public GraphPooledObject Connections;
+		public int MaxVisibleConnections;
+		public float ScrollInterval;
+		
 		public Color ChildConnectionColor;
 		public Color ParentConnectionColor;
 		
 		private ConnectionService connectionService;
 		
 		private List<GameObject> ActiveConnections { get; } = new List<GameObject>();
+		private int currentVisibleIndex = 0;
+		private int scrollDirection;
+		private float scrollTimer;
 
-		public Node[] GetActiveNodeConnections() {
+		public List<Node> GetActiveNodeConnections() {
 			if (nodeController.SelectedNode == null) return null;
-			return nodeController.SelectedNode.GetConnections(graphController.ConnectionMode.Value).Select(id => {
+			var connections = nodeController.SelectedNode.GetConnections(graphController.ConnectionMode.Value).Select(id => {
 				nodeController.LoadNode(id); //TODO handle loading in separate controller
 				return GraphController.Graph.IdNodeMap[id];
-			}).ToArray();
+			}).ToList();
+			return Utils.GetCurcularListPart(connections, currentVisibleIndex, MaxVisibleConnections);
+		}
+
+		public void OnScrollInputChanged(int direction) {
+			scrollDirection = direction;
 		}
 
 		private void UpdateConnections() {
@@ -39,6 +52,7 @@ namespace Controllers {
 
 		private void InitializeConnection(ref GameObject connectionObject, GameObject from, GameObject to) {
 			var basePosition = from.transform.position;
+			connectionObject.name = to.name;
 			connectionObject.transform.position = basePosition;
 			connectionObject.transform.parent = Connections.Container.transform;
 			
@@ -49,6 +63,10 @@ namespace Controllers {
 			line.positionCount = connectionModel.SegmentPoints.Length;
 			line.SetPositions(connectionModel.SegmentPoints);
 			ActiveConnections.Add(connectionObject);
+		}
+		
+		private void resetTimer() {
+			scrollTimer = ScrollInterval * 1000;
 		}
 
 		#region Mono Behaviour
@@ -67,6 +85,18 @@ namespace Controllers {
 			graphController.ConnectionMode.OnValueChanged += mode => UpdateConnections();
 			
 			connectionService = new ConnectionService(ref graphController.ConnectionMode.OnValueChanged);
+			resetTimer();
+		}
+
+		private void Update() {
+			if (scrollDirection != 0) {
+				scrollTimer -= Time.deltaTime * 1000;
+				if (scrollTimer <= 0) {
+					currentVisibleIndex += scrollDirection;
+					UpdateConnections();
+					resetTimer();
+				}
+			}
 		}
 
 		#endregion
