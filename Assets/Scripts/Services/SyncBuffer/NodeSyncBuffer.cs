@@ -4,33 +4,18 @@ using System.Linq;
 using UnityEngine;
 
 namespace Services.SyncBuffer {
-	public class NodeSyncBuffer {
-		private readonly SyncBuffer nodeLoadedBuffer;
-		private readonly SyncBuffer nodeUnloadedBuffer;
-		
-		public NodeSyncBuffer(Action<string> syncLoadedNodes, Action<string> syncUnloadedNodes) {
-			nodeLoadedBuffer = new SyncBuffer(syncLoadedNodes);
-			nodeUnloadedBuffer = new SyncBuffer(syncUnloadedNodes);
-		}
+	public class NodeSyncBuffer: TwoWaySyncBuffer {
+		public NodeSyncBuffer(Action<string> syncLoaded, Action<string> syncUnloaded) : base(syncLoaded, syncUnloaded) { }
 
 		public void OnNodeLoaded(uint id, Vector3 position) {
-			nodeLoadedBuffer.Sync($"{new LoadedNodeSync(id, position)}");
+			loadedBuffer.Sync($"{new LoadedNodeSync(id, position)}");
 		}
 		
 		public void OnNodeUnloaded(uint id) {
-			nodeUnloadedBuffer.Sync($"{id}");
+			unloadedBuffer.Sync($"{id}");
 		}
 
-		public void SyncRemainingNodes() {//TODO need to sync node-sync-end event?
-			nodeLoadedBuffer.SyncRemaining();
-			nodeUnloadedBuffer.SyncRemaining();
-		}
-
-		public List<uint> ParseUnloadedNodes(string nodeStream) {
-			return SyncBuffer.SplitObjectStream(nodeStream).Select(uint.Parse).ToList();
-		}
-
-		public List<LoadedNodeSync> ParseLoadedNodes(string nodeStream) {
+		public static List<LoadedNodeSync> ParseLoadedNodes(string nodeStream) {
 			return SyncBuffer.SplitObjectStream(nodeStream).Select(entry => (LoadedNodeSync) entry).ToList();
 		}
 		

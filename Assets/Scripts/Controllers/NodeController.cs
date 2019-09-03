@@ -151,8 +151,8 @@ namespace Controllers {
 			};
 			graphController.ConnectionMode.OnValueChanged += mode => UpdateNodeStates();
 
-			connectionController.OnConnectionCreated += node => SetNodeState(node, NodeState.ACTIVE);
-			connectionController.OnConnectionRemoved += node => SetNodeState(node, NodeState.DISABLED);
+			connectionController.OnConnectionLoaded += node => SetNodeState(node, NodeState.ACTIVE);
+			connectionController.OnConnectionUnloaded += node => SetNodeState(node, NodeState.DISABLED);
 		}
 
 		private void OnDestroy() {

@@ -16,7 +16,13 @@ namespace Controllers {
 
 		public void SwitchConnectionMode() {
 			if(GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT) return;
-			ConnectionMode.Value = ConnectionMode.Value == Controllers.ConnectionMode.PARENTS ? Controllers.ConnectionMode.CHILDREN : Controllers.ConnectionMode.PARENTS;
+			networkController.SetConnectionNode(ConnectionMode.Value == Controllers.ConnectionMode.PARENTS ? Controllers.ConnectionMode.CHILDREN : Controllers.ConnectionMode.PARENTS);
+		}
+
+		private NetworkController networkController;
+
+		private void Awake() {
+			networkController = GetComponent<NetworkController>();
 		}
 	}
 

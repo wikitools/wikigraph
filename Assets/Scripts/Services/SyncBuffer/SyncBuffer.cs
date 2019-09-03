@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Services.SyncBuffer {
-	class SyncBuffer {
+	public class SyncBuffer {
 		private const int MAX_CHARS_PER_SYNC = 4096;
 		private const char DIVIDER = ';';
 		

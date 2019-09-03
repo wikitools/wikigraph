@@ -1,3 +1,4 @@
+using Model;
 using Services.SyncBuffer;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace Controllers {
 		
 		private NetworkView NetworkView;
 		private NodeSyncBuffer nodeSyncBuffer;
+		private ConnectionSyncBuffer connectionSyncBuffer;
 
 		private static readonly int PORT = 25000;
 
@@ -15,28 +17,37 @@ namespace Controllers {
 
 		#region RPC Sync
 		
-		public void SyncConnection(int nodeID, bool loaded) {
-			Synchronize("syncConnection", nodeID, loaded);
+		public void SyncLoadedConnection(Node node) {
+			connectionSyncBuffer.OnConnectionLoaded(node.ID);
+		}
+		
+		public void SyncUnloadedConnection(Node node) {
+			connectionSyncBuffer.OnConnectionUnloaded(node.ID);
 		}
 		
 		[RPC]
-		private void syncConnection(int nodeID, bool loaded) {
-			//if(loaded)
-			//	connectionController.LoadConnection();
+		private void syncConnection(string stream, bool loaded) {
+			TwoWaySyncBuffer.ParseNodeIDs(stream).ForEach(id => {
+				var node = GraphController.Graph.IdNodeMap[id];
+				if(loaded)
+					connectionController.LoadConnection(node);
+				else
+					connectionController.UnloadConnection(node);
+			});
 		}
 		
-		private void SyncLoadedNodes(string nodeStream) {
-			Synchronize("syncNodes", nodeStream, true);
+		private void SyncLoadedNodes(string stream) {
+			Synchronize("syncNodes", stream, true);
 		}
 		
-		private void SyncUnloadedNodes(string nodeStream) {
-			Synchronize("syncNodes", nodeStream, false);
+		private void SyncUnloadedNodes(string stream) {
+			Synchronize("syncNodes", stream, false);
 		}
 		
 		[RPC]
-		private void syncNodes(string nodeStream, bool loaded) {
+		private void syncNodes(string stream, bool loaded) {
 			if(loaded) //TODO add node unloading sync once we support it
-				nodeSyncBuffer.ParseLoadedNodes(nodeStream).ForEach(node => nodeController.LoadNode(node.ID, node.Position));
+				NodeSyncBuffer.ParseLoadedNodes(stream).ForEach(node => nodeController.LoadNode(node.ID, node.Position));
 		}
 		
 		public void SetGraphMode(GraphMode mode) {
@@ -55,6 +66,15 @@ namespace Controllers {
 		[RPC]
 		private void setHighlightedNode(string id) {
 			nodeController.HighlightedNode = id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
+		}
+		
+		public void SetConnectionNode(ConnectionMode mode) {
+			Synchronize("setConnectionNode", (int) mode);
+		}
+		
+		[RPC]
+		private void setConnectionNode(int mode) {
+			graphController.ConnectionMode.Value = (ConnectionMode) mode;
 		}
 		
 		public void SetSelectedNode(string id) {
@@ -105,11 +125,16 @@ namespace Controllers {
 					Network.Connect("localhost", PORT);
 				}
 			}
-			nodeSyncBuffer = new NodeSyncBuffer(SyncLoadedNodes, SyncUnloadedNodes);
 			if (IsServer()) {
+				nodeSyncBuffer = new NodeSyncBuffer(SyncLoadedNodes, SyncUnloadedNodes);
 				nodeController.OnNodeLoaded += (node, position) => nodeSyncBuffer.OnNodeLoaded(node.ID, position);
 				nodeController.OnNodeUnloaded += node => nodeSyncBuffer.OnNodeUnloaded(node.ID);
-				nodeController.OnNodeLoadSessionEnded += nodeSyncBuffer.SyncRemainingNodes;
+				nodeController.OnNodeLoadSessionEnded += nodeSyncBuffer.SyncRemaining;
+				
+				connectionSyncBuffer = new ConnectionSyncBuffer(
+					stream => Synchronize("syncConnection", stream, true), 
+					stream => Synchronize("syncConnection", stream, false));
+				connectionController.OnConnectionLoadSessionEnded += connectionSyncBuffer.SyncRemaining;
 			}
 		}
 	}

@@ -17,8 +17,9 @@ namespace Controllers {
 		public Color ChildConnectionColor;
 		public Color ParentConnectionColor;
 
-		public Action<Node> OnConnectionCreated;
-		public Action<Node> OnConnectionRemoved;
+		public Action<Node> OnConnectionLoaded;
+		public Action<Node> OnConnectionUnloaded;
+		public Action OnConnectionLoadSessionEnded;
 		
 		private ConnectionService connectionService;
 		
@@ -38,19 +39,21 @@ namespace Controllers {
 				ConnectionObjectMap.Values.ToList().ForEach(connection => connection.SetActive(true));
 				return;
 			}
-			Utils.GetCircularListPart(ActiveConnections, currentVisibleIndex, MaxVisibleConnections).ForEach(UnloadConnection);
+			Utils.GetCircularListPart(ActiveConnections, currentVisibleIndex, MaxVisibleConnections).ForEach(networkController.SyncUnloadedConnection);
 			currentVisibleIndex = Utils.Mod(currentVisibleIndex + scrollDirection * ChangeConnectionNumber, ActiveConnections.Count);
-			Utils.GetCircularListPart(ActiveConnections, currentVisibleIndex, MaxVisibleConnections).ForEach(LoadConnection);
+			Utils.GetCircularListPart(ActiveConnections, currentVisibleIndex, MaxVisibleConnections).ForEach(networkController.SyncLoadedConnection);
+
+			OnConnectionLoadSessionEnded?.Invoke();
 		}
 
 		public void LoadConnection(Node node) {
 			ConnectionObjectMap[node].SetActive(true);
-			OnConnectionCreated?.Invoke(node);
+			OnConnectionLoaded?.Invoke(node);
 		}
 
 		public void UnloadConnection(Node node) {
 			ConnectionObjectMap[node].SetActive(false);
-			OnConnectionRemoved?.Invoke(node);
+			OnConnectionUnloaded?.Invoke(node);
 		}
 
 		private void LoadConnections() {
@@ -112,10 +115,8 @@ namespace Controllers {
 
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
-			if (networkController.IsServer()) {
-				nodeController.OnSelectedNodeChanged += mode => LoadConnections();
-				graphController.ConnectionMode.OnValueChanged += mode => LoadConnections();
-			}
+			nodeController.OnSelectedNodeChanged += mode => LoadConnections();
+			graphController.ConnectionMode.OnValueChanged += mode => LoadConnections();
 			connectionService = new ConnectionService(); 
 		}
 
