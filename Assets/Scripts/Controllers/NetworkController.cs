@@ -1,5 +1,4 @@
-using System;
-using Services;
+using Services.SyncBuffer;
 using UnityEngine;
 
 #pragma warning disable 618
@@ -8,13 +7,23 @@ namespace Controllers {
 		private readonly RPCMode RPC_MODE = RPCMode.AllBuffered;
 		
 		private NetworkView NetworkView;
-		private NodeSyncParser NodeSyncParser;
+		private NodeSyncBuffer nodeSyncBuffer;
 
 		private static readonly int PORT = 25000;
 
-		private Environment Environment => InputController.Environment;
+		private Environment Environment => inputController.Environment;
 
 		#region RPC Sync
+		
+		public void SyncConnection(int nodeID, bool loaded) {
+			Synchronize("syncConnection", nodeID, loaded);
+		}
+		
+		[RPC]
+		private void syncConnection(int nodeID, bool loaded) {
+			//if(loaded)
+			//	connectionController.LoadConnection();
+		}
 		
 		private void SyncLoadedNodes(string nodeStream) {
 			Synchronize("syncNodes", nodeStream, true);
@@ -27,7 +36,7 @@ namespace Controllers {
 		[RPC]
 		private void syncNodes(string nodeStream, bool loaded) {
 			if(loaded) //TODO add node unloading sync once we support it
-				NodeSyncParser.ParseLoadedNodes(nodeStream).ForEach(node => NodeController.LoadNode(node.ID, node.Position));
+				nodeSyncBuffer.ParseLoadedNodes(nodeStream).ForEach(node => nodeController.LoadNode(node.ID, node.Position));
 		}
 		
 		public void SetGraphMode(GraphMode mode) {
@@ -36,7 +45,7 @@ namespace Controllers {
 		
 		[RPC]
 		private void setGraphMode(int value) {
-			GraphController.GraphMode.Value = (GraphMode) value;
+			graphController.GraphMode.Value = (GraphMode) value;
 		}
 		
 		public void SetHighlightedNode(string id) {
@@ -45,7 +54,7 @@ namespace Controllers {
 		
 		[RPC]
 		private void setHighlightedNode(string id) {
-			NodeController.HighlightedNode = id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
+			nodeController.HighlightedNode = id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
 		}
 		
 		public void SetSelectedNode(string id) {
@@ -54,7 +63,7 @@ namespace Controllers {
 		
 		[RPC]
 		private void setSelectedNode(string id) {
-			NodeController.SelectedNode = id == null ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
+			nodeController.SelectedNode = id == null ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
 		}
 		
 		private void Synchronize(string method, params object[] args) {
@@ -77,14 +86,16 @@ namespace Controllers {
 			Network.Disconnect();
 		}
 		
-		public InputController InputController { get; private set; }
-		public GraphController GraphController { get; private set; }
-		public NodeController NodeController { get; private set; }
+		private InputController inputController;
+		private GraphController graphController;
+		private NodeController nodeController;
+		private ConnectionController connectionController;
 		
 		private void Awake() {
-			InputController = GetComponent<InputController>();
-			NodeController = GetComponent<NodeController>();
-			GraphController = GetComponent<GraphController>();
+			inputController = GetComponent<InputController>();
+			nodeController = GetComponent<NodeController>();
+			graphController = GetComponent<GraphController>();
+			connectionController = GetComponent<ConnectionController>();
 			
 			NetworkView = GetComponent<NetworkView>();
 			if (Environment == Environment.PC) {
@@ -94,11 +105,11 @@ namespace Controllers {
 					Network.Connect("localhost", PORT);
 				}
 			}
-			NodeSyncParser = new NodeSyncParser(SyncLoadedNodes, SyncUnloadedNodes);
+			nodeSyncBuffer = new NodeSyncBuffer(SyncLoadedNodes, SyncUnloadedNodes);
 			if (IsServer()) {
-				NodeController.NodeLoaded += (node, position) => NodeSyncParser.OnNodeLoaded(node.ID, position);
-				NodeController.NodeUnloaded += node => NodeSyncParser.OnNodeUnloaded(node.ID);
-				NodeController.NodeLoadSessionEnded += NodeSyncParser.SyncRemainingNodes;
+				nodeController.OnNodeLoaded += (node, position) => nodeSyncBuffer.OnNodeLoaded(node.ID, position);
+				nodeController.OnNodeUnloaded += node => nodeSyncBuffer.OnNodeUnloaded(node.ID);
+				nodeController.OnNodeLoadSessionEnded += nodeSyncBuffer.SyncRemainingNodes;
 			}
 		}
 	}

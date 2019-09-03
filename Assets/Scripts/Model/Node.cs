@@ -36,6 +36,10 @@ namespace Model {
 		public override int GetHashCode() {
 			return (int) ID;
 		}
+
+		public override string ToString() {
+			return ID.ToString();
+		}
 	}
 
 	public enum NodeState {

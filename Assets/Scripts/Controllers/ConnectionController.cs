@@ -43,12 +43,12 @@ namespace Controllers {
 			Utils.GetCircularListPart(ActiveConnections, currentVisibleIndex, MaxVisibleConnections).ForEach(LoadConnection);
 		}
 
-		private void LoadConnection(Node node) {
+		public void LoadConnection(Node node) {
 			ConnectionObjectMap[node].SetActive(true);
 			OnConnectionCreated?.Invoke(node);
 		}
 
-		private void UnloadConnection(Node node) {
+		public void UnloadConnection(Node node) {
 			ConnectionObjectMap[node].SetActive(false);
 			OnConnectionRemoved?.Invoke(node);
 		}
@@ -102,17 +102,20 @@ namespace Controllers {
 
 		private NodeController nodeController;
 		private GraphController graphController;
+		private NetworkController networkController;
 		
 		void Awake() {
 			graphController = GetComponent<GraphController>();
 			nodeController = GetComponent<NodeController>();
+			networkController = GetComponent<NetworkController>();
 		}
 
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
-			nodeController.OnSelectedNodeChanged += mode => LoadConnections();
-			graphController.ConnectionMode.OnValueChanged += mode => LoadConnections();
-			
+			if (networkController.IsServer()) {
+				nodeController.OnSelectedNodeChanged += mode => LoadConnections();
+				graphController.ConnectionMode.OnValueChanged += mode => LoadConnections();
+			}
 			connectionService = new ConnectionService(); 
 		}
 

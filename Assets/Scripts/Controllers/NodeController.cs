@@ -18,9 +18,9 @@ namespace Controllers {
 		public int NodeLoadedLimit;
 		public bool LoadTestNodeSet;
 
-		public Action<Node, Vector3> NodeLoaded;
-		public Action<Node> NodeUnloaded;
-		public Action NodeLoadSessionEnded;
+		public Action<Node, Vector3> OnNodeLoaded;
+		public Action<Node> OnNodeUnloaded;
+		public Action OnNodeLoadSessionEnded;
 		
 		#region Highlighted Node
 		
@@ -55,7 +55,7 @@ namespace Controllers {
 				UpdateNodeStates();
 				graphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
 				OnSelectedNodeChanged?.Invoke(selectedNode);
-				NodeLoadSessionEnded?.Invoke();//can trigger loading of unloaded connected nodes TODO move once we have a node loader
+				OnNodeLoadSessionEnded?.Invoke();//can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			}
 		}
 
@@ -81,7 +81,7 @@ namespace Controllers {
 			InitializeNode(node, ref nodeObject, position);
 			GraphController.Graph.NodeObjectMap[node] = nodeObject;
 			
-			NodeLoaded?.Invoke(node, position);
+			OnNodeLoaded?.Invoke(node, position);
 		}
 
 		public void InitializeNode(Node model, ref GameObject nodeObject, Vector3 position) {
@@ -144,7 +144,7 @@ namespace Controllers {
 				for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
 					LoadNode(i);
 				}
-				NodeLoadSessionEnded?.Invoke();
+				OnNodeLoadSessionEnded?.Invoke();
 			}
 			graphController.GraphMode.OnValueChanged += mode => {
 				if (mode == GraphMode.FREE_FLIGHT) SelectedNode = null;
