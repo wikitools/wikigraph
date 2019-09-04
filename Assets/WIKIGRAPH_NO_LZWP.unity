@@ -359,7 +359,7 @@ MonoBehaviour:
     Prefab: {fileID: 1767645766449916, guid: 3732550bef55849b3a12da07e1f24ebd, type: 2}
     PreloadNumber: 20
   MaxVisibleConnections: 5
-  ChangeConnectionNumber: 2
+  ChangeConnectionNumber: 1
   ScrollInterval: 1
   ChildConnectionColor: {r: 0.12156863, g: 0.18026127, b: 0.59607846, a: 1}
   ParentConnectionColor: {r: 0.43302405, g: 0.38848346, b: 0.8490566, a: 1}

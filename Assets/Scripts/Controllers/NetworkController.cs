@@ -1,3 +1,4 @@
+using System;
 using Model;
 using Services.SyncBuffer;
 using UnityEngine;
@@ -132,11 +133,14 @@ namespace Controllers {
 				nodeController.OnNodeLoadSessionEnded += nodeSyncBuffer.SyncRemaining;
 				
 				connectionSyncBuffer = new ConnectionSyncBuffer(
-					stream => Synchronize("syncConnection", stream, true), 
-					stream => Synchronize("syncConnection", stream, false));
+					SyncBufferFunction("syncConnection", true),
+					SyncBufferFunction("syncConnection", false)
+				);
 				connectionController.OnConnectionLoadSessionEnded += connectionSyncBuffer.SyncRemaining;
 			}
 		}
+
+		private Action<string> SyncBufferFunction(string rpcName, bool loaded) => stream => Synchronize(rpcName, stream, loaded);
 	}
 }
 #pragma warning restore 618
