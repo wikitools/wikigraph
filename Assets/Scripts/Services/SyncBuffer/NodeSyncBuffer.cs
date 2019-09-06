@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 namespace Services.SyncBuffer {
-	public class NodeSyncBuffer: TwoWaySyncBuffer {
+	public class NodeSyncBuffer: DoubleSyncBuffer {
 		public NodeSyncBuffer(Action<string> syncLoaded, Action<string> syncUnloaded) : base(syncLoaded, syncUnloaded) { }
 
 		public void OnNodeLoaded(uint id, Vector3 position) {

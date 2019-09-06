@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Services.SyncBuffer {
-	public abstract class TwoWaySyncBuffer {
+	public abstract class DoubleSyncBuffer {
 		protected readonly SyncBuffer loadedBuffer;
 		protected readonly SyncBuffer unloadedBuffer;
 		
-		protected TwoWaySyncBuffer(Action<string> syncLoaded, Action<string> syncUnloaded) {
+		protected DoubleSyncBuffer(Action<string> syncLoaded, Action<string> syncUnloaded) {
 			loadedBuffer = new SyncBuffer(syncLoaded);
 			unloadedBuffer = new SyncBuffer(syncUnloaded);
 		}

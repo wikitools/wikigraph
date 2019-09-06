@@ -69,12 +69,13 @@ namespace Controllers {
 		
 		private NodeLoader nodeLoader;
 
-		public void LoadNode(uint id) {
-			LoadNode(id, Random.insideUnitSphere * graphController.WorldRadius);
+		public Node LoadNode(uint id) {
+			return LoadNode(id, Random.insideUnitSphere * graphController.WorldRadius);
 		}
 
-		public void LoadNode(uint id, Vector3 position) {
-			if(GraphController.Graph.IdNodeMap.ContainsKey(id)) return;
+		public Node LoadNode(uint id, Vector3 position) {
+			if(GraphController.Graph.IdNodeMap.ContainsKey(id)) 
+				return GraphController.Graph.IdNodeMap[id];
 			Node node = nodeLoader.LoadNode(id);
 			GraphController.Graph.IdNodeMap[id] = node;
 			GameObject nodeObject = Nodes.Pool.Spawn();
@@ -82,6 +83,7 @@ namespace Controllers {
 			GraphController.Graph.NodeObjectMap[node] = nodeObject;
 			
 			OnNodeLoaded?.Invoke(node, position);
+			return node;
 		}
 
 		public void InitializeNode(Node model, ref GameObject nodeObject, Vector3 position) {
@@ -151,8 +153,8 @@ namespace Controllers {
 			};
 			graphController.ConnectionMode.OnValueChanged += mode => UpdateNodeStates();
 
-			connectionController.OnConnectionLoaded += node => SetNodeState(node, NodeState.ACTIVE);
-			connectionController.OnConnectionUnloaded += node => SetNodeState(node, NodeState.DISABLED);
+			connectionController.OnConnectionLoaded += connection => SetNodeState(connection.Item2, NodeState.ACTIVE);
+			connectionController.OnConnectionUnloaded += connection => SetNodeState(connection.Item2, NodeState.DISABLED);
 		}
 
 		private void OnDestroy() {

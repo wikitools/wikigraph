@@ -9,6 +9,8 @@ using UnityEngine;
 
 namespace Controllers {
 	public class ConnectionController: MonoBehaviour {
+		private readonly Logger<ConnectionController> logger = new Logger<ConnectionController>();
+		
 		public GraphPooledObject Connections;
 		public int MaxVisibleConnections;
 		public int ChangeConnectionNumber;
@@ -17,14 +19,13 @@ namespace Controllers {
 		public Color ChildConnectionColor;
 		public Color ParentConnectionColor;
 
-		public Action<Node> OnConnectionLoaded;
-		public Action<Node> OnConnectionUnloaded;
+		public Action<Connection> OnConnectionLoaded;
+		public Action<Connection> OnConnectionUnloaded;
 		public Action OnConnectionLoadSessionEnded;
 		
 		private ConnectionService connectionService;
-		
-		private Dictionary<Node, GameObject> ConnectionObjectMap = new Dictionary<Node, GameObject>();
-		
+		private Graph graph => GraphController.Graph;
+
 		private int currentVisibleIndex;
 		private int scrollDirection;
 		private float scrollTimer;
@@ -34,30 +35,45 @@ namespace Controllers {
 		}
 
 		private void ScrollConnections() {
+			var connections = GetNodeConnections(nodeController.SelectedNode);
+			if(connections.Count <= MaxVisibleConnections)
+				return;
 			UnloadAll();
 			OnConnectionLoadSessionEnded?.Invoke();
 
-			var connections = GetNodeConnections(nodeController.SelectedNode);
 			currentVisibleIndex = Utils.Mod(currentVisibleIndex + scrollDirection * ChangeConnectionNumber, connections.Count);
-			Utils.GetCircularListPart(connections, currentVisibleIndex, MaxVisibleConnections).ForEach(networkController.SyncLoadedConnection);
+			Utils.GetCircularListPart(connections, currentVisibleIndex, MaxVisibleConnections)
+				.ForEach(connection => networkController.SyncLoadedConnection(Connection.asTuple(nodeController.SelectedNode, connection)));
 			OnConnectionLoadSessionEnded?.Invoke();
 		}
 
-		public void LoadConnection(Node node) {
-			InitConnection(nodeController.SelectedNode, node);
-			OnConnectionLoaded?.Invoke(node);
+		public void LoadConnection(Tuple<uint, uint> nodeIDs) { //TODO handle node loading in separate controller
+			var connection = CreateConnection(nodeIDs);
+			Debug.LogError("load " + connection);
+			
+			if(graph.ConnectionObjectMap.ContainsKey(connection))
+				return;
+			InitConnection(connection);
+			OnConnectionLoaded?.Invoke(connection);
 		}
 
-		public void UnloadConnection(Node node) {
-			if(!ConnectionObjectMap.ContainsKey(node))
+		public void UnloadConnection(Tuple<uint, uint> nodeIDs) {
+			var connection = CreateConnection(nodeIDs);
+			Debug.LogError("unload " + connection);
+			
+			if(!graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
-			Connections.Pool.Despawn(ConnectionObjectMap[node]);
-			ConnectionObjectMap.Remove(node);
-			OnConnectionUnloaded?.Invoke(node);
+			Connections.Pool.Despawn(graph.ConnectionObjectMap[connection]);
+			graph.ConnectionObjectMap.Remove(connection);
+			OnConnectionUnloaded?.Invoke(connection);
+		}
+
+		private Connection CreateConnection(Tuple<uint, uint> connection) {
+			return new Connection(nodeController.LoadNode(connection.Item1), nodeController.LoadNode(connection.Item2));
 		}
 
 		private void UnloadAll() {
-			ConnectionObjectMap.Keys.ToList().ForEach(networkController.SyncUnloadedConnection);
+			graph.ConnectionObjectMap.Keys.ToList().ForEach(connection => networkController.SyncUnloadedConnection(Connection.asTuple(connection)));
 		}
 
 		private void InitNodeConnections(Node centerNode) {
@@ -69,21 +85,24 @@ namespace Controllers {
 			ScrollConnections();
 		}
 
-		private void InitConnection(Node from, Node to) {
+		private void InitConnection(Connection connection) {
+			if (!connection.Item1.GetConnections(graphController.ConnectionMode.Value).Contains(connection.Item2.ID))
+				logger.Warning("Attempting to create connection that does not exist");
+
 			GameObject connectionObject = Connections.Pool.Spawn();
-			InitConnectionObject(ref connectionObject, GraphController.Graph.NodeObjectMap[from], GraphController.Graph.NodeObjectMap[to]);
-			ConnectionObjectMap.Add(to, connectionObject);
+			connection.Route = InitConnectionObject(ref connectionObject, graph.NodeObjectMap[connection.Item1], graph.NodeObjectMap[connection.Item2]);
+			graph.ConnectionObjectMap.Add(connection, connectionObject);
 		}
 
 		private List<Node> GetNodeConnections(Node node) {
 			if (node == null) return null;
 			return node.GetConnections(graphController.ConnectionMode.Value).Select(id => {
-				nodeController.LoadNode(id); //TODO handle loading in separate controller
-				return GraphController.Graph.IdNodeMap[id];
+				nodeController.LoadNode(id);
+				return graph.IdNodeMap[id];
 			}).ToList();
 		}
 
-		private void InitConnectionObject(ref GameObject connectionObject, GameObject from, GameObject to) {
+		private Route InitConnectionObject(ref GameObject connectionObject, GameObject from, GameObject to) {
 			var basePosition = from.transform.position;
 			connectionObject.name = to.name;
 			connectionObject.transform.position = basePosition;
@@ -92,9 +111,10 @@ namespace Controllers {
 			var line = connectionObject.GetComponent<LineRenderer>();
 			line.material.color = graphController.ConnectionMode.Value == ConnectionMode.PARENTS ? ParentConnectionColor : ChildConnectionColor;
 			
-			Connection connectionModel = connectionService.GenerateConnection(basePosition, to.transform.position);
-			line.positionCount = connectionModel.SegmentPoints.Length;
-			line.SetPositions(connectionModel.SegmentPoints);
+			Route route = connectionService.GenerateConnection(basePosition, to.transform.position);
+			line.positionCount = route.SegmentPoints.Length;
+			line.SetPositions(route.SegmentPoints);
+			return route;
 		}
 		
 		private void ResetTimer() {

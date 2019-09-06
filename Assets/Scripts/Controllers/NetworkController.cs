@@ -17,33 +17,24 @@ namespace Controllers {
 		private Environment Environment => inputController.Environment;
 
 		#region RPC Sync
+
+		public void SyncLoadedConnection(Tuple<uint, uint> connection) => connectionSyncBuffer.OnConnectionLoaded(connection.Item1, connection.Item2);
 		
-		public void SyncLoadedConnection(Node node) {
-			connectionSyncBuffer.OnConnectionLoaded(node.ID);
-		}
-		
-		public void SyncUnloadedConnection(Node node) {
-			connectionSyncBuffer.OnConnectionUnloaded(node.ID);
-		}
+		public void SyncUnloadedConnection(Tuple<uint, uint> connection) => connectionSyncBuffer.OnConnectionUnloaded(connection.Item1, connection.Item2);
 		
 		[RPC]
 		private void syncConnection(string stream, bool loaded) {
-			TwoWaySyncBuffer.ParseNodeIDs(stream).ForEach(id => {
-				var node = GraphController.Graph.IdNodeMap[id];
+			ConnectionSyncBuffer.ParseConnections(stream).ForEach(connection => {
 				if(loaded)
-					connectionController.LoadConnection(node);
+					connectionController.LoadConnection(connection);
 				else
-					connectionController.UnloadConnection(node);
+					connectionController.UnloadConnection(connection);
 			});
 		}
 		
-		private void SyncLoadedNodes(string stream) {
-			Synchronize("syncNodes", stream, true);
-		}
+		private void SyncLoadedNodes(string stream) => Synchronize("syncNodes", stream, true);
 		
-		private void SyncUnloadedNodes(string stream) {
-			Synchronize("syncNodes", stream, false);
-		}
+		private void SyncUnloadedNodes(string stream) => Synchronize("syncNodes", stream, false);
 		
 		[RPC]
 		private void syncNodes(string stream, bool loaded) {
@@ -51,36 +42,28 @@ namespace Controllers {
 				NodeSyncBuffer.ParseLoadedNodes(stream).ForEach(node => nodeController.LoadNode(node.ID, node.Position));
 		}
 		
-		public void SetGraphMode(GraphMode mode) {
-			Synchronize("setGraphMode", (int) mode);
-		}
+		public void SetGraphMode(GraphMode mode) => Synchronize("setGraphMode", (int) mode);
 		
 		[RPC]
 		private void setGraphMode(int value) {
 			graphController.GraphMode.Value = (GraphMode) value;
 		}
 		
-		public void SetHighlightedNode(string id) {
-			Synchronize("setHighlightedNode", id);
-		}
+		public void SetHighlightedNode(string id) => Synchronize("setHighlightedNode", id);
 		
 		[RPC]
 		private void setHighlightedNode(string id) {
 			nodeController.HighlightedNode = id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
 		}
 		
-		public void SetConnectionNode(ConnectionMode mode) {
-			Synchronize("setConnectionNode", (int) mode);
-		}
+		public void SetConnectionNode(ConnectionMode mode) => Synchronize("setConnectionNode", (int) mode);
 		
 		[RPC]
 		private void setConnectionNode(int mode) {
 			graphController.ConnectionMode.Value = (ConnectionMode) mode;
 		}
 		
-		public void SetSelectedNode(string id) {
-			Synchronize("setSelectedNode", id);
-		}
+		public void SetSelectedNode(string id) => Synchronize("setSelectedNode", id);
 		
 		[RPC]
 		private void setSelectedNode(string id) {

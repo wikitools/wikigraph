@@ -1,3 +1,4 @@
+using Model;
 using UnityEngine;
 
 namespace Services.Connection {
@@ -6,7 +7,7 @@ namespace Services.Connection {
 		private static readonly float CURVE_BEND_PROPORTIONS = 0.5f;
 		private static int CURVE_SKEW_ANGLE = 20;
 		
-		public Model.Connection GenerateConnection(Vector3 from, Vector3 to) {
+		public Route GenerateConnection(Vector3 from, Vector3 to) {
 			Vector3 direction = to - from;
 			Vector3 normalAxis = Vector3.Cross(direction, Vector3.up);
 			normalAxis = Quaternion.AngleAxis(CURVE_SKEW_ANGLE, direction) * normalAxis;
@@ -15,7 +16,7 @@ namespace Services.Connection {
 			Vector3 toControlPointDirection = CURVE_BEND_PROPORTIONS * (rotation * -direction);
 			var controlPoints = new[] {Vector3.zero, fromControlPointDirection, toControlPointDirection, to - from};
 			var curveSegments = BezierCurveService.GenerateBezierCurve(controlPoints);
-			return new Model.Connection {SegmentPoints = curveSegments, ControlPoints = controlPoints};
+			return new Route {SegmentPoints = curveSegments, ControlPoints = controlPoints};
 		}
 	}
 }
