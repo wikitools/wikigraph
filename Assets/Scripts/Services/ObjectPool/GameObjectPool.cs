@@ -13,18 +13,18 @@ namespace Services {
 			this.elementContainer = elementContainer;
 			this.prefab = prefab;
 			pool = new Stack<GameObject>(preloadNumber);
-			preloadElements(preloadNumber);
+			PreloadElements(preloadNumber);
 		}
 
-		private void preloadElements(int number) {
+		private void PreloadElements(int number) {
 			for (int i = 0; i < Math.Abs(number); i++) {
-				putIntoPool(GameObject.Instantiate(prefab));
+				PutIntoPool(GameObject.Instantiate(prefab));
 			}
 		}
 
 		public GameObject Spawn() {
 			if (pool.Count == 0) {
-				preloadElements(LOAD_NUMBER);
+				PreloadElements(LOAD_NUMBER);
 			}
 
 			var element = pool.Pop();
@@ -37,10 +37,10 @@ namespace Services {
 		}
 
 		public void Despawn(GameObject element) {
-			putIntoPool(element);
+			PutIntoPool(element);
 		}
 
-		private void putIntoPool(GameObject element) {
+		private void PutIntoPool(GameObject element) {
 			element.SetActive(false);
 			if (elementContainer != null) {
 				element.transform.parent = elementContainer.transform;

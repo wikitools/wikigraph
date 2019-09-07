@@ -360,9 +360,9 @@ MonoBehaviour:
     PreloadNumber: 20
   MaxVisibleConnections: 5
   ChangeConnectionNumber: 1
-  ScrollInterval: 1
-  ChildConnectionColor: {r: 0.12156863, g: 0.18026127, b: 0.59607846, a: 1}
-  ParentConnectionColor: {r: 0.43302405, g: 0.38848346, b: 0.8490566, a: 1}
+  ScrollInterval: 0.5
+  ChildConnectionColor: {r: 0.30191627, g: 0.20652366, b: 0.8584906, a: 1}
+  ParentConnectionColor: {r: 0.5471407, g: 0.2691349, b: 0.9056604, a: 1}
 --- !u!114 &68664601
 MonoBehaviour:
   m_ObjectHideFlags: 0

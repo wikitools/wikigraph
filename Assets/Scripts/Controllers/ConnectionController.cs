@@ -34,7 +34,7 @@ namespace Controllers {
 		
 		public void LoadConnection(Tuple<uint, uint> nodeIDs) { //TODO handle node loading in separate controller
 			var connection = CreateConnection(nodeIDs);
-			Debug.LogError("load " + connection);
+			//Debug.LogError("load " + connection);
 			
 			if(graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
@@ -44,7 +44,7 @@ namespace Controllers {
 
 		public void UnloadConnection(Tuple<uint, uint> nodeIDs) {
 			var connection = CreateConnection(nodeIDs);
-			Debug.LogError("unload " + connection);
+			//Debug.LogError("unload " + connection);
 			
 			if(!graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
