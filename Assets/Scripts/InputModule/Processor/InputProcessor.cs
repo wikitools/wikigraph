@@ -28,7 +28,6 @@ namespace InputModule.Processor {
 			if (RaycastNode(ray, out raycastHit)) {
 
 				Controller.NodeController.SelectedNode = GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject);
-				Debug.Log("Selected: " + Controller.NodeController.SelectedNode.ID + " | " + Controller.NodeController.SelectedNode.Title);
 			}
 		}
 
