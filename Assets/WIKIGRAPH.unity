@@ -188,6 +188,7 @@ GameObject:
   - component: {fileID: 68664600}
   - component: {fileID: 68664601}
   - component: {fileID: 68664602}
+  - component: {fileID: 68664603}
   m_Layer: 0
   m_Name: GRAPH
   m_TagString: Untagged
@@ -210,7 +211,7 @@ MonoBehaviour:
     RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}
     MovementSpeed: 0.2
-  Environment: 1
+  Environment: 0
   PCInputBinding:
     RotationInput:
       IsButtonActivated: 1
@@ -417,6 +418,17 @@ NetworkView:
   m_ViewID:
     m_ID: 4
     m_Type: 1
+--- !u!114 &68664603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 68664594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 754cf6ea303545c45b5cbf6f44a2daaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &327208665
 Prefab:
   m_ObjectHideFlags: 0

@@ -1,16 +1,22 @@
-﻿using System.Collections;
+﻿using Model;
+using Services.History;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ModeTraverseAction : MonoBehaviour {
+public class ModeAction : UserAction {
+	public static Action changeModeAction;
 
-	// Use this for initialization
-	void Start () {
-		
+	private static void passChangeMode() {
+		changeModeAction();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	public void Execute() {
+		passChangeMode();
+	}
+
+	public void UnExecute() {
+		passChangeMode();
 	}
 }
