@@ -30,26 +30,11 @@ namespace Controllers {
 		private int scrollDirection;
 		private float scrollTimer;
 
-		public void OnScrollInputChanged(int direction) {
-			scrollDirection = direction;
-		}
-
-		private void ScrollConnections() {
-			var connections = GetNodeConnections(nodeController.SelectedNode);
-			if(connections.Count <= MaxVisibleConnections)
-				return;
-			UnloadAll();
-			OnConnectionLoadSessionEnded?.Invoke();
-
-			currentVisibleIndex = Utils.Mod(currentVisibleIndex + scrollDirection * ChangeConnectionNumber, connections.Count);
-			Utils.GetCircularListPart(connections, currentVisibleIndex, MaxVisibleConnections)
-				.ForEach(connection => networkController.SyncLoadedConnection(Connection.AsTuple(nodeController.SelectedNode, connection)));
-			OnConnectionLoadSessionEnded?.Invoke();
-		}
-
+		#region Connection Loading
+		
 		public void LoadConnection(Tuple<uint, uint> nodeIDs) { //TODO handle node loading in separate controller
 			var connection = CreateConnection(nodeIDs);
-			//Debug.LogError("load " + connection);
+			Debug.LogError("load " + connection);
 			
 			if(graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
@@ -59,7 +44,7 @@ namespace Controllers {
 
 		public void UnloadConnection(Tuple<uint, uint> nodeIDs) {
 			var connection = CreateConnection(nodeIDs);
-			//Debug.LogError("unload " + connection);
+			Debug.LogError("unload " + connection);
 			
 			if(!graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
@@ -68,21 +53,73 @@ namespace Controllers {
 			OnConnectionUnloaded?.Invoke(connection);
 		}
 
-		private Connection CreateConnection(Tuple<uint, uint> connection) {
-			return new Connection(nodeController.LoadNode(connection.Item1), nodeController.LoadNode(connection.Item2));
+		private void UnloadAllConnections() {
+			graph.ConnectionObjectMap.Keys.ToList().ForEach(SyncUnloadedConnection);
 		}
 
-		private void UnloadAll() {
-			graph.ConnectionObjectMap.Keys.ToList().ForEach(connection => networkController.SyncUnloadedConnection(Connection.AsTuple(connection)));
+		#endregion
+
+		#region Callbacks
+
+		public void OnScrollInputChanged(int direction) {
+			scrollDirection = direction;
 		}
 
-		private void InitNodeConnections(Node centerNode) {
-			UnloadAll();
+		private void OnConnectionNodeChanged(Node centerNode) {
+			UnloadAllConnections();
+			OnConnectionLoadSessionEnded?.Invoke();
+			
 			currentVisibleIndex = 0;
 			ResetTimer();
 			
-			if(nodeController.SelectedNode == null) return;
-			ScrollConnections();
+			if(centerNode == null) return;
+			UpdateVisibleConnections();
+		}
+		
+		#endregion
+
+		#region Connection Updating
+
+		private void SyncLoadedConnection(Connection connection) {
+			if (!graph.ConnectionObjectMap.ContainsKey(connection))
+				networkController.SyncLoadedConnection(connection.AsTuple());
+		}
+
+		private void SyncUnloadedConnection(Connection connection) {
+			if (graph.ConnectionObjectMap.ContainsKey(connection))
+				networkController.SyncUnloadedConnection(connection.AsTuple());
+		}
+
+		private void UpdateVisibleConnections() {
+			var connections = GetNodeConnections(nodeController.SelectedNode);
+			if (connections.Count <= MaxVisibleConnections) {
+				connections.ForEach(SyncLoadedConnection);
+				OnConnectionLoadSessionEnded?.Invoke();
+				return;
+			}
+			UnloadAllConnections();
+			OnConnectionLoadSessionEnded?.Invoke();
+
+			currentVisibleIndex = Utils.Mod(currentVisibleIndex + scrollDirection * ChangeConnectionNumber, connections.Count);
+			Utils.GetCircularListPart(connections, currentVisibleIndex, MaxVisibleConnections)
+				.ForEach(SyncLoadedConnection);
+			OnConnectionLoadSessionEnded?.Invoke();
+		}
+
+		private List<Connection> GetNodeConnections(Node node) {
+			if (node == null) return null;
+			return node.GetConnections(graphController.ConnectionMode.Value).Select(id => {
+				nodeController.LoadNode(id);
+				return new Connection(node, graph.IdNodeMap[id]);
+			}).ToList();
+		}
+		
+		#endregion
+
+		#region Connection Creation
+
+		private Connection CreateConnection(Tuple<uint, uint> connection) {
+			return new Connection(nodeController.LoadNode(connection.Item1), nodeController.LoadNode(connection.Item2));
 		}
 
 		private void InitConnection(Connection connection) {
@@ -92,14 +129,6 @@ namespace Controllers {
 			GameObject connectionObject = Connections.Pool.Spawn();
 			connection.Route = InitConnectionObject(ref connectionObject, graph.NodeObjectMap[connection.Item1], graph.NodeObjectMap[connection.Item2]);
 			graph.ConnectionObjectMap.Add(connection, connectionObject);
-		}
-
-		private List<Node> GetNodeConnections(Node node) {
-			if (node == null) return null;
-			return node.GetConnections(graphController.ConnectionMode.Value).Select(id => {
-				nodeController.LoadNode(id);
-				return graph.IdNodeMap[id];
-			}).ToList();
 		}
 
 		private Route InitConnectionObject(ref GameObject connectionObject, GameObject from, GameObject to) {
@@ -116,6 +145,8 @@ namespace Controllers {
 			line.SetPositions(route.SegmentPoints);
 			return route;
 		}
+
+		#endregion
 		
 		private void ResetTimer() {
 			scrollTimer = ScrollInterval * 1000;
@@ -135,8 +166,8 @@ namespace Controllers {
 
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
-			nodeController.OnSelectedNodeChanged += InitNodeConnections;
-			graphController.ConnectionMode.OnValueChanged += mode => InitNodeConnections(nodeController.SelectedNode);
+			nodeController.OnSelectedNodeChanged += OnConnectionNodeChanged;
+			graphController.ConnectionMode.OnValueChanged += mode => OnConnectionNodeChanged(nodeController.SelectedNode);
 			connectionService = new ConnectionService(); 
 		}
 
@@ -144,7 +175,7 @@ namespace Controllers {
 			if (scrollDirection != 0) {
 				scrollTimer -= Time.deltaTime * 1000;
 				if (scrollTimer <= 0) {
-					ScrollConnections();
+					UpdateVisibleConnections();
 					ResetTimer();
 				}
 			}

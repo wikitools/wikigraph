@@ -160,7 +160,7 @@ namespace Controllers {
 			graphController.GraphMode.OnValueChanged += mode => {
 				if (mode == GraphMode.FREE_FLIGHT) SelectedNode = null;
 			};
-			graphController.ConnectionMode.OnValueChanged += mode => UpdateNodeStates();
+			//graphController.ConnectionMode.OnValueChanged += mode => UpdateNodeStates();
 
 			connectionController.OnConnectionLoaded += connection => SetNodeStatesWhere(connection.Ends, NodeState.ACTIVE);
 			connectionController.OnConnectionUnloaded += connection => SetNodeStatesWhere(connection.Ends, NodeState.DISABLED);

@@ -11,10 +11,8 @@ namespace Model {
 		public static Tuple<uint, uint> AsTuple(Node one, Node two) {
 			return new Tuple<uint, uint>(one.ID, two.ID);
 		}
-		
-		public static Tuple<uint, uint> AsTuple(Connection connection) {
-			return AsTuple(connection.Item1, connection.Item2);
-		}
+
+		public Tuple<uint, uint> AsTuple() => AsTuple(Item1, Item2);
 		
 		public static bool operator ==(Connection one, Connection two) {
 			return ReferenceEquals(one, null) ? ReferenceEquals(two, null) : one.Equals(two);
