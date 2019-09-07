@@ -47,7 +47,10 @@ namespace Model {
 	}
 
 	public enum NodeState {
-		ACTIVE, SELECTED, HIGHLIGHTED, DISABLED
+		SELECTED = 3,
+		HIGHLIGHTED = 2,
+		ACTIVE = 1,
+		DISABLED = 0
 	}
 
 	public enum NodeType {

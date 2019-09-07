@@ -43,13 +43,13 @@ namespace Controllers {
 
 			currentVisibleIndex = Utils.Mod(currentVisibleIndex + scrollDirection * ChangeConnectionNumber, connections.Count);
 			Utils.GetCircularListPart(connections, currentVisibleIndex, MaxVisibleConnections)
-				.ForEach(connection => networkController.SyncLoadedConnection(Connection.asTuple(nodeController.SelectedNode, connection)));
+				.ForEach(connection => networkController.SyncLoadedConnection(Connection.AsTuple(nodeController.SelectedNode, connection)));
 			OnConnectionLoadSessionEnded?.Invoke();
 		}
 
 		public void LoadConnection(Tuple<uint, uint> nodeIDs) { //TODO handle node loading in separate controller
 			var connection = CreateConnection(nodeIDs);
-			Debug.LogError("load " + connection);
+			//Debug.LogError("load " + connection);
 			
 			if(graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
@@ -59,7 +59,7 @@ namespace Controllers {
 
 		public void UnloadConnection(Tuple<uint, uint> nodeIDs) {
 			var connection = CreateConnection(nodeIDs);
-			Debug.LogError("unload " + connection);
+			//Debug.LogError("unload " + connection);
 			
 			if(!graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
@@ -73,7 +73,7 @@ namespace Controllers {
 		}
 
 		private void UnloadAll() {
-			graph.ConnectionObjectMap.Keys.ToList().ForEach(connection => networkController.SyncUnloadedConnection(Connection.asTuple(connection)));
+			graph.ConnectionObjectMap.Keys.ToList().ForEach(connection => networkController.SyncUnloadedConnection(Connection.AsTuple(connection)));
 		}
 
 		private void InitNodeConnections(Node centerNode) {

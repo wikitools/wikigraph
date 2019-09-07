@@ -1,16 +1,19 @@
 using System;
+using System.Collections.Generic;
 
 namespace Model {
 	public class Connection: Tuple<Node, Node> {
 		public Route Route;
 		public Connection(Node one, Node two) : base(one, two) { }
 
-		public static Tuple<uint, uint> asTuple(Node one, Node two) {
+		public List<Node> Ends => new List<Node> {Item1, Item2};
+		
+		public static Tuple<uint, uint> AsTuple(Node one, Node two) {
 			return new Tuple<uint, uint>(one.ID, two.ID);
 		}
 		
-		public static Tuple<uint, uint> asTuple(Connection connection) {
-			return asTuple(connection.Item1, connection.Item2);
+		public static Tuple<uint, uint> AsTuple(Connection connection) {
+			return AsTuple(connection.Item1, connection.Item2);
 		}
 		
 		public static bool operator ==(Connection one, Connection two) {

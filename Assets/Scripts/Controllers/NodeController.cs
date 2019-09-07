@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Model;
 using Services;
@@ -52,8 +53,8 @@ namespace Controllers {
 					return;
 				}
 				selectedNode = value;
-				UpdateNodeStates();
 				graphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
+				UpdateNodeStates();
 				OnSelectedNodeChanged?.Invoke(selectedNode);
 				OnNodeLoadSessionEnded?.Invoke();//can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			}
@@ -77,6 +78,7 @@ namespace Controllers {
 			if(GraphController.Graph.IdNodeMap.ContainsKey(id)) 
 				return GraphController.Graph.IdNodeMap[id];
 			Node node = nodeLoader.LoadNode(id);
+			node.State = DefaultState;
 			GraphController.Graph.IdNodeMap[id] = node;
 			GameObject nodeObject = Nodes.Pool.Spawn();
 			InitializeNode(node, ref nodeObject, position);
@@ -92,7 +94,7 @@ namespace Controllers {
 			nodeObject.GetComponentInChildren<Text>().text = model.Title;
 			var nodeImage = nodeObject.GetComponentInChildren<Image>();
 			nodeImage.sprite = model.Type == NodeType.ARTICLE ? NodeSprites.Article : NodeSprites.Category;
-			nodeImage.color = NodeColors.First(node => node.State == NodeState.ACTIVE).Color;
+			nodeImage.color = NodeColors.First(node => node.State == DefaultState).Color;
 			nodeObject.name = model.ID.ToString();
 		}
 		
@@ -101,13 +103,15 @@ namespace Controllers {
 		#region Node States
 
 		private void UpdateNodeStates() {
-			if (selectedNode == null) {
-				SetAllNodesAs(NodeState.ACTIVE);
-			} else {
-				SetAllNodesAs(NodeState.DISABLED);
+			SetAllNodesAs(DefaultState);
+			if (graphController.GraphMode.Value == GraphMode.NODE_TRAVERSE) {
+				GraphController.Graph.ConnectionObjectMap.Keys.Where(connection => connection.Ends.Contains(SelectedNode)).ToList()
+					.ForEach(connection => SetNodeStatesWhere(connection.Ends, NodeState.ACTIVE));
 				SetNodeState(selectedNode, NodeState.SELECTED);
 			}
 		}
+
+		private NodeState DefaultState => graphController.GraphMode.Value == GraphMode.FREE_FLIGHT ? NodeState.ACTIVE : NodeState.DISABLED;
 
 		private void SetAllNodesAs(NodeState state) {
 			foreach (var node in GraphController.Graph.NodeObjectMap.Keys) {
@@ -120,6 +124,11 @@ namespace Controllers {
 			var nodeObject = GraphController.Graph.NodeObjectMap[node];
 			nodeObject.GetComponentInChildren<Text>().enabled = node.State == NodeState.SELECTED || node.State == NodeState.HIGHLIGHTED;
 			nodeObject.GetComponentInChildren<Image>().color = NodeColors.First(nodeColor => nodeColor.State == state).Color;
+		}
+
+		private void SetNodeStatesWhere(List<Node> list, NodeState state, Func<Node, bool> match = null) {
+			match = match ?? (node => node != SelectedNode);
+			list.Where(match).ToList().ForEach(node => SetNodeState(node, state));
 		}
 
 		#endregion
@@ -153,8 +162,8 @@ namespace Controllers {
 			};
 			graphController.ConnectionMode.OnValueChanged += mode => UpdateNodeStates();
 
-			connectionController.OnConnectionLoaded += connection => SetNodeState(connection.Item2, NodeState.ACTIVE);
-			connectionController.OnConnectionUnloaded += connection => SetNodeState(connection.Item2, NodeState.DISABLED);
+			connectionController.OnConnectionLoaded += connection => SetNodeStatesWhere(connection.Ends, NodeState.ACTIVE);
+			connectionController.OnConnectionUnloaded += connection => SetNodeStatesWhere(connection.Ends, NodeState.DISABLED);
 		}
 
 		private void OnDestroy() {
