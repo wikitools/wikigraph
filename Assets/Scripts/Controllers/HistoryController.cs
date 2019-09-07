@@ -11,8 +11,11 @@ namespace Controllers {
 
 		void Awake() {
 			networkController = GetComponent<NetworkController>();
+			nodeController = GetComponent<NodeController>();
+		}
+
+		private void Start() {
 			if (networkController.IsServer()) {
-				nodeController = GetComponent<NodeController>();
 				historyService = new HistoryService();
 				nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
 					if (!nodeChangedByHistory) historyService.RegisterAction(new NodeSelectedAction(oldNode, newNode));
