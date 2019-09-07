@@ -19,6 +19,7 @@ namespace InputModule.Event {
 				(ActivationButton as InputPoller).CheckForInput();
 		}
 		
+		#if UNITY_EDITOR
 		public void DrawInInspector(SerializedProperty property) {
 			InspectorUtils.DrawObject(property, () => {
 				EditorGUILayout.PropertyField(property.FindPropertyRelative("IsButtonActivated"), false);
@@ -34,5 +35,6 @@ namespace InputModule.Event {
 				}
 			});
 		}
+		#endif
 	}
 }

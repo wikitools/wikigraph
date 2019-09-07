@@ -1,8 +1,8 @@
 using System;
 using InputModule.Event.Interfaces;
 using Inspector;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
 
 namespace InputModule.Event.Button {
 	[Serializable]
@@ -22,12 +22,14 @@ namespace InputModule.Event.Button {
 			}
 		}
 
+		#if UNITY_EDITOR
 		public void DrawInInspector(SerializedProperty property) {
 			InspectorUtils.DrawObject(property, () => {
 				EditorGUILayout.PropertyField(property.FindPropertyRelative("ButtonType"), false);
 				EditorGUILayout.PropertyField(property.FindPropertyRelative(ButtonType == ButtonType.Mouse ? "MouseButton" : "KeyboardButton"), false);
 			});
 		}
+		#endif
 	}
 
 	public enum MouseButton {

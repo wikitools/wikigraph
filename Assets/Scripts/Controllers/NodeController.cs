@@ -18,8 +18,10 @@ namespace Controllers {
 		public int NodeLoadedLimit;
 		public bool LoadTestNodeSet;
 
-		private GraphController graphController;
-
+		public Action<Node, Vector3> NodeLoaded;
+		public Action<Node> NodeUnoaded;
+		public Action NodeLoadSessionEnded;
+		
 		#region Highlighted Node
 
 		private Node highlightedNode;
@@ -67,12 +69,18 @@ namespace Controllers {
 		private NodeLoader nodeLoader;
 
 		public void LoadNode(uint id) {
-			if (GraphController.Graph.IdNodeMap.ContainsKey(id)) return;
+			LoadNode(id, Random.insideUnitSphere * graphController.WorldRadius);
+		}
+
+		public void LoadNode(uint id, Vector3 position) {
+			if(GraphController.Graph.IdNodeMap.ContainsKey(id)) return;
 			Node node = nodeLoader.LoadNode(id);
 			GraphController.Graph.IdNodeMap[id] = node;
 			GameObject nodeObject = Nodes.Pool.Spawn();
-			InitializeNode(node, ref nodeObject, Random.insideUnitSphere * graphController.WorldRadius);
+			InitializeNode(node, ref nodeObject, position);
 			GraphController.Graph.NodeObjectMap[node] = nodeObject;
+			
+			NodeLoaded?.Invoke(node, position);
 		}
 
 		public void InitializeNode(Node model, ref GameObject nodeObject, Vector3 position) {
@@ -100,6 +108,7 @@ namespace Controllers {
 					LoadNode(connection.ID);
 					SetNodeState(connection, NodeState.ACTIVE);
 				}
+				NodeLoadSessionEnded?.Invoke();
 			}
 		}
 
@@ -126,16 +135,24 @@ namespace Controllers {
 
 		private ConnectionController connectionController;
 
+		private GraphController graphController;
+		private NetworkController networkController;
+
 		void Awake() {
 			graphController = GetComponent<GraphController>();
 			connectionController = GetComponent<ConnectionController>();
+			networkController = GetComponent<NetworkController>();
 		}
 
 		private void Start() {
 			Nodes.Pool = new GameObjectPool(Nodes.Prefab, Nodes.PreloadNumber, Nodes.PoolContainer);
 			nodeLoader = new NodeLoader(LoadTestNodeSet ? "-test" : "");
-			for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
-				LoadNode(i);
+			
+			if (networkController.IsServer()) {
+				for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
+					LoadNode(i);
+				}
+				NodeLoadSessionEnded?.Invoke();
 			}
 			graphController.GraphMode.OnValueChanged += mode => {
 				if (mode == GraphMode.FREE_FLIGHT) SelectedNode = null;

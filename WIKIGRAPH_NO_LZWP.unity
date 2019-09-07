@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.113663815, g: 0.19205695, b: 0.23063463, a: 1}
+  m_IndirectSpecularColor: {r: 0.11357183, g: 0.19203451, b: 0.23066843, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -210,7 +210,7 @@ MonoBehaviour:
     RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}
     MovementSpeed: 0.2
-  Environment: 1
+  Environment: 0
   PCInputBinding:
     RotationInput:
       IsButtonActivated: 1
@@ -265,14 +265,6 @@ MonoBehaviour:
       ButtonType: 0
       MouseButton: 0
       KeyboardButton: 99
-    RedoButton:
-      ButtonType: 0
-      MouseButton: 0
-      KeyboardButton: 101
-    UndoButton:
-      ButtonType: 0
-      MouseButton: 0
-      KeyboardButton: 113
   CaveInputBinding:
     MovementJoystick:
       IsButtonActivated: 0
@@ -298,12 +290,6 @@ MonoBehaviour:
     ExitNodeTraverseMode:
       Instance: 0
       Button: 1
-    UndoButton:
-      Instance: 0
-      Button: 3
-    RedoButton:
-      Instance: 0
-      Button: 2
 --- !u!114 &68664596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,7 +330,7 @@ MonoBehaviour:
     Container: {fileID: 2007395970}
     Prefab: {fileID: 1534031500408350, guid: 4fca75af5504140b6814370e66ce13db, type: 2}
     PreloadNumber: 200
-  NodeLoadedLimit: 1000
+  NodeLoadedLimit: 200
   LoadTestNodeSet: 0
 --- !u!114 &68664598
 MonoBehaviour:
@@ -358,7 +344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Entity: {fileID: 508853209}
-  SmoothTime: 0.9
+  smoothTime: 0.9
 --- !u!224 &68664599
 RectTransform:
   m_ObjectHideFlags: 0
@@ -573,11 +559,6 @@ Prefab:
         type: 2}
       propertyPath: m_ViewID.m_Type
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114960805103881502, guid: 046e8e3d9442d9d49904a240ec65e869,
-        type: 2}
-      propertyPath: screensDrawMode
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 046e8e3d9442d9d49904a240ec65e869, type: 2}

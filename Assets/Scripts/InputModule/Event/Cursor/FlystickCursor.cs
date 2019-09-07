@@ -2,8 +2,6 @@ using System;
 using InputModule.Binding;
 using InputModule.Event.Button;
 using InputModule.Event.Interfaces;
-using Inspector;
-using UnityEditor;
 using UnityEngine;
 
 namespace InputModule.Event.Cursor {

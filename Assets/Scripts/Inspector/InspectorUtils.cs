@@ -4,6 +4,7 @@ using UnityEditor;
 
 namespace Inspector {
 	public class InspectorUtils {
+		#if UNITY_EDITOR
 		public static void DrawField(FieldInfo field, SerializedProperty fieldProperty, Object parent) {
 			if (typeof(CustomInspectorProperty).IsAssignableFrom(field.FieldType)) {
 				var mappingConfig = field.GetValue(parent);
@@ -21,5 +22,6 @@ namespace Inspector {
 				EditorGUI.indentLevel--;
 			}
 		}
+		#endif
 	}
 }

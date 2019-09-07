@@ -11,7 +11,10 @@ namespace Services {
 		
 		public Node GetNodeFromObject(GameObject gameObject) {
 			if (gameObject == null) return null;
-			var name = gameObject.name;
+			return GetNodeFromGameObjectName(gameObject.name);
+		}
+		
+		public Node GetNodeFromGameObjectName(string name) {
 			uint id;
 			if (!uint.TryParse(name, out id) || !IdNodeMap.ContainsKey(id)) {
 				LOGGER.Warning($"GameObject name {name} is not a node id");
