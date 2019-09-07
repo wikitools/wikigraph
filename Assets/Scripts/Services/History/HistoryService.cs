@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 
 public class HistoryService {
-
 	private readonly Stack<UserAction> undoActionStack = new Stack<UserAction>();
 	private readonly Stack<UserAction> redoActionStack = new Stack<UserAction>();
-
-
 
 	public void RedoAction() {
 		if (redoActionStack.Count != 0) {
@@ -29,7 +26,6 @@ public class HistoryService {
 	public void RegisterAction(UserAction userAction) {
 		undoActionStack.Push(userAction);
 		redoActionStack.Clear();
-
 	}
 
 	#endregion

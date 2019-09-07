@@ -26,7 +26,6 @@ public class NodeSelectedAction : UserAction {
 	//do action backward
 	public void UnExecute() {
 		if (oldSelectedNode == null) {
-			//TODO - leave node view to free flight
 			return;
 		}
 		else {
@@ -35,5 +34,3 @@ public class NodeSelectedAction : UserAction {
 	}
 	#endregion
 }
-
-

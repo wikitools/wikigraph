@@ -10,6 +10,7 @@ namespace Controllers {
 
 		bool nodeChangedByHistory = false;
 		bool modeChangedByHistory = false;
+		bool graphChangedByHistory = false;
 
 		void Awake() {
 			networkController = GetComponent<NetworkController>();
@@ -29,13 +30,14 @@ namespace Controllers {
 					nodeController.ForceSetSelect(node);
 				};
 				graphController.ConnectionMode.OnValueChanged += mode => {
-					if (!modeChangedByHistory) historyService.RegisterAction(new ModeAction());
+					if (!modeChangedByHistory) historyService.RegisterAction(new ModeAction(mode));
 					modeChangedByHistory = false;
 				};
-				ModeAction.changeModeAction = delegate() {
+				ModeAction.changeModeAction = mode => {
 					modeChangedByHistory = true;
-					graphController.SwitchConnectionMode();
+					graphController.SetConnectionMode(mode);
 				};
+
 			}
 		}
 	}

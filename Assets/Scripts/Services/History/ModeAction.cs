@@ -1,22 +1,24 @@
-﻿using Model;
+﻿using Controllers;
 using Services.History;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public class ModeAction : UserAction {
-	public static Action changeModeAction;
+	public static Action<ConnectionMode> changeModeAction;
+	private ConnectionMode connectionMode;
 
-	private static void passChangeMode() {
-		changeModeAction();
+	public ModeAction(ConnectionMode mode) {
+		connectionMode = mode;
+	}
+
+	private static void passChangeMode(ConnectionMode mode) {
+		changeModeAction(mode);
 	}
 
 	public void Execute() {
-		passChangeMode();
+		passChangeMode(connectionMode);
 	}
 
 	public void UnExecute() {
-		passChangeMode();
+		passChangeMode(connectionMode == ConnectionMode.PARENTS ? ConnectionMode.CHILDREN : ConnectionMode.PARENTS);
 	}
 }

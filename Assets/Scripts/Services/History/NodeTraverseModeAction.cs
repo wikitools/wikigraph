@@ -1,16 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using Controllers;
+using Services.History;
+using System;
 
-public class NodeTraverseModeAction : MonoBehaviour {
+public class NodeTraverseModeAction : UserAction {
+	private GraphMode newGraphMode;
+	public static Action<GraphMode> changeNodeTraverseMode;
 
-	// Use this for initialization
-	void Start () {
-		
+	public NodeTraverseModeAction(GraphMode mode) {
+		newGraphMode = mode;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	private static void passChangingNodeTraverseMode(GraphMode mode) {
+		changeNodeTraverseMode(mode);
+	}
+
+	public void Execute() {
+		passChangingNodeTraverseMode(newGraphMode);
+	}
+
+	public void UnExecute() {
+		passChangingNodeTraverseMode(newGraphMode == GraphMode.FREE_FLIGHT ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT);
 	}
 }

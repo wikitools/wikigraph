@@ -1,12 +1,11 @@
-using System;
 using Services;
 using UnityEngine;
 
 #pragma warning disable 618
 namespace Controllers {
-	public class NetworkController: MonoBehaviour {
+	public class NetworkController : MonoBehaviour {
 		private readonly RPCMode RPC_MODE = RPCMode.AllBuffered;
-		
+
 		private NetworkView NetworkView;
 		private NodeSyncParser NodeSyncParser;
 
@@ -15,48 +14,57 @@ namespace Controllers {
 		private Environment Environment => InputController.Environment;
 
 		#region RPC Sync
-		
+
 		private void SyncLoadedNodes(string nodeStream) {
 			Synchronize("syncNodes", nodeStream, true);
 		}
-		
+
 		private void SyncUnloadedNodes(string nodeStream) {
 			Synchronize("syncNodes", nodeStream, false);
 		}
-		
+
 		[RPC]
 		private void syncNodes(string nodeStream, bool loaded) {
-			if(loaded) //TODO add node unloading sync once we support it
+			if (loaded) //TODO add node unloading sync once we support it
 				NodeSyncParser.ParseLoadedNodes(nodeStream).ForEach(node => NodeController.LoadNode(node.ID, node.Position));
 		}
-		
+
 		public void SetGraphMode(GraphMode mode) {
-			Synchronize("setGraphMode", (int) mode);
+			Synchronize("setGraphMode", (int)mode);
 		}
-		
+
 		[RPC]
 		private void setGraphMode(int value) {
-			GraphController.GraphMode.Value = (GraphMode) value;
+			GraphController.GraphMode.Value = (GraphMode)value;
 		}
-		
+
+		public void SetConnectionMode(ConnectionMode mode) {
+			Synchronize("setConnectionMode", (int)mode);
+		}
+
+		[RPC]
+		private void setConnectionMode(int value) {
+			GraphController.ConnectionMode.Value = (ConnectionMode)value;
+		}
+
 		public void SetHighlightedNode(string id) {
 			Synchronize("setHighlightedNode", id);
 		}
-		
+
 		[RPC]
 		private void setHighlightedNode(string id) {
 			NodeController.HighlightedNode = id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
 		}
-		
+
 		public void SetSelectedNode(string id) {
 			Synchronize("setSelectedNode", id);
 		}
-		
+
 		[RPC]
 		private void setSelectedNode(string id) {
 			NodeController.SelectedNode = id == null ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
 		}
-		
+
 		private void Synchronize(string method, params object[] args) {
 			NetworkView.RPC(method, RPC_MODE, args);
 		}
@@ -72,25 +80,26 @@ namespace Controllers {
 		}
 
 		public void CloseClient() {
-			if(Environment != Environment.PC || IsServer())
+			if (Environment != Environment.PC || IsServer())
 				return;
 			Network.Disconnect();
 		}
-		
+
 		public InputController InputController { get; private set; }
 		public GraphController GraphController { get; private set; }
 		public NodeController NodeController { get; private set; }
-		
+
 		private void Awake() {
 			InputController = GetComponent<InputController>();
 			NodeController = GetComponent<NodeController>();
 			GraphController = GetComponent<GraphController>();
-			
+
 			NetworkView = GetComponent<NetworkView>();
 			if (Environment == Environment.PC) {
 				if (Application.isEditor) {
 					Network.InitializeServer(1, PORT);
-				} else {
+				}
+				else {
 					Network.Connect("localhost", PORT);
 				}
 			}
