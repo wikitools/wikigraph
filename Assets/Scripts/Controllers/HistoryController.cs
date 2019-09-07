@@ -1,58 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Controllers;
-using Services.History;
+﻿using UnityEngine;
 
-namespace Controllers
-{
-    public class HistoryController: MonoBehaviour
-    {
-        private Stack<ICommand> _Undocommands = new Stack<ICommand>();
-        private Stack<ICommand> _Redocommands = new Stack<ICommand>();
-        private NodeController nodeController;
+namespace Controllers {
+	public class HistoryController : MonoBehaviour {
 
-        void Awake()
-        {
-            nodeController = GetComponent<NodeController>();
-        }
+		private NodeController nodeController;
+		public HistoryService historyService;
 
-        public void Redo(int levels)
-        {
-            for (int i = 1; i <= levels; i++)
-            {
-                if (_Redocommands.Count != 0)
-                {
-                    ICommand command = _Redocommands.Pop();
-                    command.Execute();
-                    _Undocommands.Push(command);
-                }
+		bool nodeChangedByHistory = false;
 
-            }
-        }
-
-        public void Undo(int levels)
-        {
-            for (int i = 1; i <= levels; i++)
-            {
-                if (_Undocommands.Count != 0)
-                {
-                    ICommand command = _Undocommands.Pop();
-                    command.UnExecute();
-                    _Redocommands.Push(command);
-                }
-
-            }
-        }
-
-        #region UndoHelperFunctions
-
-        public void InsertInUnDoRedoForJump(Model.Node prevNode, Model.Node targetNode)
-        {
-            ICommand cmd = new JumpCommand(prevNode, targetNode, ref nodeController);
-            _Undocommands.Push(cmd); _Redocommands.Clear();
-        }
-
-        #endregion
-    }
+		void Awake() {
+			nodeController = GetComponent<NodeController>();
+			historyService = new HistoryService();
+			nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
+				if (!nodeChangedByHistory) historyService.RegisterAction(new NodeSelectedAction(oldNode, newNode));
+				nodeChangedByHistory = false;
+			};
+			NodeSelectedAction.selectNodeAction = node => {
+				nodeChangedByHistory = true;
+				nodeController.ForceSetSelect(node);
+			};
+		}
+	}
 }

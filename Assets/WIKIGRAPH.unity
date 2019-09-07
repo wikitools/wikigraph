@@ -209,7 +209,7 @@ MonoBehaviour:
     RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}
     MovementSpeed: 0.2
-  Environment: 0
+  Environment: 1
   PCInputBinding:
     RotationInput:
       IsButtonActivated: 1
@@ -264,11 +264,11 @@ MonoBehaviour:
       ButtonType: 0
       MouseButton: 0
       KeyboardButton: 99
-    Redo:
+    RedoButton:
       ButtonType: 0
       MouseButton: 0
       KeyboardButton: 101
-    Undo:
+    UndoButton:
       ButtonType: 0
       MouseButton: 0
       KeyboardButton: 113
@@ -297,6 +297,12 @@ MonoBehaviour:
     ExitNodeTraverseMode:
       Instance: 0
       Button: 1
+    UndoButton:
+      Instance: 0
+      Button: 3
+    RedoButton:
+      Instance: 0
+      Button: 2
 --- !u!114 &68664596
 MonoBehaviour:
   m_ObjectHideFlags: 0

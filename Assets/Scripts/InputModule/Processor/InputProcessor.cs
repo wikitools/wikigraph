@@ -17,26 +17,26 @@ namespace InputModule.Processor {
 		}
 
 		protected Transform EntityTransform => Controller.CameraController.Entity.transform;
-		
+
 		protected void ExitNodeTraverseMode() => Controller.GraphController.GraphMode.Value = GraphMode.FREE_FLIGHT;
 
-        protected void Redo() { Debug.Log("Button pressed Redo!"); Controller.HistoryController.Redo(1); }
-        protected void Undo() { Debug.Log("Button pressed Undo!"); Controller.HistoryController.Undo(1); }
+		protected void RedoUserAction() { Controller.HistoryController.historyService.RedoAction(); }
+		protected void UndoUserAction() { Controller.HistoryController.historyService.UndoAction(); }
 
-        protected void OnNodeChosen(Ray ray) {
+		protected void OnNodeChosen(Ray ray) {
 			RaycastHit raycastHit;
-            if (RaycastNode(ray, out raycastHit)) {
-                Controller.HistoryController.InsertInUnDoRedoForJump(Controller.NodeController.SelectedNode, GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject));
-                Controller.NodeController.SelectedNode = GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject);
-                Debug.Log("Selected: "+ Controller.NodeController.SelectedNode.ID +" | " + Controller.NodeController.SelectedNode.Title);
-            }
+			if (RaycastNode(ray, out raycastHit)) {
+
+				Controller.NodeController.SelectedNode = GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject);
+				Debug.Log("Selected: " + Controller.NodeController.SelectedNode.ID + " | " + Controller.NodeController.SelectedNode.Title);
+			}
 		}
 
 		protected void OnNodePointed(Ray ray) {
 			RaycastHit raycastHit;
 			Controller.NodeController.HighlightedNode = RaycastNode(ray, out raycastHit) ? GraphController.Graph.GetNodeFromObject(raycastHit.collider.gameObject) : null;
 		}
-		
+
 		private bool RaycastNode(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Node"));
 
 

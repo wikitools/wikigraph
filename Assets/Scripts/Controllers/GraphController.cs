@@ -1,21 +1,21 @@
-﻿using System;
-using Services;
+﻿using Services;
+using System;
 using UnityEngine;
 
 namespace Controllers {
 	public class GraphController : MonoBehaviour {
 		public GameObject Infographic; //TODO: move
-		
+
 		public float WorldRadius;
-		
+
 		public static Graph Graph { get; } = new Graph();
-		
+
 		public ObservableProperty<GraphMode> GraphMode = new ObservableProperty<GraphMode>(Controllers.GraphMode.FREE_FLIGHT);
 
 		public ObservableProperty<ConnectionMode> ConnectionMode = new ObservableProperty<ConnectionMode>(Controllers.ConnectionMode.CHILDREN);
 
 		public void SwitchConnectionMode() {
-			if(GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT) return;
+			if (GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT) return;
 			ConnectionMode.Value = ConnectionMode.Value == Controllers.ConnectionMode.PARENTS ? Controllers.ConnectionMode.CHILDREN : Controllers.ConnectionMode.PARENTS;
 		}
 	}

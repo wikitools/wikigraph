@@ -4,12 +4,12 @@ namespace Model {
 	public class Node {
 		public uint[] Children;
 		public uint[] Parents;
-		
+
 		public uint ID;
 		public uint WikiID;
-		
+
 		public string Title;
-		
+
 		public NodeType Type;
 		public NodeState State;
 
@@ -22,7 +22,7 @@ namespace Model {
 		public static bool operator !=(Node one, Node two) {
 			return !(one == two);
 		}
-		
+
 		public bool Equals(Node other) {
 			if (ReferenceEquals(other, null)) return false;
 			return ID == other.ID;
@@ -30,11 +30,11 @@ namespace Model {
 
 		public override bool Equals(object obj) {
 			if (ReferenceEquals(obj, null)) return false;
-			return obj is Node && Equals((Node) obj);
+			return obj is Node && Equals((Node)obj);
 		}
 
 		public override int GetHashCode() {
-			return (int) ID;
+			return (int)ID;
 		}
 	}
 

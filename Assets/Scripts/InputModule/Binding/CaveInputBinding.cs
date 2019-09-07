@@ -15,6 +15,8 @@ namespace InputModule.Binding {
 		public FlystickPointer NodePointer;
 		public FlystickPointer NodeChooser;
 		public FlystickButton ExitNodeTraverseMode;
+		public FlystickButton UndoButton;
+		public FlystickButton RedoButton;
 
 		private static Dictionary<FlystickInstance, int> FlystickBinding = new Dictionary<FlystickInstance, int>();
 		public static LzwpInput.Flystick Flystick(FlystickInstance instance) => Lzwp.input.flysticks[FlystickBinding[instance]];

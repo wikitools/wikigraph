@@ -1,6 +1,5 @@
 using Controllers;
 using InputModule.Binding;
-using UnityEngine;
 
 namespace InputModule.Processor {
 	public class CaveInputProcessor : InputProcessor {
@@ -10,6 +9,8 @@ namespace InputModule.Processor {
 			binding.NodePointer.OnPointed += OnNodePointed;
 			binding.NodeChooser.OnPointed += OnNodeChosen;
 			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
+			binding.RedoButton.OnPress += RedoUserAction;
+			binding.UndoButton.OnPress += UndoUserAction;
 		}
 	}
 }

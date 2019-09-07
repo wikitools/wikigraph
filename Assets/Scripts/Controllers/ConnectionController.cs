@@ -57,7 +57,7 @@ namespace Controllers {
 
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
-			nodeController.OnSelectedNodeChanged += mode => UpdateConnections();
+			nodeController.OnSelectedNodeChanged += (oldNode, newNode) => UpdateConnections();
 			graphController.ConnectionMode.OnValueChanged += mode => UpdateConnections();
 		}
 
