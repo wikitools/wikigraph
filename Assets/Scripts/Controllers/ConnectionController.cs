@@ -34,7 +34,7 @@ namespace Controllers {
 		
 		public void LoadConnection(Tuple<uint, uint> nodeIDs) { //TODO handle node loading in separate controller
 			var connection = CreateConnection(nodeIDs);
-			//Debug.LogError("load " + connection);
+			Debug.LogError("load " + connection);
 			
 			if(graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
@@ -44,7 +44,7 @@ namespace Controllers {
 
 		public void UnloadConnection(Tuple<uint, uint> nodeIDs) {
 			var connection = CreateConnection(nodeIDs);
-			//Debug.LogError("unload " + connection);
+			Debug.LogError("unload " + connection);
 			
 			if(!graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
@@ -106,6 +106,10 @@ namespace Controllers {
 			OnConnectionLoadSessionEnded?.Invoke();
 		}
 
+		private void SwitchConnectionTypes() {
+			graph.ConnectionObjectMap.Values.ToList().ForEach(obj => SetConnectionLineColor(obj.GetComponent<LineRenderer>()));
+		}
+
 		private List<Connection> GetNodeConnections(Node node) {
 			if (node == null) return null;
 			return node.GetConnections(graphController.ConnectionMode.Value).Select(id => {
@@ -123,7 +127,7 @@ namespace Controllers {
 		}
 
 		private void InitConnection(Connection connection) {
-			if (!connection.Item1.GetConnections(graphController.ConnectionMode.Value).Contains(connection.Item2.ID))
+			if (!connection.Item1.GetConnections(graphController.ConnectionMode.Value).Contains(connection.Item2.ID) && networkController.IsServer())
 				logger.Warning("Attempting to create connection that does not exist");
 
 			GameObject connectionObject = Connections.Pool.Spawn();
@@ -138,12 +142,16 @@ namespace Controllers {
 			connectionObject.transform.parent = Connections.Container.transform;
 			
 			var line = connectionObject.GetComponent<LineRenderer>();
-			line.material.color = graphController.ConnectionMode.Value == ConnectionMode.PARENTS ? ParentConnectionColor : ChildConnectionColor;
+			SetConnectionLineColor(line);
 			
 			Route route = connectionService.GenerateConnection(basePosition, to.transform.position);
 			line.positionCount = route.SegmentPoints.Length;
 			line.SetPositions(route.SegmentPoints);
 			return route;
+		}
+
+		private void SetConnectionLineColor(LineRenderer line) {
+			line.material.color = graphController.ConnectionMode.Value == ConnectionMode.PARENTS ? ParentConnectionColor : ChildConnectionColor;
 		}
 
 		#endregion
@@ -166,13 +174,17 @@ namespace Controllers {
 
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
-			nodeController.OnSelectedNodeChanged += OnConnectionNodeChanged;
-			graphController.ConnectionMode.OnValueChanged += mode => OnConnectionNodeChanged(nodeController.SelectedNode);
+			if (networkController.IsServer()) {
+				nodeController.OnSelectedNodeChanged += OnConnectionNodeChanged;
+				graphController.ConnectionMode.OnValueChanged += mode => OnConnectionNodeChanged(nodeController.SelectedNode);
+			} else {
+				graphController.ConnectionMode.OnValueChanged += mode => SwitchConnectionTypes();
+			}
 			connectionService = new ConnectionService(); 
 		}
 
 		private void Update() {
-			if (scrollDirection != 0) {
+			if (networkController.IsServer() && scrollDirection != 0) {
 				scrollTimer -= Time.deltaTime * 1000;
 				if (scrollTimer <= 0) {
 					UpdateVisibleConnections();
