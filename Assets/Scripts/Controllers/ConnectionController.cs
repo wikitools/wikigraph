@@ -24,6 +24,7 @@ namespace Controllers {
 		public Action OnConnectionLoadSessionEnded;
 		
 		private ConnectionService connectionService;
+		private List<Tuple<uint, uint>> connectionQueue = new List<Tuple<uint, uint>>();
 		private Graph graph => GraphController.Graph;
 
 		private int currentVisibleIndex;
@@ -32,9 +33,16 @@ namespace Controllers {
 
 		#region Connection Loading
 		
-		public void LoadConnection(Tuple<uint, uint> nodeIDs) { //TODO handle node loading in separate controller
+		public void LoadConnection(Tuple<uint, uint> nodeIDs) {
+			if (!CanLoadConnection(nodeIDs)) {
+				connectionQueue.Add(nodeIDs);
+				return;
+			}
+			DoLoadConnection(nodeIDs);
+		}
+		
+		private void DoLoadConnection(Tuple<uint, uint> nodeIDs) {
 			var connection = CreateConnection(nodeIDs);
-			Debug.LogError("load " + connection);
 			
 			if(graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
@@ -44,7 +52,6 @@ namespace Controllers {
 
 		public void UnloadConnection(Tuple<uint, uint> nodeIDs) {
 			var connection = CreateConnection(nodeIDs);
-			Debug.LogError("unload " + connection);
 			
 			if(!graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
@@ -92,6 +99,7 @@ namespace Controllers {
 
 		private void UpdateVisibleConnections() {
 			var connections = GetNodeConnections(nodeController.SelectedNode);
+			nodeController.OnNodeLoadSessionEnded?.Invoke();//can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			if (connections.Count <= MaxVisibleConnections) {
 				connections.ForEach(SyncLoadedConnection);
 				OnConnectionLoadSessionEnded?.Invoke();
@@ -107,7 +115,7 @@ namespace Controllers {
 		}
 
 		private void SwitchConnectionTypes() {
-			graph.ConnectionObjectMap.Values.ToList().ForEach(obj => SetConnectionLineColor(obj.GetComponent<LineRenderer>()));
+			GetSelectedNodeConnections().ForEach(connection => SetConnectionLineColor(graph.ConnectionObjectMap[connection].GetComponent<LineRenderer>()));
 		}
 
 		private List<Connection> GetNodeConnections(Node node) {
@@ -117,13 +125,28 @@ namespace Controllers {
 				return new Connection(node, graph.IdNodeMap[id]);
 			}).ToList();
 		}
+
+		private List<Connection> GetSelectedNodeConnections() {
+			return graph.ConnectionObjectMap.Keys.ToList().Where(connection => connection.Ends.Contains(nodeController.SelectedNode)).ToList();
+		}
 		
 		#endregion
 
 		#region Connection Creation
 
 		private Connection CreateConnection(Tuple<uint, uint> connection) {
-			return new Connection(nodeController.LoadNode(connection.Item1), nodeController.LoadNode(connection.Item2));
+			return new Connection(graph.IdNodeMap[connection.Item1], graph.IdNodeMap[connection.Item2]);
+		}
+
+		private bool CanLoadConnection(Tuple<uint, uint> connection) => graph.IdNodeMap.ContainsKey(connection.Item1) && graph.IdNodeMap.ContainsKey(connection.Item2);
+
+		private void CheckConnectionQueue() {
+			for (var i = connectionQueue.Count - 1; i >= 0; i--) {
+				if (CanLoadConnection(connectionQueue[i])) {
+					DoLoadConnection(connectionQueue[i]);
+					connectionQueue.RemoveAt(i);
+				}
+			}
 		}
 
 		private void InitConnection(Connection connection) {
@@ -179,6 +202,7 @@ namespace Controllers {
 				graphController.ConnectionMode.OnValueChanged += mode => OnConnectionNodeChanged(nodeController.SelectedNode);
 			} else {
 				graphController.ConnectionMode.OnValueChanged += mode => SwitchConnectionTypes();
+				nodeController.OnNodeLoaded += (node, pos) => CheckConnectionQueue();
 			}
 			connectionService = new ConnectionService(); 
 		}

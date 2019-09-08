@@ -56,7 +56,6 @@ namespace Controllers {
 				graphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
 				UpdateNodeStates();
 				OnSelectedNodeChanged?.Invoke(selectedNode);
-				OnNodeLoadSessionEnded?.Invoke();//can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			}
 		}
 
