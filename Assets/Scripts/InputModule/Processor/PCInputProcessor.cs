@@ -18,6 +18,8 @@ namespace InputModule.Processor {
 
 			binding.InfographicToggle.OnPress += () => Controller.GraphController.Infographic.SetActive(!Controller.GraphController.Infographic.activeSelf);
 			binding.ConnectionModeToggle.OnPress += () => Controller.GraphController.SwitchConnectionMode();
+
+			binding.ConnectionScroll.OnInputChange += OnConnectionScrolled;
 		}
 
 		private void OnMove(Vector2 direction) {

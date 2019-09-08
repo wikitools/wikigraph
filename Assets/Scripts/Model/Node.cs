@@ -5,13 +5,17 @@ namespace Model {
 		public uint[] Children;
 		public uint[] Parents;
 		
-		public uint ID;
+		public readonly uint ID;
 		public uint WikiID;
 		
 		public string Title;
 		
 		public NodeType Type;
 		public NodeState State;
+
+		public Node(uint id) {
+			ID = id;
+		}
 
 		public uint[] GetConnections(ConnectionMode type) => type == ConnectionMode.PARENTS ? Parents : Children;
 
@@ -24,22 +28,29 @@ namespace Model {
 		}
 		
 		public bool Equals(Node other) {
-			if (ReferenceEquals(other, null)) return false;
-			return ID == other.ID;
+			return !ReferenceEquals(other, null) && ID == other.ID;
 		}
 
 		public override bool Equals(object obj) {
-			if (ReferenceEquals(obj, null)) return false;
+			if (ReferenceEquals(obj, null)) 
+				return false;
 			return obj is Node && Equals((Node) obj);
 		}
 
 		public override int GetHashCode() {
-			return (int) ID;
+			return ID.GetHashCode();
+		}
+
+		public override string ToString() {
+			return ID.ToString();
 		}
 	}
 
 	public enum NodeState {
-		ACTIVE, SELECTED, HIGHLIGHTED, DISABLED
+		SELECTED = 3,
+		HIGHLIGHTED = 2,
+		ACTIVE = 1,
+		DISABLED = 0
 	}
 
 	public enum NodeType {
