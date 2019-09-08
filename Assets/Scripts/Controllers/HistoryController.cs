@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿using Services.History;
+using Services.History.Actions;
+using UnityEngine;
 
 namespace Controllers {
 	public class HistoryController : MonoBehaviour {
 		private NodeController nodeController;
 		private NetworkController networkController;
 		private GraphController graphController;
-		public HistoryService historyService;
+		public HistoryService HistoryService { get; private set; }
 
 		bool nodeChangedByHistory = false;
 		bool modeChangedByHistory = false;
@@ -19,9 +21,9 @@ namespace Controllers {
 
 		private void Start() {
 			if (networkController.IsServer()) {
-				historyService = new HistoryService();
+				HistoryService = new HistoryService();
 				nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
-					if (!nodeChangedByHistory) historyService.RegisterAction(new NodeSelectedAction(oldNode, newNode));
+					if (!nodeChangedByHistory) HistoryService.RegisterAction(new NodeSelectedAction(oldNode, newNode));
 					nodeChangedByHistory = false;
 				};
 				NodeSelectedAction.selectNodeAction = node => {
@@ -29,10 +31,10 @@ namespace Controllers {
 					nodeController.ForceSetSelect(node);
 				};
 				graphController.ConnectionMode.OnValueChanged += mode => {
-					if (!modeChangedByHistory) historyService.RegisterAction(new ModeAction(mode));
+					if (!modeChangedByHistory) HistoryService.RegisterAction(new ModeChangeAction<ConnectionMode>(mode));
 					modeChangedByHistory = false;
 				};
-				ModeAction.changeModeAction = mode => {
+				ModeChangeAction<ConnectionMode>.changeMode = mode => {
 					modeChangedByHistory = true;
 					graphController.SetConnectionMode(mode);
 				};

@@ -20,8 +20,8 @@ namespace InputModule.Processor {
 		protected void ExitNodeTraverseMode() => Controller.NetworkController.SetGraphMode(GraphMode.FREE_FLIGHT);
 
 
-		protected void RedoUserAction() => Controller.HistoryController.historyService.RedoAction();
-		protected void UndoUserAction() => Controller.HistoryController.historyService.UndoAction();
+		protected void RedoUserAction() => Controller.HistoryController.HistoryService.RedoAction();
+		protected void UndoUserAction() => Controller.HistoryController.HistoryService.UndoAction();
 
 		protected void OnNodeChosen(Ray ray) {
 			RaycastHit raycastHit;
