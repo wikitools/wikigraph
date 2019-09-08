@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Model;
+using Newtonsoft.Json.Utilities;
 using Services;
 using Services.DataFiles;
 using Services.ObjectPool;
@@ -105,7 +106,7 @@ namespace Controllers {
 			SetAllNodesAs(DefaultState);
 			if (graphController.GraphMode.Value == GraphMode.NODE_TRAVERSE) {
 				GraphController.Graph.ConnectionObjectMap.Keys.Where(connection => connection.Ends.Contains(SelectedNode)).ToList()
-					.ForEach(connection => SetNodeStatesWhere(connection.Ends, NodeState.ACTIVE));
+					.ForEach(connection => UpdateConnectionEndStates(connection, NodeState.ACTIVE));
 				SetNodeState(selectedNode, NodeState.SELECTED);
 			}
 		}
@@ -125,9 +126,12 @@ namespace Controllers {
 			nodeObject.GetComponentInChildren<Image>().color = NodeColors.First(nodeColor => nodeColor.State == state).Color;
 		}
 
-		private void SetNodeStatesWhere(List<Node> list, NodeState state, Func<Node, bool> match = null) {
-			match = match ?? (node => node != SelectedNode);
-			list.Where(match).ToList().ForEach(node => SetNodeState(node, state));
+		private void UpdateConnectionEndStates(Connection connection, NodeState state) {
+			if(graphController.GraphMode.Value == GraphMode.FREE_FLIGHT)
+				return;
+			var ends = connection.Ends;
+			if(ends.Contains(SelectedNode))
+				SetNodeState(ends[ends.IndexOf(SelectedNode) == 0 ? 1 : 0], state);
 		}
 
 		#endregion
@@ -159,10 +163,8 @@ namespace Controllers {
 			graphController.GraphMode.OnValueChanged += mode => {
 				if (mode == GraphMode.FREE_FLIGHT) SelectedNode = null;
 			};
-			//graphController.ConnectionMode.OnValueChanged += mode => UpdateNodeStates();
-
-			connectionController.OnConnectionLoaded += connection => SetNodeStatesWhere(connection.Ends, NodeState.ACTIVE);
-			connectionController.OnConnectionUnloaded += connection => SetNodeStatesWhere(connection.Ends, NodeState.DISABLED);
+			connectionController.OnConnectionLoaded += connection => UpdateConnectionEndStates(connection, NodeState.ACTIVE);
+			connectionController.OnConnectionUnloaded += connection => UpdateConnectionEndStates(connection, NodeState.DISABLED);
 		}
 
 		private void OnDestroy() {
