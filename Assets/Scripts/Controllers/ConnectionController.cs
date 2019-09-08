@@ -198,7 +198,7 @@ namespace Controllers {
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
 			if (networkController.IsServer()) {
-				nodeController.OnSelectedNodeChanged += OnConnectionNodeChanged;
+				nodeController.OnSelectedNodeChanged += (oldNode, newNode) => OnConnectionNodeChanged(newNode);
 				graphController.ConnectionMode.OnValueChanged += mode => OnConnectionNodeChanged(nodeController.SelectedNode);
 			} else {
 				graphController.ConnectionMode.OnValueChanged += mode => SwitchConnectionTypes();

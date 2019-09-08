@@ -56,7 +56,7 @@ namespace Controllers {
 			nodeController.HighlightedNode = id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
 		}
 		
-		public void SetConnectionNode(ConnectionMode mode) => Synchronize("setConnectionNode", (int) mode);
+		public void SetConnectionMode(ConnectionMode mode) => Synchronize("setConnectionNode", (int) mode);
 		
 		[RPC]
 		private void setConnectionNode(int mode) {
