@@ -1,12 +1,12 @@
+using System;
 using InputModule.Event;
 using InputModule.Event.Button;
 using InputModule.Event.Cursor;
 using InputModule.Event.Pointer;
-using System;
 
 namespace InputModule.Binding {
 	[Serializable]
-	public class PcInputBinding : InputBinding {
+	public class PcInputBinding: InputBinding {
 		public PCCursor RotationInput;
 
 		public PCButtonAxis MainMovementAxis;
@@ -15,9 +15,11 @@ namespace InputModule.Binding {
 		public PCPointer NodePointer;
 		public PCPointer NodeChooser;
 		public PCButton ExitNodeTraverseMode;
-
+		
 		public PCButton InfographicToggle;
 		public PCButton ConnectionModeToggle;
+
+		public PCButtonAxis ConnectionScroll;
 
 		public PCButton RedoButton;
 		public PCButton UndoButton;

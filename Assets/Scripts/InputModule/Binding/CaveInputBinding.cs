@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using InputModule.Event;
 using InputModule.Event.Button;
 using InputModule.Event.Cursor;
 using InputModule.Event.Pointer;

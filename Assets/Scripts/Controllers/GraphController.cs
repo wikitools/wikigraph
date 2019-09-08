@@ -1,21 +1,17 @@
-﻿using Services;
-using System;
+﻿using System;
+using Services;
 using UnityEngine;
 
 namespace Controllers {
 	public class GraphController : MonoBehaviour {
 		public GameObject Infographic; //TODO: move
-		private NetworkController networkController;
+		
 		public float WorldRadius;
-
+		
 		public static Graph Graph { get; } = new Graph();
-
+		
 		public ObservableProperty<GraphMode> GraphMode = new ObservableProperty<GraphMode>(Controllers.GraphMode.FREE_FLIGHT);
 		public ObservableProperty<ConnectionMode> ConnectionMode = new ObservableProperty<ConnectionMode>(Controllers.ConnectionMode.CHILDREN);
-
-		private void Awake() {
-			networkController = GetComponent<NetworkController>();
-		}
 
 		public void SwitchConnectionMode() {
 			SetConnectionMode(ConnectionMode.Value == Controllers.ConnectionMode.PARENTS ? Controllers.ConnectionMode.CHILDREN : Controllers.ConnectionMode.PARENTS);
@@ -23,7 +19,13 @@ namespace Controllers {
 
 		public void SetConnectionMode(ConnectionMode connectionMode) {
 			if (GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT) return;
-			networkController.SetConnectionMode(connectionMode);
+				networkController.SetConnectionMode(connectionMode);
+		}
+
+		private NetworkController networkController;
+
+		private void Awake() {
+			networkController = GetComponent<NetworkController>();
 		}
 	}
 
@@ -32,6 +34,8 @@ namespace Controllers {
 		public T Value {
 			get { return value; }
 			set {
+				if(value.Equals(this.value))
+					return;
 				this.value = value;
 				OnValueChanged?.Invoke(value);
 			}

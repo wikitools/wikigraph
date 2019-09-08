@@ -1,8 +1,8 @@
-﻿using InputModule.Binding;
+﻿using System;
+using System.Reflection;
+using InputModule.Binding;
 using InputModule.Processor;
 using Inspector;
-using System;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,17 +15,20 @@ namespace Controllers {
 		public CaveInputBinding CaveInputBinding;
 
 		private InputBinding binding;
-
 		
 		public NetworkController NetworkController { get; private set; }
 		public CameraController CameraController { get; private set; }
 		public GraphController GraphController { get; private set; }
+		public NodeController NodeController { get; private set; }
+		public ConnectionController ConnectionController { get; private set; }
 		public HistoryController HistoryController { get; private set; }
 
 		void Awake() {
 			NetworkController = GetComponent<NetworkController>();
 			CameraController = GetComponent<CameraController>();
 			GraphController = GetComponent<GraphController>();
+			NodeController = GetComponent<NodeController>();
+			ConnectionController = GetComponent<ConnectionController>();
 			HistoryController = GetComponent<HistoryController>();
 		}
 
@@ -97,8 +100,7 @@ namespace Controllers {
 				var mappingProperty = serializedObject.FindProperty(mappingConfigName);
 				InspectorUtils.DrawField(targetType.GetField(mappingConfigName), mappingProperty, serializedObject.targetObject);
 				GUI.enabled = true;
-			}
-			else if (!typeof(InputBinding).IsAssignableFrom(field.FieldType)) {
+			} else if (!typeof(InputBinding).IsAssignableFrom(field.FieldType)) {
 				EditorGUILayout.PropertyField(fieldProperty, true);
 			}
 		}
