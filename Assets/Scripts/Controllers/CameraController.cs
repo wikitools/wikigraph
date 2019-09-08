@@ -17,7 +17,7 @@ namespace Controllers {
 		}
 
 		void Update() {
-			if(!networkController.IsServer())
+			if (!networkController.IsServer())
 				return;
 			if (graphController.GraphMode.Value == GraphMode.NODE_TRAVERSE) {
 				if (nodeController.SelectedNode != null) {

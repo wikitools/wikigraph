@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace InputModule.Event.Button {
 	[Serializable]
-	public class FlystickButton: ButtonInput, InputInitializer, FlystickInput {
+	public class FlystickButton : ButtonInput, InputInitializer, FlystickInput {
 		public FlystickInstance Instance;
 		public LzwpInput.Flystick.ButtonID Button;
 

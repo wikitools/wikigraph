@@ -6,13 +6,13 @@ namespace Services.SyncBuffer {
 	public abstract class DoubleSyncBuffer {
 		protected readonly SyncBuffer loadedBuffer;
 		protected readonly SyncBuffer unloadedBuffer;
-		
+
 		protected DoubleSyncBuffer(Action<string> syncLoaded, Action<string> syncUnloaded) {
 			loadedBuffer = new SyncBuffer(syncLoaded);
 			unloadedBuffer = new SyncBuffer(syncUnloaded);
 		}
 
-		public void SyncRemaining() {//TODO need to sync node-sync-end event?
+		public void SyncRemaining() { //TODO need to sync node-sync-end event?
 			loadedBuffer.SyncRemaining();
 			unloadedBuffer.SyncRemaining();
 		}

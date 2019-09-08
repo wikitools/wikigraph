@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace InputModule.Event.Pointer {
 	[Serializable]
-	public class FlystickPointer: PointerInput, FlystickInput {
+	public class FlystickPointer : PointerInput, FlystickInput {
 		public FlystickInstance Instance;
 		public FlystickButton Button;
 

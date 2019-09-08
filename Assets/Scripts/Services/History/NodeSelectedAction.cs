@@ -1,6 +1,7 @@
 ﻿using Model;
 using Services.History;
 using System;
+
 public class NodeSelectedAction : UserAction {
 	private Node oldSelectedNode;
 	private Node newSelectedNode;
@@ -27,10 +28,10 @@ public class NodeSelectedAction : UserAction {
 	public void UnExecute() {
 		if (oldSelectedNode == null) {
 			return;
-		}
-		else {
+		} else {
 			passSelectAction(oldSelectedNode);
 		}
 	}
+
 	#endregion
 }

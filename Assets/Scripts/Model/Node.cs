@@ -4,12 +4,12 @@ namespace Model {
 	public class Node {
 		public uint[] Children;
 		public uint[] Parents;
-		
+
 		public readonly uint ID;
 		public uint WikiID;
-		
+
 		public string Title;
-		
+
 		public NodeType Type;
 		public NodeState State;
 
@@ -26,13 +26,13 @@ namespace Model {
 		public static bool operator !=(Node one, Node two) {
 			return !(one == two);
 		}
-		
+
 		public bool Equals(Node other) {
 			return !ReferenceEquals(other, null) && ID == other.ID;
 		}
 
 		public override bool Equals(object obj) {
-			if (ReferenceEquals(obj, null)) 
+			if (ReferenceEquals(obj, null))
 				return false;
 			return obj is Node && Equals((Node) obj);
 		}
@@ -54,6 +54,7 @@ namespace Model {
 	}
 
 	public enum NodeType {
-		ARTICLE, CATEGORY
+		ARTICLE,
+		CATEGORY
 	}
 }

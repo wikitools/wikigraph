@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace InputModule.Event.Pointer {
 	[Serializable]
-	public class PCPointer: PointerInput {
+	public class PCPointer : PointerInput {
 		public PCButton Button;
 
 		protected override Ray GetPointerRay() {

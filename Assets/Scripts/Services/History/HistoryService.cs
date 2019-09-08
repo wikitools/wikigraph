@@ -21,13 +21,8 @@ public class HistoryService {
 		}
 	}
 
-	#region UserActionsInserts
-
 	public void RegisterAction(UserAction userAction) {
 		undoActionStack.Push(userAction);
 		redoActionStack.Clear();
 	}
-
-	#endregion
-
 }

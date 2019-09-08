@@ -6,7 +6,7 @@ namespace Services.SyncBuffer {
 	public class SyncBuffer {
 		private const int MAX_CHARS_PER_SYNC = 4096;
 		private const char DIVIDER = ';';
-		
+
 		private string buffer = "";
 
 		private readonly Action<string> performSync;
@@ -22,7 +22,7 @@ namespace Services.SyncBuffer {
 			buffer += obj;
 		}
 
-		public void SyncRemaining() {//TODO need to sync node-sync-end event?
+		public void SyncRemaining() { //TODO need to sync node-sync-end event?
 			DoSync();
 		}
 
@@ -31,7 +31,7 @@ namespace Services.SyncBuffer {
 		}
 
 		private void DoSync() {
-			if(buffer.Length == 0)
+			if (buffer.Length == 0)
 				return;
 			performSync(buffer.Remove(buffer.Length - 1));
 			buffer = "";

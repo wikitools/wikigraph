@@ -2,7 +2,6 @@
 
 namespace Controllers {
 	public class HistoryController : MonoBehaviour {
-
 		private NodeController nodeController;
 		private NetworkController networkController;
 		private GraphController graphController;
@@ -37,7 +36,6 @@ namespace Controllers {
 					modeChangedByHistory = true;
 					graphController.SetConnectionMode(mode);
 				};
-
 			}
 		}
 	}

@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 
 namespace Services.ObjectPool {
-	
 	[Serializable]
 	public class GraphPooledObject {
 		public GameObject Container;

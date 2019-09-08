@@ -6,7 +6,7 @@ using InputModule.Event.Pointer;
 
 namespace InputModule.Binding {
 	[Serializable]
-	public class PcInputBinding: InputBinding {
+	public class PcInputBinding : InputBinding {
 		public PCCursor RotationInput;
 
 		public PCButtonAxis MainMovementAxis;
@@ -15,7 +15,7 @@ namespace InputModule.Binding {
 		public PCPointer NodePointer;
 		public PCPointer NodeChooser;
 		public PCButton ExitNodeTraverseMode;
-		
+
 		public PCButton InfographicToggle;
 		public PCButton ConnectionModeToggle;
 

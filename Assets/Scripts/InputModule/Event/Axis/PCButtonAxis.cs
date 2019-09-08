@@ -5,7 +5,7 @@ using InputModule.Event.Interfaces;
 
 namespace InputModule.Event {
 	[Serializable]
-	public class PCButtonAxis: ButtonPair, InputPoller, InputInitializer {
+	public class PCButtonAxis : ButtonPair, InputPoller, InputInitializer {
 		public PCButton PositiveButton;
 		public PCButton NegativeButton;
 

@@ -15,11 +15,10 @@ namespace InputModule.Processor {
 		}
 
 		private void OnMovementJoystickYAxisMove(float amount) {
-			if(Controller.GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT)
+			if (Controller.GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT)
 				EntityTransform.Translate(0, 0, amount * Config.MovementSpeed);
 			else
 				OnConnectionScrolled(Math.Sign(amount));
 		}
-		
 	}
 }

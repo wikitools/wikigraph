@@ -4,8 +4,8 @@ using Inspector;
 using UnityEditor;
 
 namespace InputModule.Binding {
-	public abstract class InputBinding: CustomInspectorProperty, InputPoller, InputInitializer {
-		#if UNITY_EDITOR
+	public abstract class InputBinding : CustomInspectorProperty, InputPoller, InputInitializer {
+#if UNITY_EDITOR
 		public void DrawInInspector(SerializedProperty property) {
 			InspectorUtils.DrawObject(property, () => {
 				foreach (var field in GetType().GetFields()) {
@@ -14,7 +14,7 @@ namespace InputModule.Binding {
 				}
 			});
 		}
-		#endif
+#endif
 
 		public void CheckForInput() {
 			CallFieldsOfType<InputPoller>(field => field.CheckForInput());
@@ -24,7 +24,7 @@ namespace InputModule.Binding {
 			CallFieldsOfType<InputInitializer>(field => field.Init());
 		}
 
-		private void CallFieldsOfType<T>(Action<T> function) where T: class {
+		private void CallFieldsOfType<T>(Action<T> function) where T : class {
 			foreach (var field in GetType().GetFields()) {
 				if (typeof(T).IsAssignableFrom(field.FieldType))
 					function(field.GetValue(this) as T);

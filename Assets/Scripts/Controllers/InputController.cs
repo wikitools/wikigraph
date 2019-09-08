@@ -15,7 +15,7 @@ namespace Controllers {
 		public CaveInputBinding CaveInputBinding;
 
 		private InputBinding binding;
-		
+
 		public NetworkController NetworkController { get; private set; }
 		public CameraController CameraController { get; private set; }
 		public GraphController GraphController { get; private set; }
@@ -33,12 +33,13 @@ namespace Controllers {
 		}
 
 		void Start() {
-			if(!NetworkController.IsServer())
+			if (!NetworkController.IsServer())
 				return;
-			InputProcessor input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) 
+			InputProcessor input = Environment == Environment.PC
+				? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this)
 				: new CaveInputProcessor(Config, CaveInputBinding, this);
 			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
-			
+
 			// TODO: let user choose the main flystick
 			CaveInputBinding.SetPrimaryFlystick(0);
 			binding.Init();
@@ -49,8 +50,8 @@ namespace Controllers {
 				NetworkController.CloseClient();
 				Application.Quit();
 			}
-			
-			if(!NetworkController.IsServer())
+
+			if (!NetworkController.IsServer())
 				return;
 			binding.CheckForInput();
 		}
@@ -69,7 +70,7 @@ namespace Controllers {
 		Cave = 1
 	}
 
-	#if UNITY_EDITOR
+#if UNITY_EDITOR
 	[CustomEditor(typeof(InputController))]
 	[CanEditMultipleObjects]
 	public class InputConfigEditor : Editor {
@@ -94,7 +95,7 @@ namespace Controllers {
 				if (EditorApplication.isPlaying)
 					GUI.enabled = false;
 				EditorGUILayout.PropertyField(fieldProperty, true);
-				Environment env = (Environment)field.GetValue(serializedObject.targetObject);
+				Environment env = (Environment) field.GetValue(serializedObject.targetObject);
 
 				string mappingConfigName = env == Environment.Cave ? "CaveInputBinding" : "PCInputBinding";
 				var mappingProperty = serializedObject.FindProperty(mappingConfigName);
@@ -105,5 +106,5 @@ namespace Controllers {
 			}
 		}
 	}
-	#endif
+#endif
 }
