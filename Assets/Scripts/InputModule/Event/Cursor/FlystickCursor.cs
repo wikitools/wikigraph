@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace InputModule.Event.Cursor {
 	[Serializable]
-	public class FlystickCursor: CursorInput, FlystickInput {
+	public class FlystickCursor : CursorInput, FlystickInput {
 		public FlystickInstance Instance;
 		public FlystickButton Button;
 

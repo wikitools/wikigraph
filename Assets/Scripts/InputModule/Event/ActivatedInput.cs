@@ -6,7 +6,7 @@ using Inspector;
 using UnityEditor;
 
 namespace InputModule.Event {
-	public abstract class ActivatedInput: InputInitializer, InputPoller, CustomInspectorProperty {
+	public abstract class ActivatedInput : InputInitializer, InputPoller, CustomInspectorProperty {
 		public bool IsButtonActivated;
 
 		private ButtonInput cachedButton;
@@ -18,12 +18,12 @@ namespace InputModule.Event {
 			if (IsButtonActivated && typeof(InputPoller).IsAssignableFrom(ActivationButton.GetType()))
 				(ActivationButton as InputPoller).CheckForInput();
 		}
-		
-		#if UNITY_EDITOR
+
+#if UNITY_EDITOR
 		public void DrawInInspector(SerializedProperty property) {
 			InspectorUtils.DrawObject(property, () => {
 				EditorGUILayout.PropertyField(property.FindPropertyRelative("IsButtonActivated"), false);
-				if(typeof(CursorInput).IsAssignableFrom(GetType()))
+				if (typeof(CursorInput).IsAssignableFrom(GetType()))
 					EditorGUILayout.PropertyField(property.FindPropertyRelative("MainAxisOnly"), false);
 				if (typeof(FlystickInput).IsAssignableFrom(GetType()))
 					EditorGUILayout.PropertyField(property.FindPropertyRelative("Instance"), false);
@@ -35,6 +35,6 @@ namespace InputModule.Event {
 				}
 			});
 		}
-		#endif
+#endif
 	}
 }

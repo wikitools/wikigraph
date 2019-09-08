@@ -12,7 +12,7 @@ namespace Services.DataFiles {
 		private readonly Logger<DataFileReader> LOGGER = new Logger<DataFileReader>();
 
 		private Dictionary<DataFileType, DataFile> streams = new Dictionary<DataFileType, DataFile>();
-		
+
 		private readonly string DATA_FILE_PATH = Application.streamingAssetsPath;
 		private const string DATA_FILE_EXTENSION = "wg";
 
@@ -59,7 +59,7 @@ namespace Services.DataFiles {
 		private void loadDataFile(DataFileType type, string dataFilePostfix) {
 			var filePath = Path.Combine(DATA_FILE_PATH, $"{type.ToString().ToLower() + dataFilePostfix}.{DATA_FILE_EXTENSION}");
 			var stream = new FileStream(filePath, FileMode.Open, FileSystemRights.Read, FileShare.Read, 4096, FileOptions.RandomAccess);
-			streams[type] = new DataFile { Stream = stream, Length = new FileInfo(filePath).Length };
+			streams[type] = new DataFile {Stream = stream, Length = new FileInfo(filePath).Length};
 		}
 
 		private byte[] readBytes(DataFileType file, long offset, int count) {

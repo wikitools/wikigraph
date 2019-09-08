@@ -1,7 +1,6 @@
 using System;
 using Controllers;
 using InputModule.Binding;
-using UnityEngine;
 
 namespace InputModule.Processor {
 	public class CaveInputProcessor : InputProcessor {
@@ -11,14 +10,15 @@ namespace InputModule.Processor {
 			binding.NodePointer.OnPointed += OnNodePointed;
 			binding.NodeChooser.OnPointed += OnNodeChosen;
 			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
+			binding.RedoButton.OnPress += RedoUserAction;
+			binding.UndoButton.OnPress += UndoUserAction;
 		}
 
 		private void OnMovementJoystickYAxisMove(float amount) {
-			if(Controller.GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT)
+			if (Controller.GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT)
 				EntityTransform.Translate(0, 0, amount * Config.MovementSpeed);
 			else
 				OnConnectionScrolled(Math.Sign(amount));
 		}
-		
 	}
 }

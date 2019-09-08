@@ -2,15 +2,14 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Controllers {
-	public class CameraController: MonoBehaviour {
+	public class CameraController : MonoBehaviour {
 		public GameObject Entity;
 		private NodeController nodeController;
 		private GraphController graphController;
 		private NetworkController networkController;
-
 		private Vector3 velocity = Vector3.zero;
 		public float SmoothTime = 0.9F;
-		
+
 		void Awake() {
 			nodeController = GetComponent<NodeController>();
 			graphController = GetComponent<GraphController>();
@@ -18,7 +17,7 @@ namespace Controllers {
 		}
 
 		void Update() {
-			if(!networkController.IsServer())
+			if (!networkController.IsServer())
 				return;
 			if (graphController.GraphMode.Value == GraphMode.NODE_TRAVERSE) {
 				if (nodeController.SelectedNode != null) {

@@ -1,17 +1,14 @@
 using Controllers;
 using InputModule.Binding;
-using Services;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace InputModule.Processor {
-	public class PCInputProcessor: InputProcessor {
-
+	public class PCInputProcessor : InputProcessor {
 		public PCInputProcessor(InputConfig config, PcInputBinding binding, InputController controller) : base(config, binding, controller) {
 			binding.RotationInput.OnMove += OnRotate;
 			binding.MainMovementAxis.OnMove += dir => OnMove(new Vector2(dir, 0));
 			binding.CrossMovementAxis.OnMove += dir => OnMove(new Vector2(0, dir));
-			
+
 			binding.NodePointer.OnPointed += OnNodePointed;
 			binding.NodeChooser.OnPointed += OnNodeChosen;
 			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
@@ -20,10 +17,13 @@ namespace InputModule.Processor {
 			binding.ConnectionModeToggle.OnPress += () => Controller.GraphController.SwitchConnectionMode();
 
 			binding.ConnectionScroll.OnInputChange += OnConnectionScrolled;
+
+			binding.UndoButton.OnPress += UndoUserAction;
+			binding.RedoButton.OnPress += RedoUserAction;
 		}
 
 		private void OnMove(Vector2 direction) {
-			if(Controller.GraphController.GraphMode.Value == GraphMode.NODE_TRAVERSE) return;
+			if (Controller.GraphController.GraphMode.Value == GraphMode.NODE_TRAVERSE) return;
 			direction *= Config.MovementSpeed;
 			EntityTransform.Translate(direction.y, 0, direction.x, Space.Self);
 		}
