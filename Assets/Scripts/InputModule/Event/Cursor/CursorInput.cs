@@ -3,7 +3,7 @@ using InputModule.Event.Interfaces;
 using UnityEngine;
 
 namespace InputModule.Event.Cursor {
-	public abstract class CursorInput : ActivatedInput, InputPoller {
+	public abstract class CursorInput : ActivatedInput {
 		public Action<Vector2> OnMove;
 		public Action<float> OnXAxisMove;
 		public Action<float> OnYAxisMove;
@@ -12,7 +12,7 @@ namespace InputModule.Event.Cursor {
 
 		protected abstract Vector2 GetCursorPosition();
 
-		public new void CheckForInput() {
+		public override void CheckForInput() {
 			base.CheckForInput();
 			if (IsButtonActivated && !ActivationButton.Pressed)
 				return;

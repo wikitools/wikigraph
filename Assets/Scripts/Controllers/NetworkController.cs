@@ -102,6 +102,9 @@ namespace Controllers {
 			connectionController = GetComponent<ConnectionController>();
 
 			NetworkView = GetComponent<NetworkView>();
+		}
+
+		private void Start() {
 			if (Environment == Environment.PC) {
 				if (Application.isEditor) {
 					Network.InitializeServer(1, PORT);

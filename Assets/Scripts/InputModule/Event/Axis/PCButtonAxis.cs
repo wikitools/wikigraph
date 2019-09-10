@@ -9,7 +9,7 @@ namespace InputModule.Event {
 		public PCButton PositiveButton;
 		public PCButton NegativeButton;
 
-		public new void CheckForInput() {
+		public override void CheckForInput() {
 			PositiveButton.CheckForInput();
 			NegativeButton.CheckForInput();
 			base.CheckForInput();

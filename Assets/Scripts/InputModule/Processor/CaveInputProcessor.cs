@@ -18,7 +18,7 @@ namespace InputModule.Processor {
 			if (Controller.GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT)
 				EntityTransform.Translate(0, 0, amount * Config.MovementSpeed);
 			else
-				OnConnectionScrolled(Math.Sign(amount));
+				OnConnectionScrolled(Math.Sign(amount));//TODO improve that
 		}
 	}
 }
