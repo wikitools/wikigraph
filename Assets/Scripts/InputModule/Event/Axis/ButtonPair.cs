@@ -5,13 +5,13 @@ using Inspector;
 using UnityEditor;
 
 namespace InputModule.Event.Axis {
-	public class ButtonPair: CustomInspectorProperty, InputPoller {
+	public class ButtonPair : CustomInspectorProperty, InputPoller {
 		public bool ReverseAxisDirection;
 		public Action<int> OnMove;
 		public Action<int> OnInputChange;
 
 		protected int AxisState;
-		
+
 		protected void Init(ButtonInput positiveButton, ButtonInput negativeButton) {
 			positiveButton.OnPress += () => OnAxisChange(1);
 			positiveButton.OnRelease += () => OnAxisChange(0);
@@ -21,16 +21,16 @@ namespace InputModule.Event.Axis {
 
 		private void OnAxisChange(int direction) {
 			direction *= ReverseAxisDirection ? -1 : 1;
-			if(AxisState != direction)
+			if (AxisState != direction)
 				OnInputChange?.Invoke(direction);
 			AxisState = direction;
 		}
 
-		public void CheckForInput() {
-			if(AxisState != 0) OnMove?.Invoke(AxisState);
+		public virtual void CheckForInput() {
+			if (AxisState != 0) OnMove?.Invoke(AxisState);
 		}
 
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		public void DrawInInspector(SerializedProperty property) {
 			InspectorUtils.DrawObject(property, () => {
 				EditorGUILayout.PropertyField(property.FindPropertyRelative("ReverseAxisDirection"), false);
@@ -38,6 +38,6 @@ namespace InputModule.Event.Axis {
 				InspectorUtils.DrawField(GetType().GetField("NegativeButton"), property.FindPropertyRelative("NegativeButton"), this);
 			});
 		}
-		#endif
+#endif
 	}
 }

@@ -4,13 +4,13 @@ using System.Linq;
 using UnityEngine;
 
 namespace Services.SyncBuffer {
-	public class NodeSyncBuffer: DoubleSyncBuffer {
+	public class NodeSyncBuffer : DoubleSyncBuffer {
 		public NodeSyncBuffer(Action<string> syncLoaded, Action<string> syncUnloaded) : base(syncLoaded, syncUnloaded) { }
 
 		public void OnNodeLoaded(uint id, Vector3 position) {
 			loadedBuffer.Sync($"{new LoadedNodeSync(id, position)}");
 		}
-		
+
 		public void OnNodeUnloaded(uint id) {
 			unloadedBuffer.Sync($"{id}");
 		}
@@ -18,7 +18,7 @@ namespace Services.SyncBuffer {
 		public static List<LoadedNodeSync> ParseLoadedNodes(string nodeStream) {
 			return SyncBuffer.SplitObjectStream(nodeStream).Select(entry => (LoadedNodeSync) entry).ToList();
 		}
-		
+
 		public struct LoadedNodeSync {
 			public readonly uint ID;
 			public readonly Vector3 Position;

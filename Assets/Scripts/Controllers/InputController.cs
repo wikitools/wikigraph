@@ -8,19 +8,31 @@ using UnityEngine;
 
 namespace Controllers {
 	public class InputController : MonoBehaviour {
-		public InputConfig Config;
-
 		public Environment Environment;
+		
+		[EnvironmentField(Environment.PC)]
 		public PcInputBinding PCInputBinding;
+		[EnvironmentField(Environment.Cave)]
 		public CaveInputBinding CaveInputBinding;
+		
+		[EnvironmentField(Environment.PC)]
+		public InputConfig PCConfig;
+		[EnvironmentField(Environment.Cave)]
+		public InputConfig CaveConfig;
 
 		private InputBinding binding;
 		
+		[EnvironmentField(Environment.Cave)]
+		public GameObject[] Flysticks;
+		[EnvironmentField(Environment.Cave)]
+		public bool ShowFlystickRays;
+
 		public NetworkController NetworkController { get; private set; }
 		public CameraController CameraController { get; private set; }
 		public GraphController GraphController { get; private set; }
 		public NodeController NodeController { get; private set; }
 		public ConnectionController ConnectionController { get; private set; }
+		public HistoryController HistoryController { get; private set; }
 
 		void Awake() {
 			NetworkController = GetComponent<NetworkController>();
@@ -28,15 +40,21 @@ namespace Controllers {
 			GraphController = GetComponent<GraphController>();
 			NodeController = GetComponent<NodeController>();
 			ConnectionController = GetComponent<ConnectionController>();
+			HistoryController = GetComponent<HistoryController>();
 		}
 
 		void Start() {
-			if(!NetworkController.IsServer())
-				return;
-			InputProcessor input = Environment == Environment.PC ? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this) 
-				: new CaveInputProcessor(Config, CaveInputBinding, this);
-			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
+			if(Environment == Environment.Cave)
+				foreach (var flystick in Flysticks)
+					flystick.GetComponent<LineRenderer>().enabled = ShowFlystickRays;
 			
+			if (!NetworkController.IsServer())
+				return;
+			InputProcessor input = Environment == Environment.PC
+				? (InputProcessor) new PCInputProcessor(PCConfig, PCInputBinding, this)
+				: new CaveInputProcessor(CaveConfig, CaveInputBinding, this);
+			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
+
 			// TODO: let user choose the main flystick
 			CaveInputBinding.SetPrimaryFlystick(0);
 			binding.Init();
@@ -47,8 +65,8 @@ namespace Controllers {
 				NetworkController.CloseClient();
 				Application.Quit();
 			}
-			
-			if(!NetworkController.IsServer())
+
+			if (!NetworkController.IsServer())
 				return;
 			binding.CheckForInput();
 		}
@@ -67,7 +85,7 @@ namespace Controllers {
 		Cave = 1
 	}
 
-	#if UNITY_EDITOR
+#if UNITY_EDITOR
 	[CustomEditor(typeof(InputController))]
 	[CanEditMultipleObjects]
 	public class InputConfigEditor : Editor {
@@ -88,20 +106,20 @@ namespace Controllers {
 			if (field == null) {
 				return;
 			}
-			if (field.FieldType == typeof(Environment)) {
-				if(EditorApplication.isPlaying)
-					GUI.enabled = false;
-				EditorGUILayout.PropertyField(fieldProperty, true);
-				Environment env = (Environment) field.GetValue(serializedObject.targetObject);
+			var environmentAttribute = field.GetCustomAttribute<EnvironmentField>();
+			Environment environment = (Environment) targetType.GetField("Environment").GetValue(serializedObject.targetObject);
 				
-				string mappingConfigName = env == Environment.Cave ? "CaveInputBinding" : "PCInputBinding";
-				var mappingProperty = serializedObject.FindProperty(mappingConfigName);
-				InspectorUtils.DrawField(targetType.GetField(mappingConfigName), mappingProperty, serializedObject.targetObject);
-				GUI.enabled = true;
-			} else if(!typeof(InputBinding).IsAssignableFrom(field.FieldType)) {
-				EditorGUILayout.PropertyField(fieldProperty, true);
-			}
+			if (field.Name.EndsWith("InputBinding") && EditorApplication.isPlaying) 
+				GUI.enabled = false;
+			if(environmentAttribute == null || environmentAttribute.TargetEnvironment == environment)
+				DrawField(field.Name, targetType);
+			GUI.enabled = true;
+		}
+
+		private void DrawField(string name, Type targetType) {
+			var mappingProperty = serializedObject.FindProperty(name);
+			InspectorUtils.DrawField(targetType.GetField(name), mappingProperty, serializedObject.targetObject);
 		}
 	}
-	#endif
+#endif
 }

@@ -4,13 +4,13 @@ using System.Linq;
 using UnityEngine;
 
 namespace Services.SyncBuffer {
-	public class ConnectionSyncBuffer: DoubleSyncBuffer {
+	public class ConnectionSyncBuffer : DoubleSyncBuffer {
 		public ConnectionSyncBuffer(Action<string> syncLoaded, Action<string> syncUnloaded) : base(syncLoaded, syncUnloaded) { }
 
 		public void OnConnectionLoaded(uint from, uint to) {
 			loadedBuffer.Sync($"{from} {to}");
 		}
-		
+
 		public void OnConnectionUnloaded(uint from, uint to) {
 			unloadedBuffer.Sync($"{from} {to}");
 		}

@@ -156,6 +156,7 @@ GameObject:
   - component: {fileID: 68664600}
   - component: {fileID: 68664601}
   - component: {fileID: 68664602}
+  - component: {fileID: 68664603}
   m_Layer: 0
   m_Name: GRAPH
   m_TagString: Untagged
@@ -174,10 +175,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1afe824797e1453ca533cadd8934bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Config:
-    RotationSpeed: 20
-    MaxRotationSpeed: {x: 10, y: 10}
-    MovementSpeed: 0.2
   Environment: 0
   PCInputBinding:
     RotationInput:
@@ -243,6 +240,14 @@ MonoBehaviour:
         ButtonType: 0
         MouseButton: 0
         KeyboardButton: 120
+    RedoButton:
+      ButtonType: 0
+      MouseButton: 0
+      KeyboardButton: 101
+    UndoButton:
+      ButtonType: 0
+      MouseButton: 0
+      KeyboardButton: 113
   CaveInputBinding:
     MovementJoystick:
       IsButtonActivated: 0
@@ -268,6 +273,22 @@ MonoBehaviour:
     ExitNodeTraverseMode:
       Instance: 0
       Button: 1
+    UndoButton:
+      Instance: 0
+      Button: 0
+    RedoButton:
+      Instance: 0
+      Button: 0
+  PCConfig:
+    RotationSpeed: 20
+    MaxRotationSpeed: {x: 10, y: 10}
+    MovementSpeed: 0.2
+  CaveConfig:
+    RotationSpeed: 20
+    MaxRotationSpeed: {x: 10, y: 10}
+    MovementSpeed: 0.2
+  Flysticks: []
+  ShowFlystickRays: 0
 --- !u!114 &68664596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -386,6 +407,17 @@ NetworkView:
   m_ViewID:
     m_ID: 4
     m_Type: 1
+--- !u!114 &68664603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 68664594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 754cf6ea303545c45b5cbf6f44a2daaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1104120198
 GameObject:
   m_ObjectHideFlags: 0

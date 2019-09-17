@@ -6,7 +6,7 @@ namespace Services.Connection {
 		private static readonly int CURVE_ANGLE_HEIGHT = 80;
 		private static readonly float CURVE_BEND_PROPORTIONS = 0.5f;
 		private static int CURVE_SKEW_ANGLE = 20;
-		
+
 		public Route GenerateConnection(Vector3 from, Vector3 to) {
 			Vector3 direction = to - from;
 			Vector3 normalAxis = Vector3.Cross(direction, Vector3.up);

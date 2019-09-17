@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace InputModule.Event.Button {
 	[Serializable]
-	public class PCButton: ButtonInput, CustomInspectorProperty, InputPoller {
+	public class PCButton : ButtonInput, CustomInspectorProperty, InputPoller {
 		public ButtonType ButtonType;
 		public MouseButton MouseButton;
 		public KeyCode KeyboardButton;
@@ -22,14 +22,14 @@ namespace InputModule.Event.Button {
 			}
 		}
 
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		public void DrawInInspector(SerializedProperty property) {
 			InspectorUtils.DrawObject(property, () => {
 				EditorGUILayout.PropertyField(property.FindPropertyRelative("ButtonType"), false);
 				EditorGUILayout.PropertyField(property.FindPropertyRelative(ButtonType == ButtonType.Mouse ? "MouseButton" : "KeyboardButton"), false);
 			});
 		}
-		#endif
+#endif
 	}
 
 	public enum MouseButton {
@@ -39,7 +39,7 @@ namespace InputModule.Event.Button {
 	}
 
 	public enum ButtonType {
-		Keyboard = 0, 
+		Keyboard = 0,
 		Mouse = 1
 	}
 }

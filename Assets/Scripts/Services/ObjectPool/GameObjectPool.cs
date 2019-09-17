@@ -8,7 +8,7 @@ namespace Services {
 		private readonly GameObject elementContainer;
 		private const int LOAD_NUMBER = 100;
 		private Stack<GameObject> pool;
-		
+
 		public GameObjectPool(GameObject prefab, int preloadNumber, GameObject elementContainer = null) {
 			this.elementContainer = elementContainer;
 			this.prefab = prefab;
