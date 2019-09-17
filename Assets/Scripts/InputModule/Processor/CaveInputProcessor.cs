@@ -24,7 +24,7 @@ namespace InputModule.Processor {
 				var translation = CaveInputBinding.Flystick(binding.MovementJoystick.Instance).pose.rotation * Vector3.forward;
 				EntityTransform.Translate(Config.MovementSpeed * amount * translation, Space.World);
 			} else {
-				Controller.ConnectionController.OnAdvanceScrollInput(Math.Abs(amount) >= 1 ? 1 : 0 * Math.Sign(amount));
+				Controller.ConnectionController.OnAdvanceScrollInput((Math.Abs(amount) >= 1 ? 1 : 0) * Math.Sign(amount));
 			}
 		}
 	}
