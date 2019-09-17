@@ -13,7 +13,7 @@ namespace Services.DataFiles {
 
 		private Dictionary<DataFileType, DataFile> streams = new Dictionary<DataFileType, DataFile>();
 
-		private readonly string DATA_FILE_PATH = Application.streamingAssetsPath;
+		private readonly string DATA_FILE_PATH = Path.Combine(Application.streamingAssetsPath, "DataFiles");
 		private const string DATA_FILE_EXTENSION = "wg";
 
 		public DataFileReader(string dataFilePostfix = "") {

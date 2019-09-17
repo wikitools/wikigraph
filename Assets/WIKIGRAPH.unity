@@ -275,11 +275,11 @@ MonoBehaviour:
     RedoButton:
       ButtonType: 0
       MouseButton: 0
-      KeyboardButton: 101
+      KeyboardButton: 0
     UndoButton:
       ButtonType: 0
       MouseButton: 0
-      KeyboardButton: 113
+      KeyboardButton: 0
   CaveInputBinding:
     MovementJoystick:
       IsButtonActivated: 0
@@ -307,10 +307,10 @@ MonoBehaviour:
       Button: 1
     UndoButton:
       Instance: 0
-      Button: 3
+      Button: 0
     RedoButton:
       Instance: 0
-      Button: 2
+      Button: 0
   PCConfig:
     RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}

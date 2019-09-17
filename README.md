@@ -11,7 +11,7 @@ Interactive 3D visualization of Wikipedia articles and categories in a graph-lik
 
 ### Loading full Wikipedia node set
 - Download the [data files](https://drive.google.com/open?id=107n-Bm3Enm-WQO8gVqk42P70a9bcMWTR)
-- Unpack to ``Assets/StreamingAssets`` folder
+- Unpack to ``Assets/StreamingAssets/DataFiles`` folder
 - Uncheck the ``Load Test Node Set`` option
 - You might want to tweak the ``Node Loaded Limit`` - start with a couple hundred
 - Adjust the ``World Radius`` accordingly
