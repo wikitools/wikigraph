@@ -44,7 +44,7 @@ namespace Controllers {
 		}
 
 		private void OnConnectionNodeChanged(Node oldNode, Node newNode) {
-			UnloadNodeConnections(oldNode);
+			graph.ConnectionObjectMap.Keys.ToList().ForEach(SyncUnloadedConnection);
 			OnConnectionLoadSessionEnded?.Invoke();
 
 			currentVisibleIndex = 0;

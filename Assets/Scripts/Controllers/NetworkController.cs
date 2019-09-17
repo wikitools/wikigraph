@@ -102,9 +102,12 @@ namespace Controllers {
 			connectionController = GetComponent<ConnectionController>();
 
 			NetworkView = GetComponent<NetworkView>();
+
+			//Lzwp.OnLZWPlibInitialize += Initialize;
+			Initialize();
 		}
 
-		private void Start() {
+		private void Initialize() {
 			if (Environment == Environment.PC) {
 				if (Application.isEditor) {
 					Network.InitializeServer(1, PORT);
