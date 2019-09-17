@@ -175,15 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1afe824797e1453ca533cadd8934bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PCConfig:
-    RotationSpeed: 20
-    MaxRotationSpeed: {x: 10, y: 10}
-    MovementSpeed: 0.2
-  CaveConfig:
-    RotationSpeed: 20
-    MaxRotationSpeed: {x: 10, y: 10}
-    MovementSpeed: 0.2
-  Environment: 1
+  Environment: 0
   PCInputBinding:
     RotationInput:
       IsButtonActivated: 1
@@ -287,6 +279,16 @@ MonoBehaviour:
     RedoButton:
       Instance: 0
       Button: 0
+  PCConfig:
+    RotationSpeed: 20
+    MaxRotationSpeed: {x: 10, y: 10}
+    MovementSpeed: 0.2
+  CaveConfig:
+    RotationSpeed: 20
+    MaxRotationSpeed: {x: 10, y: 10}
+    MovementSpeed: 0.2
+  Flysticks: []
+  ShowFlystickRays: 0
 --- !u!114 &68664596
 MonoBehaviour:
   m_ObjectHideFlags: 0
