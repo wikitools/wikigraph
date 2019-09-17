@@ -72,6 +72,16 @@ namespace Controllers {
 			scrollDirection = direction;
 		}
 
+		public void OnAdvanceScrollInput(int direction) {
+			OnScrollInputChanged(direction);
+			if (scrollDirection == 0) return;
+			scrollTimer -= Time.deltaTime * 1000;
+			if (scrollTimer <= 0) {
+				UpdateVisibleConnections();
+				ResetTimer();
+			}
+		}
+
 		private void OnConnectionNodeChanged(Node centerNode) {
 			UnloadAllConnections();
 			OnConnectionLoadSessionEnded?.Invoke();
@@ -189,11 +199,13 @@ namespace Controllers {
 		private NodeController nodeController;
 		private GraphController graphController;
 		private NetworkController networkController;
+		private  InputController inputController;
 
 		void Awake() {
 			graphController = GetComponent<GraphController>();
 			nodeController = GetComponent<NodeController>();
 			networkController = GetComponent<NetworkController>();
+			inputController = GetComponent<InputController>();
 		}
 
 		private void Start() {
@@ -209,13 +221,8 @@ namespace Controllers {
 		}
 
 		private void Update() {
-			if (networkController.IsServer() && scrollDirection != 0) {
-				scrollTimer -= Time.deltaTime * 1000;
-				if (scrollTimer <= 0) {
-					UpdateVisibleConnections();
-					ResetTimer();
-				}
-			}
+			if (networkController.IsServer() && inputController.Environment == Environment.PC)
+				OnAdvanceScrollInput(scrollDirection);
 		}
 
 		#endregion
