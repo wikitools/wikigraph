@@ -10,12 +10,11 @@ using UnityEngine;
 namespace Controllers {
 	public class ConnectionController : MonoBehaviour {
 		public GraphPooledObject Connections;
+		public ConnectionColors Colors;
+		
 		public int MaxVisibleConnections;
 		public int ChangeConnectionNumber;
 		public float ScrollInterval;
-
-		public Color ChildConnectionColor;
-		public Color ParentConnectionColor;
 
 		public Action<Connection> OnConnectionLoaded;
 		public Action<Connection> OnConnectionUnloaded;
@@ -152,5 +151,12 @@ namespace Controllers {
 		}
 
 		#endregion
+		
+		[Serializable]
+		public class ConnectionColors {
+			public Color ChildColor;
+			public Color ParentColor;
+			public Color DisabledColor;
+		}
 	}
 }

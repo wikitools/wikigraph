@@ -101,7 +101,7 @@ namespace Services.Connection {
 		}
 
 		private Color GetConnectionLineColor(Model.Connection connection) {
-			return connectionMode.Value == ConnectionMode.PARENTS ? controller.ParentConnectionColor : controller.ChildConnectionColor;
+			return connectionMode.Value == ConnectionMode.PARENTS ? controller.Colors.ParentColor : controller.Colors.ChildColor;
 		}
 
 		#endregion
