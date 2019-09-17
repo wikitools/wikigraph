@@ -8,7 +8,8 @@ using UnityEngine;
 
 namespace Controllers {
 	public class InputController : MonoBehaviour {
-		public InputConfig Config;
+		public InputConfig PCConfig;
+		public InputConfig CaveConfig;
 
 		public Environment Environment;
 		public PcInputBinding PCInputBinding;
@@ -36,8 +37,8 @@ namespace Controllers {
 			if (!NetworkController.IsServer())
 				return;
 			InputProcessor input = Environment == Environment.PC
-				? (InputProcessor) new PCInputProcessor(Config, PCInputBinding, this)
-				: new CaveInputProcessor(Config, CaveInputBinding, this);
+				? (InputProcessor) new PCInputProcessor(PCConfig, PCInputBinding, this)
+				: new CaveInputProcessor(CaveConfig, CaveInputBinding, this);
 			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
 
 			// TODO: let user choose the main flystick
@@ -97,13 +98,15 @@ namespace Controllers {
 				EditorGUILayout.PropertyField(fieldProperty, true);
 				Environment env = (Environment) field.GetValue(serializedObject.targetObject);
 
-				string mappingConfigName = env == Environment.Cave ? "CaveInputBinding" : "PCInputBinding";
-				var mappingProperty = serializedObject.FindProperty(mappingConfigName);
-				InspectorUtils.DrawField(targetType.GetField(mappingConfigName), mappingProperty, serializedObject.targetObject);
+				DrawField(env == Environment.Cave ? "CaveInputBinding" : "PCInputBinding", targetType);
+				DrawField(env == Environment.Cave ? "CaveConfig" : "PCConfig", targetType);
 				GUI.enabled = true;
-			} else if (!typeof(InputBinding).IsAssignableFrom(field.FieldType)) {
-				EditorGUILayout.PropertyField(fieldProperty, true);
 			}
+		}
+
+		private void DrawField(string name, Type targetType) {
+			var mappingProperty = serializedObject.FindProperty(name);
+			InspectorUtils.DrawField(targetType.GetField(name), mappingProperty, serializedObject.targetObject);
 		}
 	}
 #endif
