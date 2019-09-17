@@ -23,6 +23,9 @@ namespace Controllers {
 		public Action<Node, Vector3> OnNodeLoaded;
 		public Action<Node> OnNodeUnloaded;
 		public Action OnNodeLoadSessionEnded;
+
+		public Action<Node> OnSelectedNodeChanged;
+		public Action<Node> OnHighlightedNodeChanged;
 		
 		#region Highlighted Node
 		
@@ -36,6 +39,7 @@ namespace Controllers {
 				highlightedNode = value;
 				if (highlightedNode != null && highlightedNode.State != NodeState.SELECTED) 
 					SetNodeState(highlightedNode, NodeState.HIGHLIGHTED);
+				OnHighlightedNodeChanged?.Invoke(highlightedNode);
 			}
 		}
 		
@@ -59,8 +63,6 @@ namespace Controllers {
 				OnSelectedNodeChanged?.Invoke(selectedNode);
 			}
 		}
-
-		public Action<Node> OnSelectedNodeChanged;
 		
 		#endregion
 
