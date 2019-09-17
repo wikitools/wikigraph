@@ -30,8 +30,6 @@ namespace InputModule.Processor {
 			}
 		}
 
-		protected void OnConnectionScrolled(int direction) => Controller.ConnectionController.OnScrollInputChanged(direction);
-
 		protected void OnNodePointed(Ray ray) {
 			RaycastHit raycastHit;
 			var id = RaycastNode(ray, out raycastHit) ? raycastHit.collider.gameObject.name : "";

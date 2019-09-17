@@ -207,7 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1afe824797e1453ca533cadd8934bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Environment: 1
+  Environment: 0
   PCInputBinding:
     RotationInput:
       IsButtonActivated: 1
@@ -322,7 +322,7 @@ MonoBehaviour:
   Flysticks:
   - {fileID: 327208667}
   - {fileID: 2060724263}
-  ShowFlystickRays: 0
+  ShowFlystickRays: 1
 --- !u!114 &68664596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -514,7 +514,7 @@ LineRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 327208667}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1082,7 +1082,7 @@ LineRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2060724263}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
