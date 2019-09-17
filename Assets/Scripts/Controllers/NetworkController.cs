@@ -26,9 +26,9 @@ namespace Controllers {
 		private void syncConnection(string stream, bool loaded) {
 			ConnectionSyncBuffer.ParseConnections(stream).ForEach(connection => {
 				if (loaded)
-					connectionController.LoadConnection(connection);
+					connectionController.ConnectionManager.LoadConnection(connection);
 				else
-					connectionController.UnloadConnection(connection);
+					connectionController.ConnectionManager.UnloadConnection(connection);
 			});
 		}
 
