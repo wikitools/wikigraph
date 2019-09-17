@@ -24,7 +24,7 @@ namespace Controllers {
 		public Action OnNodeLoadSessionEnded;
 
 		public Action<Node, Node> OnSelectedNodeChanged;
-		public Action<Node> OnHighlightedNodeChanged;
+		public Action<Node, Node> OnHighlightedNodeChanged;
 		
 		#region Highlighted Node
 
@@ -36,10 +36,11 @@ namespace Controllers {
 				if (highlightedNode == value || NewNodeDisabled(value)) return;
 				if (highlightedNode != null && highlightedNode.State != NodeState.SELECTED)
 					SetNodeState(highlightedNode, NodeState.ACTIVE);
+				Node previousNode = highlightedNode;
 				highlightedNode = value;
 				if (highlightedNode != null && highlightedNode.State != NodeState.SELECTED)
 					SetNodeState(highlightedNode, NodeState.HIGHLIGHTED);
-				OnHighlightedNodeChanged?.Invoke(highlightedNode);
+				OnHighlightedNodeChanged?.Invoke(previousNode, highlightedNode);
 			}
 		}
 

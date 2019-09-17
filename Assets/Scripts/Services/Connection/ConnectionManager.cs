@@ -8,18 +8,15 @@ using UnityEngine;
 namespace Services.Connection {
 	public class ConnectionManager {
 		private readonly Logger<ConnectionManager> logger = new Logger<ConnectionManager>();
+		
 		private readonly List<Tuple<uint, uint>> connectionQueue = new List<Tuple<uint, uint>>();
 		private readonly ConnectionController controller;
-		private readonly ObservableProperty<ConnectionMode> connectionMode;
-		private readonly Func<bool> isServer;
 
 		private readonly RouteService routeService = new RouteService();
 		private Graph graph => GraphController.Graph;
 
-		public ConnectionManager(ConnectionController controller, ObservableProperty<ConnectionMode> connectionMode, Func<bool> isServer) {
+		public ConnectionManager(ConnectionController controller) {
 			this.controller = controller;
-			this.connectionMode = connectionMode;
-			this.isServer = isServer;
 		}
 
 		#region Connection Loading
@@ -72,7 +69,7 @@ namespace Services.Connection {
 			graph.IdNodeMap.ContainsKey(connection.Item1) && graph.IdNodeMap.ContainsKey(connection.Item2);
 
 		private void InitConnection(Model.Connection connection) {
-			if (!connection.Item1.GetConnections(connectionMode.Value).Contains(connection.Item2.ID) && isServer())
+			if (!connection.Item1.GetConnections(controller.GraphController.ConnectionMode.Value).Contains(connection.Item2.ID) && controller.NetworkController.IsServer())
 				logger.Warning("Attempting to create connection that does not exist");
 
 			GameObject connectionObject = controller.Connections.Pool.Spawn();
@@ -101,7 +98,9 @@ namespace Services.Connection {
 		}
 
 		private Color GetConnectionLineColor(Model.Connection connection) {
-			return connectionMode.Value == ConnectionMode.PARENTS ? controller.Colors.ParentColor : controller.Colors.ChildColor;
+			if (!connection.Ends.Contains(controller.NodeController.SelectedNode))
+				return controller.Colors.DisabledColor;
+			return controller.GraphController.ConnectionMode.Value == ConnectionMode.PARENTS ? controller.Colors.ParentColor : controller.Colors.ChildColor;
 		}
 
 		#endregion
