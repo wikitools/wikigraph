@@ -62,7 +62,6 @@ namespace Controllers {
 			get { return selectedNode; }
 			set {
 				if (selectedNode == value) {
-					Debug.LogError(graphController.ConnectionMode.Value);
 					if (inputController.Environment == Environment.Cave)
 						graphController.SwitchConnectionMode();
 					return;
