@@ -34,12 +34,20 @@ namespace Controllers {
 			get { return highlightedNode; }
 			set {
 				if (highlightedNode == value || value != null && value.State == NodeState.DISABLED) return;
-				if (highlightedNode != null && highlightedNode.State != NodeState.SELECTED)
-					SetNodeState(highlightedNode, NodeState.ACTIVE);
+				if (highlightedNode != null) {
+					if (highlightedNode.State != NodeState.SELECTED)
+						SetNodeState(highlightedNode, NodeState.ACTIVE);
+					else
+						SetNodeColor(highlightedNode, NodeState.SELECTED);
+				}
 				Node previousNode = highlightedNode;
 				highlightedNode = value;
-				if (highlightedNode != null && highlightedNode.State != NodeState.SELECTED)
-					SetNodeState(highlightedNode, NodeState.HIGHLIGHTED);
+				if (highlightedNode != null) {
+					if (highlightedNode.State != NodeState.SELECTED)
+						SetNodeState(highlightedNode, NodeState.HIGHLIGHTED);
+					else
+						SetNodeColor(highlightedNode, NodeState.HIGHLIGHTED);
+				}
 				OnHighlightedNodeChanged?.Invoke(previousNode, highlightedNode);
 			}
 		}
@@ -53,12 +61,11 @@ namespace Controllers {
 		public Node SelectedNode {
 			get { return selectedNode; }
 			set {
-				if (selectedNode != null && value != null && !selectedNode.GetConnections(graphController.ConnectionMode.Value).Contains(value.ID)) return;
 				if (selectedNode == value) {
 					if (inputController.Environment == Environment.Cave)
 						graphController.SwitchConnectionMode();
 					return;
-				}
+				} else if (selectedNode != null && value != null && !selectedNode.GetConnections(graphController.ConnectionMode.Value).Contains(value.ID)) return;
 				Node previousNode = selectedNode;
 				selectedNode = value;
 				graphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
@@ -95,6 +102,7 @@ namespace Controllers {
 			nodeObject.transform.parent = Nodes.Container.transform;
 			nodeObject.transform.position = position;
 			nodeObject.GetComponentInChildren<Text>().text = model.Title;
+			nodeObject.GetComponent<SphereCollider>().enabled = model.State != NodeState.DISABLED;
 			var nodeImage = nodeObject.GetComponentInChildren<Image>();
 			nodeImage.sprite = model.Type == NodeType.ARTICLE ? NodeSprites.Article : NodeSprites.Category;
 			nodeImage.color = NodeColors.First(node => node.State == DefaultState).Color;
@@ -126,6 +134,12 @@ namespace Controllers {
 			node.State = state;
 			var nodeObject = GraphController.Graph.NodeObjectMap[node];
 			nodeObject.GetComponentInChildren<Text>().enabled = node.State == NodeState.SELECTED || node.State == NodeState.HIGHLIGHTED;
+			SetNodeColor(node, state);
+			nodeObject.GetComponent<SphereCollider>().enabled = node.State != NodeState.DISABLED;
+		}
+
+		private void SetNodeColor(Node node, NodeState state) {
+			var nodeObject = GraphController.Graph.NodeObjectMap[node];
 			nodeObject.GetComponentInChildren<Image>().color = NodeColors.First(nodeColor => nodeColor.State == state).Color;
 		}
 

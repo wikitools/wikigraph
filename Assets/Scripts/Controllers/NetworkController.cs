@@ -60,6 +60,7 @@ namespace Controllers {
 
 		[RPC]
 		private void setConnectionMode(int mode) {
+			Debug.LogError((ConnectionMode)mode);
 			graphController.ConnectionMode.Value = (ConnectionMode) mode;
 		}
 

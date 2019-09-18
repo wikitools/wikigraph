@@ -1,9 +1,12 @@
 using Controllers;
 using InputModule.Binding;
+using Services;
 using UnityEngine;
 
 namespace InputModule.Processor {
 	public abstract class InputProcessor {
+		protected readonly Logger<InputProcessor> logger = new Logger<InputProcessor>();
+
 		protected InputConfig Config;
 		protected InputBinding Binding;
 		protected InputController Controller;
