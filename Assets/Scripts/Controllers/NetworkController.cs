@@ -26,9 +26,9 @@ namespace Controllers {
 		private void syncConnection(string stream, bool loaded) {
 			ConnectionSyncBuffer.ParseConnections(stream).ForEach(connection => {
 				if (loaded)
-					connectionController.LoadConnection(connection);
+					connectionController.ConnectionManager.LoadConnection(connection);
 				else
-					connectionController.UnloadConnection(connection);
+					connectionController.ConnectionManager.UnloadConnection(connection);
 			});
 		}
 
@@ -102,9 +102,14 @@ namespace Controllers {
 			connectionController = GetComponent<ConnectionController>();
 
 			NetworkView = GetComponent<NetworkView>();
+
+			if(inputController.Environment == Environment.Cave)
+				Lzwp.OnLZWPlibInitialize += Initialize;
+			else
+				Initialize();
 		}
 
-		private void Start() {
+		private void Initialize() {
 			if (Environment == Environment.PC) {
 				if (Application.isEditor) {
 					Network.InitializeServer(1, PORT);

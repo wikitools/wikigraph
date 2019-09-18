@@ -23,6 +23,9 @@ namespace Controllers {
 		public Action<Node> OnNodeUnloaded;
 		public Action OnNodeLoadSessionEnded;
 
+		public Action<Node, Node> OnSelectedNodeChanged;
+		public Action<Node, Node> OnHighlightedNodeChanged;
+		
 		#region Highlighted Node
 
 		private Node highlightedNode;
@@ -30,12 +33,14 @@ namespace Controllers {
 		public Node HighlightedNode {
 			get { return highlightedNode; }
 			set {
-				if (highlightedNode == value || NewNodeDisabled(value)) return;
+				if (highlightedNode == value || value != null && value.State == NodeState.DISABLED) return;
 				if (highlightedNode != null && highlightedNode.State != NodeState.SELECTED)
 					SetNodeState(highlightedNode, NodeState.ACTIVE);
+				Node previousNode = highlightedNode;
 				highlightedNode = value;
 				if (highlightedNode != null && highlightedNode.State != NodeState.SELECTED)
 					SetNodeState(highlightedNode, NodeState.HIGHLIGHTED);
+				OnHighlightedNodeChanged?.Invoke(previousNode, highlightedNode);
 			}
 		}
 
@@ -48,7 +53,7 @@ namespace Controllers {
 		public Node SelectedNode {
 			get { return selectedNode; }
 			set {
-				if (NewNodeDisabled(value)) return;
+				if (selectedNode != null && value != null && !selectedNode.GetConnections(graphController.ConnectionMode.Value).Contains(value.ID)) return;
 				if (selectedNode == value) {
 					if (inputController.Environment == Environment.Cave)
 						graphController.SwitchConnectionMode();
@@ -61,12 +66,8 @@ namespace Controllers {
 				OnSelectedNodeChanged?.Invoke(previousNode, selectedNode);
 			}
 		}
-
-		public Action<Node, Node> OnSelectedNodeChanged;
-
+		
 		#endregion
-
-		private bool NewNodeDisabled(Node newVal) => newVal != null && newVal.State == NodeState.DISABLED;
 
 		#region Node Loading
 

@@ -379,11 +379,13 @@ MonoBehaviour:
     Container: {fileID: 1131386829}
     Prefab: {fileID: 1767645766449916, guid: 3732550bef55849b3a12da07e1f24ebd, type: 2}
     PreloadNumber: 20
+  Colors:
+    ChildColor: {r: 0.3019608, g: 0.20784314, b: 0.85882354, a: 1}
+    ParentColor: {r: 0.54901963, g: 0.27058825, b: 0.90588236, a: 1}
+    DisabledColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0.2}
   MaxVisibleConnections: 5
   ChangeConnectionNumber: 1
   ScrollInterval: 0.5
-  ChildConnectionColor: {r: 0.30191627, g: 0.20652366, b: 0.8584906, a: 1}
-  ParentConnectionColor: {r: 0.5471407, g: 0.2691349, b: 0.9056604, a: 1}
 --- !u!114 &68664601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -522,7 +524,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1122214240}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.640625, y: 5.4384766, z: 20.517578}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
