@@ -55,7 +55,7 @@ namespace Controllers {
 		}
 
 		private void OnHighlightedNodeChanged(Node oldNode, Node newNode) {
-			if(NodeController.SelectedNode == null || NodeController.SelectedNode == oldNode || NodeController.SelectedNode == newNode) 
+			if(NodeController.SelectedNode != null && (NodeController.SelectedNode == oldNode || NodeController.SelectedNode == newNode)) 
 				return;
 			if(oldNode != null) 
 				GetNodeConnections(oldNode).Where(connection => !connection.Ends.Contains(NodeController.SelectedNode)).ToList().ForEach(SyncUnloadedConnection);

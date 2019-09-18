@@ -382,7 +382,7 @@ MonoBehaviour:
   Colors:
     ChildColor: {r: 0.3019608, g: 0.20784314, b: 0.85882354, a: 1}
     ParentColor: {r: 0.54901963, g: 0.27058825, b: 0.90588236, a: 1}
-    DisabledColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0.29803923}
+    DisabledColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0.2}
   MaxVisibleConnections: 5
   ChangeConnectionNumber: 1
   ScrollInterval: 0.5
