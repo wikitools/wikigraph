@@ -84,7 +84,6 @@ namespace Controllers {
 
 		private void UpdateVisibleConnections() {
 			var connections = CreateNodeConnections(NodeController.SelectedNode);
-			NodeController.OnNodeLoadSessionEnded?.Invoke(); //can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			if (connections.Count <= MaxVisibleConnections) {
 				connections.ForEach(SyncLoadedConnection);
 				OnConnectionLoadSessionEnded?.Invoke();
@@ -105,10 +104,12 @@ namespace Controllers {
 
 		private List<Connection> CreateNodeConnections(Node node) {
 			if (node == null) return null;
-			return node.GetConnections(GraphController.ConnectionMode.Value).Select(id => {
+			var connections = node.GetConnections(GraphController.ConnectionMode.Value).Select(id => {
 				NodeController.LoadNode(id);
 				return new Connection(node, graph.IdNodeMap[id]);
 			}).ToList();
+			NodeController.OnNodeLoadSessionEnded?.Invoke(); //can trigger loading of unloaded connected nodes TODO move once we have a node loader
+			return connections;
 		}
 
 		private List<Connection> GetNodeConnections(Node node) {
@@ -142,6 +143,7 @@ namespace Controllers {
 				NodeController.OnHighlightedNodeChanged += OnHighlightedNodeChanged;
 				GraphController.ConnectionMode.OnValueChanged += mode => OnConnectionNodeChanged(NodeController.SelectedNode, NodeController.SelectedNode);
 			} else {
+				NodeController.OnSelectedNodeChanged += (oldNode, newNode) => SwitchConnectionTypes();
 				GraphController.ConnectionMode.OnValueChanged += mode => SwitchConnectionTypes();
 				NodeController.OnNodeLoaded += (node, pos) => ConnectionManager.CheckConnectionQueue();
 			}

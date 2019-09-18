@@ -103,8 +103,10 @@ namespace Controllers {
 
 			NetworkView = GetComponent<NetworkView>();
 
-			//Lzwp.OnLZWPlibInitialize += Initialize;
-			Initialize();
+			if(inputController.Environment == Environment.Cave)
+				Lzwp.OnLZWPlibInitialize += Initialize;
+			else
+				Initialize();
 		}
 
 		private void Initialize() {
