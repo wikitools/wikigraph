@@ -15,8 +15,7 @@ namespace Controllers {
 
 		public void SwitchConnectionMode() {
 			SetConnectionMode(ConnectionMode.Value == Controllers.ConnectionMode.PARENTS
-				? Controllers.ConnectionMode.CHILDREN
-				: Controllers.ConnectionMode.PARENTS);
+				? Controllers.ConnectionMode.CHILDREN : Controllers.ConnectionMode.PARENTS);
 		}
 
 		public void SetConnectionMode(ConnectionMode connectionMode) {

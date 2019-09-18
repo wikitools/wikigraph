@@ -9,14 +9,18 @@ namespace InputModule.Processor {
 
 		public CaveInputProcessor(InputConfig config, CaveInputBinding binding, InputController controller) : base(config, binding, controller) {
 			this.binding = binding;
-			
-			binding.MovementJoystick.OnXAxisMove += amount => EntityTransform.Rotate(0, amount * Config.RotationSpeed, 0, Space.World);
+
+			binding.MovementJoystick.OnXAxisMove += Rotate;
 			binding.MovementJoystick.OnYAxisMove += OnMovementJoystickYAxisMove;
 			binding.NodePointer.OnPointed += OnNodePointed;
 			binding.NodeChooser.OnPointed += OnNodeChosen;
 			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
 			binding.RedoButton.OnPress += RedoUserAction;
 			binding.UndoButton.OnPress += UndoUserAction;
+		}
+
+		private void Rotate(float amount) {
+			EntityTransform.Rotate(0, Mathf.Clamp(amount * Config.RotationSpeed, -Config.MaxRotationSpeed.x, Config.MaxRotationSpeed.x), 0, Space.World);
 		}
 
 		private void OnMovementJoystickYAxisMove(float amount) {
