@@ -39,9 +39,6 @@ namespace Services.Connection {
 
 		#region Connection Creation
 
-		private bool CanLoadConnection(Model.Connection connection) =>
-			graph.IdNodeMap.ContainsKey(connection.Item1.ID) && graph.IdNodeMap.ContainsKey(connection.Item2.ID);
-
 		private void InitConnection(Model.Connection connection) {
 			if (!connection.Item1.GetConnections(controller.GraphController.ConnectionMode.Value).Contains(connection.Item2.ID) && controller.NetworkController.IsServer())
 				logger.Warning("Attempting to create connection that does not exist");

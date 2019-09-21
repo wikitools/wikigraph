@@ -28,6 +28,8 @@ namespace Controllers {
 
 		#region Callbacks
 
+		#region Scrolling
+
 		public void OnScrollInputChanged(int direction) {
 			scrollDirection = direction;
 		}
@@ -42,24 +44,30 @@ namespace Controllers {
 			}
 		}
 
-		private void OnConnectionNodeChanged(Node oldNode, Node newNode) {
+		private void ReloadSelectedNodeConnections(Node centerNode) {
 			graph.ConnectionObjectMap.Keys.ToList().ForEach(ConnectionManager.UnloadConnection);
 
 			currentVisibleIndex = 0;
 			ResetTimer();
 
-			if (newNode == null) return;
-			UpdateVisibleConnections();
+			if (centerNode == null) return;
+			UpdateVisibleConnections(scrollDirection);
 			SwitchConnectionTypes();
 		}
+
+		private void ResetTimer() {
+			scrollTimer = ScrollInterval * 1000;
+		}
+		
+		#endregion
 
 		private void OnHighlightedNodeChanged(Node oldNode, Node newNode) {
 			if(NodeController.SelectedNode != null && (NodeController.SelectedNode == oldNode || NodeController.SelectedNode == newNode)) 
 				return;
 			if(oldNode != null) 
-				GetNodeConnections(oldNode).Where(connection => !connection.Ends.Contains(NodeController.SelectedNode)).ToList().ForEach(ConnectionManager.UnloadConnection);
+				GetConnectionsAround(oldNode).Where(connection => !connection.Ends.Contains(NodeController.SelectedNode)).ToList().ForEach(ConnectionManager.UnloadConnection);
 			if(newNode != null)
-				CreateNodeConnections(newNode).ForEach(ConnectionManager.LoadConnection);
+				CreateConnectionsAround(newNode).ForEach(ConnectionManager.LoadConnection);
 		}
 		
 		#endregion
@@ -70,10 +78,8 @@ namespace Controllers {
 			graph.ConnectionObjectMap.Keys.Where(connection => connection.Ends.Contains(centerNode)).ToList().ForEach(ConnectionManager.UnloadConnection);
 		}
 
-		public void UpdateVisibleConnections(int direction = 0) {
-			if (direction == 0)
-				direction = scrollDirection;
-			var connections = CreateNodeConnections(NodeController.SelectedNode);
+		public void UpdateVisibleConnections(int direction) {
+			var connections = CreateConnectionsAround(NodeController.SelectedNode);
 			if (connections.Count <= MaxVisibleConnections) {
 				connections.ForEach(ConnectionManager.LoadConnection);
 				return;
@@ -86,28 +92,24 @@ namespace Controllers {
 		}
 
 		private void SwitchConnectionTypes() {
-			GetNodeConnections(NodeController.SelectedNode).ForEach(ConnectionManager.SetConnectionLineColor);
+			GetConnectionsAround(NodeController.SelectedNode).ForEach(ConnectionManager.SetConnectionLineColor);
 		}
 
-		private List<Connection> CreateNodeConnections(Node node) {
-			if (node == null) return null;
-			var connections = node.GetConnections(GraphController.ConnectionMode.Value).Where(id => id != node.ID).Select(id => {
+		private List<Connection> CreateConnectionsAround(Node centerNode) {
+			if (centerNode == null) return null;
+			var connections = centerNode.GetConnections(GraphController.ConnectionMode.Value).Where(id => id != centerNode.ID).Select(id => {
 				NodeController.LoadNode(id);
-				return new Connection(node, graph.IdNodeMap[id]);
+				return new Connection(centerNode, graph.IdNodeMap[id]);
 			}).ToList();
 			NodeController.OnNodeLoadSessionEnded?.Invoke(); //can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			return connections;
 		}
 
-		private List<Connection> GetNodeConnections(Node node) {
-			return graph.ConnectionObjectMap.Keys.ToList().Where(connection => connection.Ends.Contains(node)).ToList();
+		private List<Connection> GetConnectionsAround(Node centerNode) {
+			return graph.ConnectionObjectMap.Keys.ToList().Where(connection => connection.Ends.Contains(centerNode)).ToList();
 		}
 
 		#endregion
-
-		private void ResetTimer() {
-			scrollTimer = ScrollInterval * 1000;
-		}
 
 		#region Mono Behaviour
 
@@ -126,9 +128,9 @@ namespace Controllers {
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
 			
-			NodeController.OnSelectedNodeChanged += OnConnectionNodeChanged;
+			NodeController.OnSelectedNodeChanged += (oldNode, newNode) => ReloadSelectedNodeConnections(newNode);
 			NodeController.OnHighlightedNodeChanged += OnHighlightedNodeChanged;
-			GraphController.ConnectionMode.OnValueChanged += mode => OnConnectionNodeChanged(NodeController.SelectedNode, NodeController.SelectedNode);
+			GraphController.ConnectionMode.OnValueChanged += mode => ReloadSelectedNodeConnections(NodeController.SelectedNode);
 
 			ConnectionManager = new ConnectionManager(this);
 		}

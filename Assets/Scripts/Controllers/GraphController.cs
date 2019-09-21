@@ -20,13 +20,7 @@ namespace Controllers {
 
 		public void SetConnectionMode(ConnectionMode connectionMode) {
 			if (GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT) return;
-			networkController.SetConnectionMode(connectionMode);
-		}
-
-		private NetworkController networkController;
-
-		private void Awake() {
-			networkController = GetComponent<NetworkController>();
+			ConnectionMode.Value = (connectionMode);
 		}
 	}
 
