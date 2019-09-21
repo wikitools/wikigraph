@@ -104,7 +104,7 @@ namespace Controllers {
 
 		private List<Connection> CreateNodeConnections(Node node) {
 			if (node == null) return null;
-			var connections = node.GetConnections(GraphController.ConnectionMode.Value).Select(id => {
+			var connections = node.GetConnections(GraphController.ConnectionMode.Value).Where(id => id != node.ID).Select(id => {
 				NodeController.LoadNode(id);
 				return new Connection(node, graph.IdNodeMap[id]);
 			}).ToList();

@@ -80,7 +80,7 @@ namespace Services.Connection {
 
 		private Route InitConnectionObject(ref GameObject connectionObject, GameObject from, GameObject to, Color color) {
 			var basePosition = from.transform.position;
-			connectionObject.name = to.name;
+			connectionObject.name = from.name + " " + to.name;
 			connectionObject.transform.position = basePosition;
 			connectionObject.transform.parent = controller.Connections.Container.transform;
 

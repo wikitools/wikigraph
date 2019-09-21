@@ -68,6 +68,7 @@ namespace Controllers {
 
 		[RPC]
 		private void setSelectedNode(string id) {
+			Debug.LogError(id);
 			nodeController.ForceSetSelectedNode(id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id));
 		}
 

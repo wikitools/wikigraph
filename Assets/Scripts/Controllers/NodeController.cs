@@ -62,7 +62,7 @@ namespace Controllers {
 			get { return selectedNode; }
 			set {
 				if (selectedNode == value) {
-					if (inputController.Environment == Environment.Cave)
+					//if (inputController.Environment == Environment.Cave)
 						graphController.SwitchConnectionMode();
 					return;
 				}
