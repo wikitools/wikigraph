@@ -9,7 +9,6 @@ namespace Services.Connection {
 	public class ConnectionManager {
 		private readonly Logger<ConnectionManager> logger = new Logger<ConnectionManager>();
 		
-		private readonly List<Model.Connection> connectionQueue = new List<Model.Connection>();
 		private readonly ConnectionController controller;
 
 		private readonly RouteService routeService = new RouteService();
@@ -22,15 +21,6 @@ namespace Services.Connection {
 		#region Connection Loading
 
 		public void LoadConnection(Model.Connection connection) {
-			if (!CanLoadConnection(connection)) {
-				Debug.LogError(connection);
-				connectionQueue.Add(connection);
-				return;
-			}
-			DoLoadConnection(connection);
-		}
-
-		private void DoLoadConnection(Model.Connection connection) {
 			if (graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
 			InitConnection(connection);
@@ -43,15 +33,6 @@ namespace Services.Connection {
 			controller.Connections.Pool.Despawn(graph.ConnectionObjectMap[connection]);
 			graph.ConnectionObjectMap.Remove(connection);
 			controller.OnConnectionUnloaded?.Invoke(connection);
-		}
-
-		public void CheckConnectionQueue() {
-			for (var i = connectionQueue.Count - 1; i >= 0; i--) {
-				if (CanLoadConnection(connectionQueue[i])) {
-					DoLoadConnection(connectionQueue[i]);
-					connectionQueue.RemoveAt(i);
-				}
-			}
 		}
 
 		#endregion
