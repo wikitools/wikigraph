@@ -9,7 +9,7 @@ namespace Services.Connection {
 	public class ConnectionManager {
 		private readonly Logger<ConnectionManager> logger = new Logger<ConnectionManager>();
 		
-		private readonly List<Tuple<uint, uint>> connectionQueue = new List<Tuple<uint, uint>>();
+		private readonly List<Model.Connection> connectionQueue = new List<Model.Connection>();
 		private readonly ConnectionController controller;
 
 		private readonly RouteService routeService = new RouteService();
@@ -21,26 +21,23 @@ namespace Services.Connection {
 
 		#region Connection Loading
 
-		public void LoadConnection(Tuple<uint, uint> nodeIDs) {
-			if (!CanLoadConnection(nodeIDs)) {
-				connectionQueue.Add(nodeIDs);
+		public void LoadConnection(Model.Connection connection) {
+			if (!CanLoadConnection(connection)) {
+				Debug.LogError(connection);
+				connectionQueue.Add(connection);
 				return;
 			}
-			DoLoadConnection(nodeIDs);
+			DoLoadConnection(connection);
 		}
 
-		private void DoLoadConnection(Tuple<uint, uint> nodeIDs) {
-			var connection = CreateConnection(nodeIDs);
-
+		private void DoLoadConnection(Model.Connection connection) {
 			if (graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
 			InitConnection(connection);
 			controller.OnConnectionLoaded?.Invoke(connection);
 		}
 
-		public void UnloadConnection(Tuple<uint, uint> nodeIDs) {
-			var connection = CreateConnection(nodeIDs);
-
+		public void UnloadConnection(Model.Connection connection) {
 			if (!graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
 			controller.Connections.Pool.Despawn(graph.ConnectionObjectMap[connection]);
@@ -61,12 +58,8 @@ namespace Services.Connection {
 
 		#region Connection Creation
 
-		private Model.Connection CreateConnection(Tuple<uint, uint> connection) {
-			return new Model.Connection(graph.IdNodeMap[connection.Item1], graph.IdNodeMap[connection.Item2]);
-		}
-
-		private bool CanLoadConnection(Tuple<uint, uint> connection) =>
-			graph.IdNodeMap.ContainsKey(connection.Item1) && graph.IdNodeMap.ContainsKey(connection.Item2);
+		private bool CanLoadConnection(Model.Connection connection) =>
+			graph.IdNodeMap.ContainsKey(connection.Item1.ID) && graph.IdNodeMap.ContainsKey(connection.Item2.ID);
 
 		private void InitConnection(Model.Connection connection) {
 			if (!connection.Item1.GetConnections(controller.GraphController.ConnectionMode.Value).Contains(connection.Item2.ID) && controller.NetworkController.IsServer())

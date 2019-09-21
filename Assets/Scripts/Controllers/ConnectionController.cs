@@ -18,7 +18,6 @@ namespace Controllers {
 
 		public Action<Connection> OnConnectionLoaded;
 		public Action<Connection> OnConnectionUnloaded;
-		public Action OnConnectionLoadSessionEnded;
 
 		public ConnectionManager ConnectionManager { get; private set; }
 		private Graph graph => GraphController.Graph;
@@ -38,64 +37,52 @@ namespace Controllers {
 			if (scrollDirection == 0) return;
 			scrollTimer -= Time.deltaTime * 1000;
 			if (scrollTimer <= 0) {
-				UpdateVisibleConnections();
+				NetworkController.SyncConnectionScrolled(scrollDirection);
 				ResetTimer();
 			}
 		}
 
 		private void OnConnectionNodeChanged(Node oldNode, Node newNode) {
-			graph.ConnectionObjectMap.Keys.ToList().ForEach(SyncUnloadedConnection);
-			OnConnectionLoadSessionEnded?.Invoke();
+			graph.ConnectionObjectMap.Keys.ToList().ForEach(ConnectionManager.UnloadConnection);
 
 			currentVisibleIndex = 0;
 			ResetTimer();
 
 			if (newNode == null) return;
 			UpdateVisibleConnections();
+			SwitchConnectionTypes();
 		}
 
 		private void OnHighlightedNodeChanged(Node oldNode, Node newNode) {
 			if(NodeController.SelectedNode != null && (NodeController.SelectedNode == oldNode || NodeController.SelectedNode == newNode)) 
 				return;
 			if(oldNode != null) 
-				GetNodeConnections(oldNode).Where(connection => !connection.Ends.Contains(NodeController.SelectedNode)).ToList().ForEach(SyncUnloadedConnection);
+				GetNodeConnections(oldNode).Where(connection => !connection.Ends.Contains(NodeController.SelectedNode)).ToList().ForEach(ConnectionManager.UnloadConnection);
 			if(newNode != null)
-				CreateNodeConnections(newNode).ForEach(SyncLoadedConnection);
-			OnConnectionLoadSessionEnded?.Invoke();
+				CreateNodeConnections(newNode).ForEach(ConnectionManager.LoadConnection);
 		}
 		
 		#endregion
 
 		#region Connection Updating
-
-		private void SyncLoadedConnection(Connection connection) {
-			if (!graph.ConnectionObjectMap.ContainsKey(connection))
-				NetworkController.SyncLoadedConnection(connection.AsTuple());
-		}
-
-		private void SyncUnloadedConnection(Connection connection) {
-			if (graph.ConnectionObjectMap.ContainsKey(connection))
-				NetworkController.SyncUnloadedConnection(connection.AsTuple());
-		}
 		
 		private void UnloadNodeConnections(Node centerNode) {
-			graph.ConnectionObjectMap.Keys.Where(connection => connection.Ends.Contains(centerNode)).ToList().ForEach(SyncUnloadedConnection);
+			graph.ConnectionObjectMap.Keys.Where(connection => connection.Ends.Contains(centerNode)).ToList().ForEach(ConnectionManager.UnloadConnection);
 		}
 
-		private void UpdateVisibleConnections() {
+		public void UpdateVisibleConnections(int direction = 0) {
+			if (direction == 0)
+				direction = scrollDirection;
 			var connections = CreateNodeConnections(NodeController.SelectedNode);
 			if (connections.Count <= MaxVisibleConnections) {
-				connections.ForEach(SyncLoadedConnection);
-				OnConnectionLoadSessionEnded?.Invoke();
+				connections.ForEach(ConnectionManager.LoadConnection);
 				return;
 			}
 			UnloadNodeConnections(NodeController.SelectedNode);
-			OnConnectionLoadSessionEnded?.Invoke();
 
-			currentVisibleIndex = Utils.Mod(currentVisibleIndex + scrollDirection * ChangeConnectionNumber, connections.Count);
+			currentVisibleIndex = Utils.Mod(currentVisibleIndex + direction * ChangeConnectionNumber, connections.Count);
 			Utils.GetCircularListPart(connections, currentVisibleIndex, MaxVisibleConnections)
-				.ForEach(SyncLoadedConnection);
-			OnConnectionLoadSessionEnded?.Invoke();
+				.ForEach(ConnectionManager.LoadConnection);
 		}
 
 		private void SwitchConnectionTypes() {
@@ -138,15 +125,11 @@ namespace Controllers {
 
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
-			if (NetworkController.IsServer()) {
-				NodeController.OnSelectedNodeChanged += OnConnectionNodeChanged;
-				NodeController.OnHighlightedNodeChanged += OnHighlightedNodeChanged;
-				GraphController.ConnectionMode.OnValueChanged += mode => OnConnectionNodeChanged(NodeController.SelectedNode, NodeController.SelectedNode);
-			} else {
-				NodeController.OnSelectedNodeChanged += (oldNode, newNode) => SwitchConnectionTypes();
-				GraphController.ConnectionMode.OnValueChanged += mode => SwitchConnectionTypes();
-				NodeController.OnNodeLoaded += (node, pos) => ConnectionManager.CheckConnectionQueue();
-			}
+			
+			NodeController.OnSelectedNodeChanged += OnConnectionNodeChanged;
+			NodeController.OnHighlightedNodeChanged += OnHighlightedNodeChanged;
+			GraphController.ConnectionMode.OnValueChanged += mode => OnConnectionNodeChanged(NodeController.SelectedNode, NodeController.SelectedNode);
+
 			ConnectionManager = new ConnectionManager(this);
 		}
 

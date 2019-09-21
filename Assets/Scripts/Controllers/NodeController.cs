@@ -165,13 +165,11 @@ namespace Controllers {
 		private ConnectionController connectionController;
 		private GraphController graphController;
 		private NetworkController networkController;
-		private InputController inputController;
 
 		void Awake() {
 			graphController = GetComponent<GraphController>();
 			connectionController = GetComponent<ConnectionController>();
 			networkController = GetComponent<NetworkController>();
-			inputController = GetComponent<InputController>();
 		}
 
 		private void Start() {
