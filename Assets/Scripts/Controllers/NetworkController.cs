@@ -68,7 +68,7 @@ namespace Controllers {
 
 		[RPC]
 		private void setSelectedNode(string id) {
-			nodeController.SelectedNode = id == null ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
+			nodeController.ForceSetSelectedNode(id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id));
 		}
 
 		private void Synchronize(string method, params object[] args) {

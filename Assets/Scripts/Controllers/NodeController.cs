@@ -65,7 +65,8 @@ namespace Controllers {
 					if (inputController.Environment == Environment.Cave)
 						graphController.SwitchConnectionMode();
 					return;
-				} else if (selectedNode != null && value != null && !selectedNode.GetConnections(graphController.ConnectionMode.Value).Contains(value.ID)) return;
+				}
+				if (selectedNode != null && value != null && !selectedNode.GetConnections(graphController.ConnectionMode.Value).Contains(value.ID)) return;
 				Node previousNode = selectedNode;
 				selectedNode = value;
 				graphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
@@ -143,8 +144,9 @@ namespace Controllers {
 			nodeObject.GetComponentInChildren<Image>().color = NodeColors.First(nodeColor => nodeColor.State == state).Color;
 		}
 
-		public void ForceSetSelect(Node node) {
-			SetNodeState(node, NodeState.ACTIVE);
+		public void ForceSetSelectedNode(Node node) {
+			if(node != null)
+				SetNodeState(node, NodeState.ACTIVE);
 			SelectedNode = node;
 		}
 
@@ -181,10 +183,11 @@ namespace Controllers {
 					LoadNode(i);
 				}
 				OnNodeLoadSessionEnded?.Invoke();
+				graphController.GraphMode.OnValueChanged += mode => {
+					if (mode == GraphMode.FREE_FLIGHT)
+						networkController.SetSelectedNode("");
+				};
 			}
-			graphController.GraphMode.OnValueChanged += mode => {
-				if (mode == GraphMode.FREE_FLIGHT) SelectedNode = null;
-			};
 			connectionController.OnConnectionLoaded += connection => UpdateConnectionEndStates(connection, NodeState.ACTIVE);
 			connectionController.OnConnectionUnloaded += connection => UpdateConnectionEndStates(connection, NodeState.DISABLED);
 		}
