@@ -32,6 +32,13 @@ namespace Controllers {
 		private void Awake() {
 			networkController = GetComponent<NetworkController>();
 		}
+
+		private void Start() {
+			GraphMode.OnValueChanged += mode => {
+				if (GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT)
+					ConnectionMode.Value = Controllers.ConnectionMode.CHILDREN;
+			};
+		}
 	}
 
 	public class ObservableProperty<T> {

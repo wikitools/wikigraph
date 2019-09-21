@@ -66,7 +66,7 @@ namespace Controllers {
 			if(oldNode != null) 
 				GetConnectionsAround(oldNode).Where(connection => !connection.Ends.Contains(NodeController.SelectedNode)).ToList().ForEach(ConnectionManager.UnloadConnection);
 			if(newNode != null)
-				CreateConnectionsAround(newNode).ForEach(ConnectionManager.LoadConnection);
+				CreateConnectionsAround(newNode, MaxVisibleConnections).ToList().ForEach(ConnectionManager.LoadConnection);
 		}
 		
 		#endregion
@@ -94,12 +94,12 @@ namespace Controllers {
 			GetConnectionsAround(NodeController.SelectedNode).ForEach(ConnectionManager.SetConnectionLineColor);
 		}
 
-		private List<Connection> CreateConnectionsAround(Node centerNode) {
+		private List<Connection> CreateConnectionsAround(Node centerNode, int limit = -1) {
 			if (centerNode == null) return null;
-			var connections = centerNode.GetConnections(GraphController.ConnectionMode.Value).Where(id => id != centerNode.ID).Select(id => {
-				NodeController.LoadNode(id);
-				return new Connection(centerNode, graph.IdNodeMap[id]);
-			}).ToList();
+			var enumerable = centerNode.GetConnections(GraphController.ConnectionMode.Value).Where(id => id != centerNode.ID);
+			if (limit >= 0)
+				enumerable = enumerable.Take(limit);
+			var connections = 	enumerable.Select(id => new Connection(centerNode, NodeController.LoadNode(id))).ToList();
 			NodeController.OnNodeLoadSessionEnded?.Invoke(); //can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			return connections;
 		}
