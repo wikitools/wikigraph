@@ -37,7 +37,7 @@ namespace Controllers {
 				if (highlightedNode != null) {
 					if (highlightedNode.State != NodeState.SELECTED)
 						SetNodeState(highlightedNode, NodeState.ACTIVE);
-					else
+					else if(inputController.Environment == Environment.Cave)
 						SetNodeColor(highlightedNode, NodeState.SELECTED);
 				}
 				Node previousNode = highlightedNode;
@@ -45,7 +45,7 @@ namespace Controllers {
 				if (highlightedNode != null) {
 					if (highlightedNode.State != NodeState.SELECTED)
 						SetNodeState(highlightedNode, NodeState.HIGHLIGHTED);
-					else
+					else if(inputController.Environment == Environment.Cave)
 						SetNodeColor(highlightedNode, NodeState.HIGHLIGHTED);
 				}
 				OnHighlightedNodeChanged?.Invoke(previousNode, highlightedNode);
@@ -62,8 +62,8 @@ namespace Controllers {
 			get { return selectedNode; }
 			set {
 				if (selectedNode == value) {
-					//if (inputController.Environment == Environment.Cave)
-						graphController.SwitchConnectionMode();
+					if (inputController.Environment == Environment.Cave)
+						graphController.ConnectionMode.Value = graphController.GetSwitchedConnectionMode();
 					return;
 				}
 				if (selectedNode != null && value != null && !selectedNode.GetConnections(graphController.ConnectionMode.Value).Contains(value.ID)) return;
@@ -145,7 +145,7 @@ namespace Controllers {
 		}
 
 		public void ForceSetSelectedNode(Node node) {
-			if(node != null)
+			if(node != null && node.State != NodeState.SELECTED)
 				SetNodeState(node, NodeState.ACTIVE);
 			SelectedNode = node;
 		}
@@ -165,11 +165,13 @@ namespace Controllers {
 		private ConnectionController connectionController;
 		private GraphController graphController;
 		private NetworkController networkController;
+		private InputController inputController;
 
 		void Awake() {
 			graphController = GetComponent<GraphController>();
 			connectionController = GetComponent<ConnectionController>();
 			networkController = GetComponent<NetworkController>();
+			inputController = GetComponent<InputController>();
 		}
 
 		private void Start() {
