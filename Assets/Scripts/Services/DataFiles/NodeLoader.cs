@@ -32,6 +32,7 @@ namespace Services.DataFiles {
 			node.WikiID = fileReader.ReadInt(DataFileType.MAP, nodeMapFilePos + MAP.GRAPH_OFFSET_SIZE + MAP.TITLE_OFFSET_SIZE);
 			uint nextNodeTitleFilePos = getNextNodePropPos(DataFileType.TITLES, nodeMapFilePos + MAP.LINE_SIZE + MAP.GRAPH_OFFSET_SIZE);
 			node.Title = fileReader.ReadString(DataFileType.TITLES, nodeTitleFilePos, (int) (nextNodeTitleFilePos - nodeTitleFilePos));
+			node.Title = node.Title.Replace('_', ' ');
 			return node;
 		}
 
