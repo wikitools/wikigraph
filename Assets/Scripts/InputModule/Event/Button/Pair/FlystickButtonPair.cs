@@ -1,20 +1,22 @@
 using System;
 using InputModule.Binding;
-using InputModule.Event.Interfaces;
-using UnityEngine;
 
-namespace InputModule.Event.Button {
+namespace InputModule.Event.Button.Pair {
 	[Serializable]
-	public class FlystickButton : ButtonInput, InputInitializer, FlystickInput {
-		public FlystickInstance Instance;
-		public LzwpInput.Flystick.ButtonID Button;
+	public class FlystickButtonPair: FlystickButton {
+		public FlystickButton ModifierButton;
 
-		public virtual void Init() {
+		public override void Init() {
+			ModifierButton.Init();
 			CaveInputBinding.Flystick(Instance).GetButton(Button).OnPress += () => {
+				if(!ModifierButton.Pressed)
+					return;
 				Pressed = true;
 				OnPress?.Invoke();
 			};
 			CaveInputBinding.Flystick(Instance).GetButton(Button).OnRelease += () => {
+				if(!Pressed)
+					return;
 				Pressed = false;
 				OnRelease?.Invoke();
 			};
