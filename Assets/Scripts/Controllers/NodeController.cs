@@ -33,7 +33,6 @@ namespace Controllers {
 		public Node HighlightedNode {
 			get { return highlightedNode; }
 			set {
-				Debug.Log(value?.State);
 				if (highlightedNode == value || value != null && value.State == NodeState.DISABLED) return;
 				if (highlightedNode != null) {
 					if (highlightedNode.State != NodeState.SELECTED)
