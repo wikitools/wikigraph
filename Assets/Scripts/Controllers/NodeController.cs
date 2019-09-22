@@ -116,6 +116,8 @@ namespace Controllers {
 
 		private void UpdateNodeStates() {
 			SetAllNodesAs(DefaultState);
+			if(HighlightedNode != null)
+				SetNodeState(HighlightedNode, NodeState.HIGHLIGHTED);
 			if (graphController.GraphMode.Value == GraphMode.NODE_TRAVERSE) {
 				GraphController.Graph.ConnectionObjectMap.Keys.Where(connection => connection.Ends.Contains(SelectedNode)).ToList()
 					.ForEach(connection => UpdateConnectionEndStates(connection, NodeState.ACTIVE));
@@ -154,8 +156,14 @@ namespace Controllers {
 			if(graphController.GraphMode.Value == GraphMode.FREE_FLIGHT)
 				return;
 			var ends = connection.Ends;
-			if(ends.Contains(SelectedNode))
-				SetNodeState(ends[ends.IndexOf(SelectedNode) == 0 ? 1 : 0], state);
+			if(ends.Contains(SelectedNode)) {
+				var otherNode = ends[ends.IndexOf(SelectedNode) == 0 ? 1 : 0];
+				if (otherNode == HighlightedNode && state == NodeState.DISABLED)
+					HighlightedNode = null;
+				SetNodeState(otherNode, state);
+				if(otherNode == HighlightedNode && state == NodeState.ACTIVE)
+					SetNodeState(otherNode, NodeState.HIGHLIGHTED);
+			}
 		}
 
 		#endregion

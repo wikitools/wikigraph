@@ -83,11 +83,12 @@ namespace Controllers {
 				connections.ForEach(ConnectionManager.LoadConnection);
 				return;
 			}
-			UnloadNodeConnections(NodeController.SelectedNode);
+			var oldSubList = GetConnectionsAround(NodeController.SelectedNode);
 
 			currentVisibleIndex = Utils.Mod(currentVisibleIndex + direction * ChangeConnectionNumber, connections.Count);
-			Utils.GetCircularListPart(connections, currentVisibleIndex, MaxVisibleConnections)
-				.ForEach(ConnectionManager.LoadConnection);
+			var newSubList = Utils.GetCircularListPart(connections, currentVisibleIndex, MaxVisibleConnections);
+			oldSubList.Where(connection => !newSubList.Contains(connection)).ToList().ForEach(ConnectionManager.UnloadConnection);
+			newSubList.Where(connection => !oldSubList.Contains(connection)).ToList().ForEach(ConnectionManager.LoadConnection);
 		}
 
 		private void SwitchConnectionTypes() {

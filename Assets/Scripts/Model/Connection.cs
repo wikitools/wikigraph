@@ -4,15 +4,13 @@ using System.Collections.Generic;
 namespace Model {
 	public class Connection : Tuple<Node, Node> {
 		public Route Route;
-		public Connection(Node one, Node two) : base(one, two) { }
+		public Connection(Node one, Node two) : base(one.ID <= two.ID ? one : two, one.ID <= two.ID ? two : one) { }
 
 		public List<Node> Ends => new List<Node> {Item1, Item2};
 
 		public static Tuple<uint, uint> AsTuple(Node one, Node two) {
 			return new Tuple<uint, uint>(one.ID, two.ID);
 		}
-
-		public Tuple<uint, uint> AsTuple() => AsTuple(Item1, Item2);
 
 		public static bool operator ==(Connection one, Connection two) {
 			return ReferenceEquals(one, null) ? ReferenceEquals(two, null) : one.Equals(two);
