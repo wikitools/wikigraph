@@ -10,7 +10,6 @@ namespace Controllers {
 
 		private NetworkView NetworkView;
 		private NodeSyncBuffer nodeSyncBuffer;
-		private ConnectionSyncBuffer connectionSyncBuffer;
 
 		private static readonly int PORT = 25000;
 
@@ -18,18 +17,11 @@ namespace Controllers {
 
 		#region RPC Sync
 
-		public void SyncLoadedConnection(Tuple<uint, uint> connection) => connectionSyncBuffer.OnConnectionLoaded(connection.Item1, connection.Item2);
-
-		public void SyncUnloadedConnection(Tuple<uint, uint> connection) => connectionSyncBuffer.OnConnectionUnloaded(connection.Item1, connection.Item2);
+		public void SyncConnectionScrolled(int direction) => Synchronize("syncConnectionScrolled", direction);
 
 		[RPC]
-		private void syncConnection(string stream, bool loaded) {
-			ConnectionSyncBuffer.ParseConnections(stream).ForEach(connection => {
-				if (loaded)
-					connectionController.ConnectionManager.LoadConnection(connection);
-				else
-					connectionController.ConnectionManager.UnloadConnection(connection);
-			});
+		private void syncConnectionScrolled(int direction) {
+			connectionController.UpdateVisibleConnections(direction);
 		}
 
 		private void SyncLoadedNodes(string stream) => Synchronize("syncNodes", stream, true);
@@ -60,7 +52,6 @@ namespace Controllers {
 
 		[RPC]
 		private void setConnectionMode(int mode) {
-			Debug.LogError((ConnectionMode)mode);
 			graphController.ConnectionMode.Value = (ConnectionMode) mode;
 		}
 
@@ -68,7 +59,7 @@ namespace Controllers {
 
 		[RPC]
 		private void setSelectedNode(string id) {
-			nodeController.SelectedNode = id == null ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
+			nodeController.ForceSetSelectedNode(id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id));
 		}
 
 		private void Synchronize(string method, params object[] args) {
@@ -123,16 +114,8 @@ namespace Controllers {
 				nodeController.OnNodeLoaded += (node, position) => nodeSyncBuffer.OnNodeLoaded(node.ID, position);
 				nodeController.OnNodeUnloaded += node => nodeSyncBuffer.OnNodeUnloaded(node.ID);
 				nodeController.OnNodeLoadSessionEnded += nodeSyncBuffer.SyncRemaining;
-
-				connectionSyncBuffer = new ConnectionSyncBuffer(
-					SyncBufferFunction("syncConnection", true),
-					SyncBufferFunction("syncConnection", false)
-				);
-				connectionController.OnConnectionLoadSessionEnded += connectionSyncBuffer.SyncRemaining;
 			}
 		}
-
-		private Action<string> SyncBufferFunction(string rpcName, bool loaded) => stream => Synchronize(rpcName, stream, loaded);
 	}
 }
 #pragma warning restore 618

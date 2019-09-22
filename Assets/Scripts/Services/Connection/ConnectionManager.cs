@@ -9,7 +9,6 @@ namespace Services.Connection {
 	public class ConnectionManager {
 		private readonly Logger<ConnectionManager> logger = new Logger<ConnectionManager>();
 		
-		private readonly List<Tuple<uint, uint>> connectionQueue = new List<Tuple<uint, uint>>();
 		private readonly ConnectionController controller;
 
 		private readonly RouteService routeService = new RouteService();
@@ -21,26 +20,14 @@ namespace Services.Connection {
 
 		#region Connection Loading
 
-		public void LoadConnection(Tuple<uint, uint> nodeIDs) {
-			if (!CanLoadConnection(nodeIDs)) {
-				connectionQueue.Add(nodeIDs);
-				return;
-			}
-			DoLoadConnection(nodeIDs);
-		}
-
-		private void DoLoadConnection(Tuple<uint, uint> nodeIDs) {
-			var connection = CreateConnection(nodeIDs);
-
+		public void LoadConnection(Model.Connection connection) {
 			if (graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
 			InitConnection(connection);
 			controller.OnConnectionLoaded?.Invoke(connection);
 		}
 
-		public void UnloadConnection(Tuple<uint, uint> nodeIDs) {
-			var connection = CreateConnection(nodeIDs);
-
+		public void UnloadConnection(Model.Connection connection) {
 			if (!graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
 			controller.Connections.Pool.Despawn(graph.ConnectionObjectMap[connection]);
@@ -48,25 +35,9 @@ namespace Services.Connection {
 			controller.OnConnectionUnloaded?.Invoke(connection);
 		}
 
-		public void CheckConnectionQueue() {
-			for (var i = connectionQueue.Count - 1; i >= 0; i--) {
-				if (CanLoadConnection(connectionQueue[i])) {
-					DoLoadConnection(connectionQueue[i]);
-					connectionQueue.RemoveAt(i);
-				}
-			}
-		}
-
 		#endregion
 
 		#region Connection Creation
-
-		private Model.Connection CreateConnection(Tuple<uint, uint> connection) {
-			return new Model.Connection(graph.IdNodeMap[connection.Item1], graph.IdNodeMap[connection.Item2]);
-		}
-
-		private bool CanLoadConnection(Tuple<uint, uint> connection) =>
-			graph.IdNodeMap.ContainsKey(connection.Item1) && graph.IdNodeMap.ContainsKey(connection.Item2);
 
 		private void InitConnection(Model.Connection connection) {
 			if (!connection.Item1.GetConnections(controller.GraphController.ConnectionMode.Value).Contains(connection.Item2.ID) && controller.NetworkController.IsServer())
@@ -80,7 +51,7 @@ namespace Services.Connection {
 
 		private Route InitConnectionObject(ref GameObject connectionObject, GameObject from, GameObject to, Color color) {
 			var basePosition = from.transform.position;
-			connectionObject.name = to.name;
+			connectionObject.name = from.name + " " + to.name;
 			connectionObject.transform.position = basePosition;
 			connectionObject.transform.parent = controller.Connections.Container.transform;
 

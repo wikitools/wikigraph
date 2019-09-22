@@ -182,7 +182,7 @@ MonoBehaviour:
       MainAxisOnly: 0
       Button:
         ButtonType: 1
-        MouseButton: 0
+        MouseButton: 1
         KeyboardButton: 0
     MainMovementAxis:
       ReverseAxisDirection: 0
@@ -213,7 +213,7 @@ MonoBehaviour:
         KeyboardButton: 0
     NodeChooser:
       IsButtonActivated: 1
-      ActivationType: 0
+      ActivationType: 1
       Button:
         ButtonType: 1
         MouseButton: 0
