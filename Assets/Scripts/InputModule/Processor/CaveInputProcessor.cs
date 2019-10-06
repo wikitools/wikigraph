@@ -17,6 +17,8 @@ namespace InputModule.Processor {
 			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
 			binding.RedoButton.OnPress += RedoUserAction;
 			binding.UndoButton.OnPress += UndoUserAction;
+			
+			binding.ConnectionsScrollAxis.OnInputChange += direction => Controller.ConnectionController.OnScrollInputChanged(direction);
 		}
 
 		private void Rotate(float amount) {
@@ -24,12 +26,10 @@ namespace InputModule.Processor {
 		}
 
 		private void OnMovementJoystickYAxisMove(float amount) {
-			if (Controller.GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT) {
-				var translation = CaveInputBinding.Flystick(binding.MovementJoystick.Instance).pose.rotation * Vector3.forward;
-				EntityTransform.Translate(Config.MovementSpeed * amount * translation, Space.World);
-			} else {
-				Controller.ConnectionController.OnAdvanceScrollInput((Math.Abs(amount) >= 1 ? 1 : 0) * Math.Sign(amount));
-			}
+			if (Controller.GraphController.GraphMode.Value != GraphMode.FREE_FLIGHT) 
+				return;
+			var translation = CaveInputBinding.Flystick(binding.MovementJoystick.Instance).pose.rotation * Vector3.forward;
+			EntityTransform.Translate(Config.MovementSpeed * amount * translation, Space.World);
 		}
 	}
 }

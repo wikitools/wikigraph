@@ -175,7 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1afe824797e1453ca533cadd8934bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Environment: 0
+  Environment: 1
   PCInputBinding:
     RotationInput:
       IsButtonActivated: 1
@@ -279,6 +279,14 @@ MonoBehaviour:
     RedoButton:
       Instance: 0
       Button: 0
+    ConnectionsScrollAxis:
+      ReverseAxisDirection: 0
+      PositiveButton:
+        Instance: 0
+        Button: 3
+      NegativeButton:
+        Instance: 0
+        Button: 2
   PCConfig:
     RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}

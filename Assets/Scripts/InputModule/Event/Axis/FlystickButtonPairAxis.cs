@@ -4,9 +4,9 @@ using InputModule.Event.Interfaces;
 
 namespace InputModule.Event.Axis {
 	[Serializable]
-	public class FlystickButtonAxis : ButtonPair, InputInitializer, FlystickInput {
-		public FlystickButton PositiveButton;
-		public FlystickButton NegativeButton;
+	public class FlystickButtonPairAxis: ButtonPair, InputInitializer, FlystickInput {
+		public FlystickButtonPair PositiveButton;
+		public FlystickButtonPair NegativeButton;
 
 		public void Init() {
 			PositiveButton.Init();
