@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Model;
+using Model.Connection;
 using Services;
 using Services.Connection;
 using Services.ObjectPool;
@@ -12,8 +13,7 @@ namespace Controllers {
 		public GraphPooledObject Connections;
 		public ConnectionColors Colors;
 		
-		public int MaxVisibleConnections;
-		public int ChangeConnectionNumber;
+		public ConnectionRing ConnectionRing;
 		public float ScrollInterval;
 
 		public Action<Connection> OnConnectionLoaded;
@@ -66,7 +66,7 @@ namespace Controllers {
 			if(oldNode != null) 
 				GetConnectionsAround(oldNode).Where(connection => !connection.Ends.Contains(NodeController.SelectedNode)).ToList().ForEach(ConnectionManager.UnloadConnection);
 			if(newNode != null)
-				CreateConnectionsAround(newNode, MaxVisibleConnections).ToList().ForEach(ConnectionManager.LoadConnection);
+				CreateConnectionsAround(newNode, ConnectionRing.MaxVisibleConnections).ToList().ForEach(con => ConnectionManager.LoadConnection(con, newNode));
 		}
 		
 		#endregion
@@ -79,16 +79,16 @@ namespace Controllers {
 
 		public void UpdateVisibleConnections(int direction) {
 			var connections = CreateConnectionsAround(NodeController.SelectedNode);
-			if (connections.Count <= MaxVisibleConnections) {
-				connections.ForEach(ConnectionManager.LoadConnection);
+			if (connections.Count <= ConnectionRing.MaxVisibleConnections) {
+				connections.ForEach(con => ConnectionManager.LoadConnection(con, NodeController.SelectedNode));
 				return;
 			}
 			var oldSubList = GetConnectionsAround(NodeController.SelectedNode);
 
-			currentVisibleIndex = Utils.Mod(currentVisibleIndex + direction * ChangeConnectionNumber, connections.Count);
-			var newSubList = Utils.GetCircularListPart(connections, currentVisibleIndex, MaxVisibleConnections);
+			currentVisibleIndex = Utils.Mod(currentVisibleIndex + direction * ConnectionRing.ChangeConnectionNumber, connections.Count);
+			var newSubList = Utils.GetCircularListPart(connections, currentVisibleIndex, ConnectionRing.MaxVisibleConnections);
 			oldSubList.Where(connection => !newSubList.Contains(connection)).ToList().ForEach(ConnectionManager.UnloadConnection);
-			newSubList.Where(connection => !oldSubList.Contains(connection)).ToList().ForEach(ConnectionManager.LoadConnection);
+			newSubList.Where(connection => !oldSubList.Contains(connection)).ToList().ForEach(con => ConnectionManager.LoadConnection(con, NodeController.SelectedNode));
 		}
 
 		private void SwitchConnectionTypes() {
@@ -100,7 +100,7 @@ namespace Controllers {
 			var enumerable = centerNode.GetConnections(GraphController.ConnectionMode.Value).Where(id => id != centerNode.ID);
 			if (limit >= 0)
 				enumerable = enumerable.Take(limit);
-			var connections = 	enumerable.Select(id => new Connection(centerNode, NodeController.LoadNode(id))).ToList();
+			var connections = enumerable.Select(id => new Connection(centerNode, NodeController.LoadNode(id))).ToList();
 			NodeController.OnNodeLoadSessionEnded?.Invoke(); //can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			return connections;
 		}

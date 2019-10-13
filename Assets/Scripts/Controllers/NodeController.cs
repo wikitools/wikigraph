@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Model;
+using Model.Connection;
 using Services;
 using Services.DataFiles;
 using Services.ObjectPool;

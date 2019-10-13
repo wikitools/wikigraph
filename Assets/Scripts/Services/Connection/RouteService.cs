@@ -1,4 +1,5 @@
 using Model;
+using Model.Connection;
 using UnityEngine;
 
 namespace Services.Connection {

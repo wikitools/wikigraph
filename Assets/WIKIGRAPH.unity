@@ -311,6 +311,14 @@ MonoBehaviour:
     RedoButton:
       Instance: 0
       Button: 2
+    ConnectionsScrollAxis:
+      ReverseAxisDirection: 0
+      PositiveButton:
+        Instance: 0
+        Button: 0
+      NegativeButton:
+        Instance: 0
+        Button: 0
   PCConfig:
     RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}
@@ -417,8 +425,11 @@ MonoBehaviour:
     ChildColor: {r: 0.3019608, g: 0.20784314, b: 0.85882354, a: 1}
     ParentColor: {r: 0.54901963, g: 0.27058825, b: 0.90588236, a: 1}
     DisabledColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0.2}
-  MaxVisibleConnections: 8
-  ChangeConnectionNumber: 2
+  ConnectionRing:
+    MaxVisibleConnections: 6
+    ChangeConnectionNumber: 1
+    MaxRowConnections: 4
+    RingAngleSpan: {x: 30, y: 60}
   ScrollInterval: 0.5
 --- !u!114 &68664601
 MonoBehaviour:

@@ -6,7 +6,7 @@ namespace Services {
 	public class Graph {
 		private readonly Logger<Graph> logger = new Logger<Graph>();
 		public Dictionary<Node, GameObject> NodeObjectMap { get; } = new Dictionary<Node, GameObject>();
-		public Dictionary<Model.Connection, GameObject> ConnectionObjectMap { get; } = new Dictionary<Model.Connection, GameObject>();
+		public Dictionary<Model.Connection.Connection, GameObject> ConnectionObjectMap { get; } = new Dictionary<Model.Connection.Connection, GameObject>();
 		public Dictionary<uint, Node> IdNodeMap { get; } = new Dictionary<uint, Node>();
 
 		public Node GetNodeFromObject(GameObject gameObject) {

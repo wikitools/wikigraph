@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Model {
+namespace Model.Connection {
 	public class Connection : Tuple<Node, Node> {
 		public Route Route;
 		public Connection(Node one, Node two) : base(one.ID <= two.ID ? one : two, one.ID <= two.ID ? two : one) { }
