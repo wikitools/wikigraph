@@ -42,8 +42,8 @@ namespace Services.Connection {
 				logger.Warning("Attempting to create connection that does not exist");
 
 			GameObject connectionObject = controller.Connections.Pool.Spawn();
-			Node otherNode = connection.Item1 == distributionService.CentralNode ? connection.Item2 : connection.Item1;
-			connection.Route = distributionService.GenerateRoute(otherNode);
+			Node otherNode = connection.OtherEnd(distributionService.CentralNode);
+			distributionService.GenerateRoute(connection, otherNode);
 			InitConnectionObject(ref connectionObject, connection.Route, graph.NodeObjectMap[distributionService.CentralNode], 
 				graph.NodeObjectMap[otherNode], GetConnectionLineColor(connection));
 			graph.ConnectionObjectMap.Add(connection, connectionObject);

@@ -94,7 +94,10 @@ namespace Controllers {
 
 			currentVisibleIndex = Utils.Mod(currentVisibleIndex + direction * ConnectionDistribution.ChangeConnectionNumber, connections.Count);
 			var newSubList = Utils.GetCircularListPart(connections, currentVisibleIndex, ConnectionDistribution.MaxVisibleConnections);
-			oldSubList.Where(connection => !newSubList.Contains(connection)).ToList().ForEach(ConnectionManager.UnloadConnection);
+			oldSubList.Where(connection => !newSubList.Contains(connection)).ToList().ForEach(connection => {
+				selectedNodeDistribution.OnConnectionUnloaded(connection);
+				ConnectionManager.UnloadConnection(connection);
+			});
 			newSubList.Where(connection => !oldSubList.Contains(connection)).ToList().ForEach(con => ConnectionManager.LoadConnection(con, selectedNodeDistribution));
 		}
 

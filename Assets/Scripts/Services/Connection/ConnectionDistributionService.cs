@@ -12,7 +12,7 @@ namespace Services.Connection {
 		private readonly ConnectionDistribution connectionDistribution;
 		
 		private List<Vector3> freePlaces = new List<Vector3>();
-		private List<Vector3> usedPlaces = new List<Vector3>();
+		private List<Vector3> takenPlaces = new List<Vector3>();
 		
 		private List<GameObject> debugMarks = new List<GameObject>();
 
@@ -24,7 +24,7 @@ namespace Services.Connection {
 			DistributeConnections();
 			
 			//Debug
-			var pos = GraphController.Graph.NodeObjectMap[centralNode].transform.position;
+			var pos = NodePosition(CentralNode);
 			freePlaces.ForEach(place => debugMarks.Add(Object.Instantiate(controller.ConnectionMarker, pos + place, Quaternion.identity, controller.transform)));
 		}
 
@@ -48,8 +48,27 @@ namespace Services.Connection {
 			}
 		}
 
-		public Route GenerateRoute(Node to) {
-			return RouteService.GenerateRoute(NodePosition(CentralNode), NodePosition(to));
+		public void GenerateRoute(Model.Connection.Connection connection, Node to) {
+			var basePos = NodePosition(CentralNode);
+			var toPos = NodePosition(to);
+			int nearestPlace = 0;
+			float nearestDist = float.MaxValue;
+			for (var i = 0; i < freePlaces.Count; i++) {
+				float dist = Vector3.Distance(basePos + freePlaces[i], toPos);
+				if (nearestDist > dist) {
+					nearestDist = dist;
+					nearestPlace = i;
+				}
+			}
+			Vector3 chosenPlace = freePlaces[nearestPlace];
+			freePlaces.RemoveAt(nearestPlace);
+			takenPlaces.Add(chosenPlace);
+			connection.Route = RouteService.GenerateRoute(NodePosition(CentralNode), NodePosition(to), chosenPlace);
+		}
+
+		public void OnConnectionUnloaded(Model.Connection.Connection connection) {
+			takenPlaces.Remove(connection.Route.SpherePoint);
+			freePlaces.Add(connection.Route.SpherePoint);
 		}
 
 		private Vector3 NodePosition(Node node) => GraphController.Graph.NodeObjectMap[node].transform.position;
