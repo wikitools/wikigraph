@@ -11,19 +11,17 @@ namespace Services.Connection {
 		private readonly ConnectionController controller;
 
 		private Graph graph => GraphController.Graph;
-		private ConnectionRingService connectionRingService;
 
 		public ConnectionManager(ConnectionController controller) {
 			this.controller = controller;
-			connectionRingService = new ConnectionRingService(controller.ConnectionRing);
 		}
 
 		#region Connection Loading
 
-		public void LoadConnection(Model.Connection.Connection connection, Node centralNode) {
+		public void LoadConnection(Model.Connection.Connection connection, ConnectionDistributionService distributionService) {
 			if (graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
-			InitConnection(connection, centralNode);
+			InitConnection(connection, distributionService);
 			controller.OnConnectionLoaded?.Invoke(connection);
 		}
 
@@ -39,14 +37,15 @@ namespace Services.Connection {
 
 		#region Connection Creation
 
-		private void InitConnection(Model.Connection.Connection connection, Node centralNode) {
+		private void InitConnection(Model.Connection.Connection connection, ConnectionDistributionService distributionService) {
 			if (!connection.Item1.GetConnections(controller.GraphController.ConnectionMode.Value).Contains(connection.Item2.ID) && controller.NetworkController.IsServer())
 				logger.Warning("Attempting to create connection that does not exist");
 
 			GameObject connectionObject = controller.Connections.Pool.Spawn();
-			connection.Route = connectionRingService.GenerateRoute(connection, centralNode);
-			InitConnectionObject(ref connectionObject, connection.Route, graph.NodeObjectMap[connection.Item1], 
-				graph.NodeObjectMap[connection.Item2], GetConnectionLineColor(connection));
+			Node otherNode = connection.Item1 == distributionService.CentralNode ? connection.Item2 : connection.Item1;
+			connection.Route = distributionService.GenerateRoute(otherNode);
+			InitConnectionObject(ref connectionObject, connection.Route, graph.NodeObjectMap[distributionService.CentralNode], 
+				graph.NodeObjectMap[otherNode], GetConnectionLineColor(connection));
 			graph.ConnectionObjectMap.Add(connection, connectionObject);
 		}
 

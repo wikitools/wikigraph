@@ -425,12 +425,15 @@ MonoBehaviour:
     ChildColor: {r: 0.3019608, g: 0.20784314, b: 0.85882354, a: 1}
     ParentColor: {r: 0.54901963, g: 0.27058825, b: 0.90588236, a: 1}
     DisabledColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0.2}
-  ConnectionRing:
-    MaxVisibleConnections: 6
-    ChangeConnectionNumber: 1
-    MaxRowConnections: 4
-    RingAngleSpan: {x: 30, y: 60}
+  ConnectionDistribution:
+    MaxVisibleConnections: 8
+    ChangeConnectionNumber: 2
+    MaxRowConnections: 6
+    RingAngleSpan: {x: 50, y: 70}
+    RingRadius: 5
   ScrollInterval: 0.5
+  ConnectionMarker: {fileID: 1824095325314408, guid: e0816aae4b18f47fc8fd2117484817c4,
+    type: 2}
 --- !u!114 &68664601
 MonoBehaviour:
   m_ObjectHideFlags: 0

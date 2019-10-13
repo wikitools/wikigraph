@@ -13,13 +13,17 @@ namespace Controllers {
 		public GraphPooledObject Connections;
 		public ConnectionColors Colors;
 		
-		public ConnectionRing ConnectionRing;
+		public ConnectionDistribution ConnectionDistribution;
 		public float ScrollInterval;
 
 		public Action<Connection> OnConnectionLoaded;
 		public Action<Connection> OnConnectionUnloaded;
+		
+		public GameObject ConnectionMarker; //temp
 
 		public ConnectionManager ConnectionManager { get; private set; }
+		private ConnectionDistributionService selectedNodeDistribution;
+		private ConnectionDistributionService highlightedNodeDistribution;
 		private Graph graph => GraphController.Graph;
 
 		private int currentVisibleIndex;
@@ -50,6 +54,7 @@ namespace Controllers {
 			ResetTimer();
 
 			if (centerNode == null) return;
+			selectedNodeDistribution = new ConnectionDistributionService(centerNode, this);
 			UpdateVisibleConnections(scrollDirection);
 			SwitchConnectionTypes();
 		}
@@ -65,8 +70,10 @@ namespace Controllers {
 				return;
 			if(oldNode != null) 
 				GetConnectionsAround(oldNode).Where(connection => !connection.Ends.Contains(NodeController.SelectedNode)).ToList().ForEach(ConnectionManager.UnloadConnection);
-			if(newNode != null)
-				CreateConnectionsAround(newNode, ConnectionRing.MaxVisibleConnections).ToList().ForEach(con => ConnectionManager.LoadConnection(con, newNode));
+			if(newNode != null) {
+				highlightedNodeDistribution = new ConnectionDistributionService(newNode, this);
+				CreateConnectionsAround(newNode, ConnectionDistribution.MaxVisibleConnections).ToList().ForEach(con => ConnectionManager.LoadConnection(con, highlightedNodeDistribution));
+			}
 		}
 		
 		#endregion
@@ -79,16 +86,16 @@ namespace Controllers {
 
 		public void UpdateVisibleConnections(int direction) {
 			var connections = CreateConnectionsAround(NodeController.SelectedNode);
-			if (connections.Count <= ConnectionRing.MaxVisibleConnections) {
-				connections.ForEach(con => ConnectionManager.LoadConnection(con, NodeController.SelectedNode));
+			if (connections.Count <= ConnectionDistribution.MaxVisibleConnections) {
+				connections.ForEach(con => ConnectionManager.LoadConnection(con, selectedNodeDistribution));
 				return;
 			}
 			var oldSubList = GetConnectionsAround(NodeController.SelectedNode);
 
-			currentVisibleIndex = Utils.Mod(currentVisibleIndex + direction * ConnectionRing.ChangeConnectionNumber, connections.Count);
-			var newSubList = Utils.GetCircularListPart(connections, currentVisibleIndex, ConnectionRing.MaxVisibleConnections);
+			currentVisibleIndex = Utils.Mod(currentVisibleIndex + direction * ConnectionDistribution.ChangeConnectionNumber, connections.Count);
+			var newSubList = Utils.GetCircularListPart(connections, currentVisibleIndex, ConnectionDistribution.MaxVisibleConnections);
 			oldSubList.Where(connection => !newSubList.Contains(connection)).ToList().ForEach(ConnectionManager.UnloadConnection);
-			newSubList.Where(connection => !oldSubList.Contains(connection)).ToList().ForEach(con => ConnectionManager.LoadConnection(con, NodeController.SelectedNode));
+			newSubList.Where(connection => !oldSubList.Contains(connection)).ToList().ForEach(con => ConnectionManager.LoadConnection(con, selectedNodeDistribution));
 		}
 
 		private void SwitchConnectionTypes() {
@@ -97,12 +104,16 @@ namespace Controllers {
 
 		private List<Connection> CreateConnectionsAround(Node centerNode, int limit = -1) {
 			if (centerNode == null) return null;
-			var enumerable = centerNode.GetConnections(GraphController.ConnectionMode.Value).Where(id => id != centerNode.ID);
+			var enumerable = GetNodeNeighbours(centerNode);
 			if (limit >= 0)
 				enumerable = enumerable.Take(limit);
 			var connections = enumerable.Select(id => new Connection(centerNode, NodeController.LoadNode(id))).ToList();
 			NodeController.OnNodeLoadSessionEnded?.Invoke(); //can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			return connections;
+		}
+
+		public IEnumerable<uint> GetNodeNeighbours(Node centerNode) {
+			return centerNode.GetConnections(GraphController.ConnectionMode.Value).Where(id => id != centerNode.ID);
 		}
 
 		private List<Connection> GetConnectionsAround(Node centerNode) {
