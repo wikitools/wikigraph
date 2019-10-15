@@ -136,7 +136,7 @@ namespace Controllers {
 		private void SetNodeState(Node node, NodeState state) {
 			node.State = state;
 			var nodeObject = GraphController.Graph.NodeObjectMap[node];
-			nodeObject.GetComponentInChildren<Text>().enabled = node.State == NodeState.SELECTED || node.State == NodeState.HIGHLIGHTED;
+			//nodeObject.GetComponentInChildren<Text>().enabled = node.State == NodeState.SELECTED || node.State == NodeState.HIGHLIGHTED;
 			SetNodeColor(node, state);
 			nodeObject.GetComponent<SphereCollider>().enabled = node.State != NodeState.DISABLED;
 		}
