@@ -1,4 +1,4 @@
-using Model;
+using System.Collections.Generic;
 using Model.Connection;
 using UnityEngine;
 
@@ -8,7 +8,19 @@ namespace Services.Connection {
 		private static readonly float CURVE_BEND_PROPORTIONS = 0.5f;
 		private static int CURVE_SKEW_ANGLE = 20;
 
-		public static Route GenerateRoute(Vector3 @from, Vector3 to, Vector3 spherePoint) {
+		public static Route GenerateRoute(Vector3 from, Vector3 to, Vector3 relSpherePoint) {
+			var controlPoints = new List<Vector3>();
+			var pointDir = Vector3.ProjectOnPlane(relSpherePoint, Vector3.up);
+			controlPoints.Add(pointDir);
+			controlPoints.Add(relSpherePoint);
+			controlPoints.Add(relSpherePoint + (relSpherePoint - pointDir) * .5f);
+
+			var controlPointArray = controlPoints.ToArray();
+			var curveSegments = BezierCurveService.GenerateBezierCurve(controlPointArray);
+			return new Route {SegmentPoints = curveSegments, ControlPoints = controlPointArray, SpherePoint = relSpherePoint};
+		}
+		
+		private Route oldAlg(Vector3 from, Vector3 to, Vector3 spherePoint) {
 			Vector3 direction = to - from;
 			Vector3 normalAxis = Vector3.Cross(direction, Vector3.up);
 			normalAxis = Quaternion.AngleAxis(CURVE_SKEW_ANGLE, direction) * normalAxis;
