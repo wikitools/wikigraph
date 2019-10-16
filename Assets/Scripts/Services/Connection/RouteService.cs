@@ -29,7 +29,7 @@ namespace Services.Connection {
 			controlPoints.Add(to - from);
 
 			var controlPointArray = controlPoints.ToArray();
-			var curveSegments = BezierCurveService.GenerateBezierCurve(controlPointArray);
+			var curveSegments = BezierCurveService.GenerateBSpline(controlPointArray);
 			return new Route {SegmentPoints = curveSegments, ControlPoints = controlPointArray, SpherePoint = relSpherePoint};
 		}
 		

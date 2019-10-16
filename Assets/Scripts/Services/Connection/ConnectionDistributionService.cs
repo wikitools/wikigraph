@@ -35,16 +35,18 @@ namespace Services.Connection {
 			
 			DistributeAtElevation(firstRowNumber, connectionDistribution.RingAngleSpan.y);
 			if(totalNumber > firstRowNumber)
-				DistributeAtElevation(totalNumber - firstRowNumber, connectionDistribution.RingAngleSpan.x);
+				DistributeAtElevation(totalNumber - firstRowNumber, connectionDistribution.RingAngleSpan.x, 15);
 		}
 
-		private void DistributeAtElevation(int connectionNumber, float elevationAngle) {
+		private void DistributeAtElevation(int connectionNumber, float elevationAngle, float angleOffset = 0f) {
 			Vector3 baseVector = Quaternion.AngleAxis(elevationAngle - 90, Vector3.forward) * Vector3.right * connectionDistribution.RingRadius;
 			baseVector.y += 5;
-			float angleDistance = 360f / connectionNumber;
+			var rotation = Quaternion.AngleAxis(360f / connectionNumber, Vector3.up);
+			if(angleOffset != 0)
+				baseVector = Quaternion.AngleAxis(angleOffset, Vector3.up) * baseVector;
 			for (int i = 0; i < connectionNumber; i++) {
 				freePlaces.Add(baseVector);
-				baseVector = Quaternion.AngleAxis(angleDistance, Vector3.up) * baseVector;
+				baseVector = rotation * baseVector;
 			}
 		}
 
@@ -66,11 +68,11 @@ namespace Services.Connection {
 			connection.Route = RouteService.GenerateRoute(NodePosition(CentralNode), NodePosition(to), chosenPlace);
 			
 			//Debug
-			var pos = NodePosition(CentralNode);
+			/*var pos = NodePosition(CentralNode);
 			connection.Route.ControlPoints.ToList().ForEach(place => {
 				debugMarks.Add(Object.Instantiate(controller.ConnectionMarker, pos + place, Quaternion.identity, controller.transform));
 				debugMarks.Last().transform.localScale = new Vector3(.1f, .1f, .1f);
-			});
+			});*/
 		}
 
 		public void OnConnectionUnloaded(Model.Connection.Connection connection) {
