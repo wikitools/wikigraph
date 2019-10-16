@@ -6,7 +6,7 @@ namespace Services.Connection {
 	public static class BezierCurveService {
 		private static readonly int B_SPLINE_DEGREE = 4;
 		
-		private static readonly int BEZIER_SEGMENT_NUMBER_MULTIPLIER = 1;
+		private static readonly double BEZIER_SEGMENT_NUMBER_MULTIPLIER = .5;
 
 		public static Vector3[] GenerateBSpline(Vector3[] controlPoints) {
 			var knots = new float[B_SPLINE_DEGREE + controlPoints.Length + 1];
@@ -20,6 +20,7 @@ namespace Services.Connection {
 			var segments = new Vector3[segmentNumber + 1];
 			for (var i = 0; i <= segmentNumber; i++)
 				segments[i] = CalcBSplinePoint(i / (float) segmentNumber, controlPoints, knots);
+			segments[0] = controlPoints[0];
 			return segments;
 		}
 

@@ -429,7 +429,7 @@ MonoBehaviour:
     MaxVisibleConnections: 8
     ChangeConnectionNumber: 2
     MaxRowConnections: 6
-    RingAngleSpan: {x: 50, y: 70}
+    RingAngleSpan: {x: 50, y: 80}
     RingRadius: 5
   ScrollInterval: 0.5
   ConnectionMarker: {fileID: 1824095325314408, guid: e0816aae4b18f47fc8fd2117484817c4,
