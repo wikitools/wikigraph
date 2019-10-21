@@ -475,8 +475,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Entity: {fileID: 508853209}
-  HeaderHeight: 8
-  HeaderDistance: 18
+  PCCanvas: {fileID: 0}
+  HeaderHeight: -6
+  HeaderDeviation: -10
+  HeaderDistance: 16
   CurrentlySelectedText: 'Selected:'
   CurrentlyLookingAtText: 'Looking at:'
 --- !u!1 &125188561
@@ -486,7 +488,7 @@ GameObject:
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 125188562}
+  - component: {fileID: 125188563}
   m_Layer: 9
   m_Name: Header
   m_TagString: Untagged
@@ -494,14 +496,14 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &125188562
-Transform:
+--- !u!224 &125188563
+RectTransform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 125188561}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.18035889, y: -19.609375, z: -4.665039}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 459829116}
@@ -509,6 +511,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &327208665
 Prefab:
   m_ObjectHideFlags: 0
@@ -684,7 +691,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 4.665039}
   m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_Children: []
-  m_Father: {fileID: 125188562}
+  m_Father: {fileID: 125188563}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -832,7 +839,7 @@ Transform:
   m_LocalPosition: {x: -0.18035889, y: 18.6, z: 4.665039}
   m_LocalScale: {x: 0.29999998, y: 0.29999998, z: 1}
   m_Children: []
-  m_Father: {fileID: 125188562}
+  m_Father: {fileID: 125188563}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!102 &686099626
