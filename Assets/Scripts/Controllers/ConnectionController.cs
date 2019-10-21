@@ -18,8 +18,6 @@ namespace Controllers {
 
 		public Action<Connection> OnConnectionLoaded;
 		public Action<Connection> OnConnectionUnloaded;
-		
-		public GameObject ConnectionMarker; //temp
 
 		public ConnectionManager ConnectionManager { get; private set; }
 		private ConnectionDistributionService selectedNodeDistribution;
@@ -79,10 +77,6 @@ namespace Controllers {
 		#endregion
 
 		#region Connection Updating
-		
-		private void UnloadNodeConnections(Node centerNode) {
-			graph.ConnectionObjectMap.Keys.Where(connection => connection.Ends.Contains(centerNode)).ToList().ForEach(ConnectionManager.UnloadConnection);
-		}
 
 		public void UpdateVisibleConnections(int direction) {
 			var connections = CreateConnectionsAround(NodeController.SelectedNode);

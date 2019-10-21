@@ -13,8 +13,6 @@ namespace Services.Connection {
 		
 		private List<Vector3> freePlaces = new List<Vector3>();
 		private List<Vector3> takenPlaces = new List<Vector3>();
-		
-		private List<GameObject> debugMarks = new List<GameObject>();
 
 		public ConnectionDistributionService(Node centralNode, ConnectionController controller) {
 			CentralNode = centralNode;
@@ -22,10 +20,6 @@ namespace Services.Connection {
 			connectionDistribution = controller.ConnectionDistribution;
 			
 			DistributeConnections();
-			
-			//Debug
-			var pos = NodePosition(CentralNode);
-			freePlaces.ForEach(place => debugMarks.Add(Object.Instantiate(controller.ConnectionMarker, pos + place, Quaternion.identity, controller.transform)));
 		}
 
 		private void DistributeConnections() {
@@ -66,13 +60,6 @@ namespace Services.Connection {
 			freePlaces.RemoveAt(nearestPlace);
 			takenPlaces.Add(chosenPlace);
 			connection.Route = RouteService.GenerateRoute(NodePosition(CentralNode), NodePosition(to), chosenPlace);
-			
-			//Debug
-			/*var pos = NodePosition(CentralNode);
-			connection.Route.ControlPoints.ToList().ForEach(place => {
-				debugMarks.Add(Object.Instantiate(controller.ConnectionMarker, pos + place, Quaternion.identity, controller.transform));
-				debugMarks.Last().transform.localScale = new Vector3(.1f, .1f, .1f);
-			});*/
 		}
 
 		public void OnConnectionUnloaded(Model.Connection.Connection connection) {

@@ -30,6 +30,11 @@ namespace Services.Connection {
 				return;
 			controller.Connections.Pool.Despawn(graph.ConnectionObjectMap[connection]);
 			graph.ConnectionObjectMap.Remove(connection);
+
+			if (graph.ConnectionNodes.ContainsKey(connection)) {
+				controller.NodeController.Nodes.Pool.Despawn(graph.ConnectionNodes[connection]);
+				graph.ConnectionNodes.Remove(connection);
+			}
 			controller.OnConnectionUnloaded?.Invoke(connection);
 		}
 
@@ -38,16 +43,24 @@ namespace Services.Connection {
 		#region Connection Creation
 
 		private void InitConnection(Model.Connection.Connection connection, ConnectionDistributionService distributionService) {
-			if (!connection.Item1.GetConnections(controller.GraphController.ConnectionMode.Value).Contains(connection.Item2.ID) && controller.NetworkController.IsServer())
+			if (!(Connected(connection.Item1, connection.Item2) || Connected(connection.Item2, connection.Item1)) && controller.NetworkController.IsServer())
 				logger.Warning("Attempting to create connection that does not exist");
 
 			GameObject connectionObject = controller.Connections.Pool.Spawn();
 			Node otherNode = connection.OtherEnd(distributionService.CentralNode);
 			distributionService.GenerateRoute(connection, otherNode);
-			InitConnectionObject(ref connectionObject, connection.Route, graph.NodeObjectMap[distributionService.CentralNode], 
+			var centerNode = graph.NodeObjectMap[distributionService.CentralNode];
+			InitConnectionObject(ref connectionObject, connection.Route, centerNode, 
 				graph.NodeObjectMap[otherNode], GetConnectionLineColor(connection));
 			graph.ConnectionObjectMap.Add(connection, connectionObject);
+
+			if (distributionService.CentralNode == controller.NodeController.SelectedNode) {
+				GameObject conNode = controller.NodeController.LoadConnectionNode(otherNode, centerNode.transform.position + connection.Route.SpherePoint);
+				graph.ConnectionNodes.Add(connection, conNode);
+			}
 		}
+
+		private bool Connected(Node one, Node two) => one.GetConnections(controller.GraphController.ConnectionMode.Value).Contains(two.ID);
 
 		private void InitConnectionObject(ref GameObject connectionObject, Route route, GameObject from, GameObject to, Color color) {
 			var basePosition = from.transform.position;
