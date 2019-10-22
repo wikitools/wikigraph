@@ -10,11 +10,6 @@ namespace Services {
 		public Dictionary<uint, Node> IdNodeMap { get; } = new Dictionary<uint, Node>();
 		public Dictionary<Model.Connection.Connection, GameObject> ConnectionNodes = new Dictionary<Model.Connection.Connection, GameObject>();
 
-		public Node GetNodeFromObject(GameObject gameObject) {
-			if (gameObject == null) return null;
-			return GetNodeFromGameObjectName(gameObject.name);
-		}
-
 		public Node GetNodeFromGameObjectName(string name) {
 			uint id;
 			if (!uint.TryParse(name, out id) || !IdNodeMap.ContainsKey(id)) {
@@ -22,19 +17,6 @@ namespace Services {
 				return null;
 			}
 			return IdNodeMap[id];
-		}
-
-		public GameObject GetObjectFromId(uint id) {
-			if (!IdNodeMap.ContainsKey(id)) {
-				logger.Warning($"Id {id} is not a node id or is not loaded");
-				return null;
-			}
-			var node = IdNodeMap[id];
-			if (!NodeObjectMap.ContainsKey(node)) {
-				logger.Warning("Node is not loaded");
-				return null;
-			}
-			return NodeObjectMap[node];
 		}
 	}
 }

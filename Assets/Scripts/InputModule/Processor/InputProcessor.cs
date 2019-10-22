@@ -5,8 +5,6 @@ using UnityEngine;
 
 namespace InputModule.Processor {
 	public abstract class InputProcessor {
-		protected readonly Logger<InputProcessor> logger = new Logger<InputProcessor>();
-
 		protected InputConfig Config;
 		protected InputBinding Binding;
 		protected InputController Controller;
@@ -36,12 +34,10 @@ namespace InputModule.Processor {
 		protected void OnNodePointed(Ray ray) {
 			RaycastHit raycastHit;
 			var id = RaycastNode(ray, out raycastHit) ? raycastHit.collider.gameObject.name : "";
-			var highlightedNode = Controller.NodeController.HighlightedNode;
-			var highlightedID = highlightedNode != null ? highlightedNode.ID.ToString() : "";
-			if (id != highlightedID)
+			if (Controller.NodeController.IsNodeInteractable(id != "" ? raycastHit.collider.gameObject.layer : -1, id))
 				Controller.NetworkController.SetHighlightedNode(id);
 		}
 
-		private bool RaycastNode(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Node"));
+		private bool RaycastNode(Ray ray, out RaycastHit hit) => Physics.Raycast(ray, out hit, float.MaxValue, LayerMask.GetMask("Node", "Connection Node"));
 	}
 }

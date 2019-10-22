@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Controllers;
@@ -68,5 +69,15 @@ namespace Services.Connection {
 		}
 
 		private Vector3 NodePosition(Node node) => GraphController.Graph.NodeObjectMap[node].transform.position;
+	}
+	
+	[Serializable]
+	public class ConnectionDistribution {
+		public int MaxVisibleConnections;
+		public int ChangeConnectionNumber;
+		
+		public int MaxRowConnections;
+		public Vector2 RingAngleSpan;
+		public float RingRadius;
 	}
 }

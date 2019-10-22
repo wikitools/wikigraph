@@ -34,7 +34,7 @@ namespace Controllers {
 		public Node HighlightedNode {
 			get { return highlightedNode; }
 			set {
-				if (highlightedNode == value || value != null && value.State == NodeState.DISABLED) return;
+				if (highlightedNode == value || SelectedNode == null && value != null && value.State == NodeState.DISABLED) return;
 				if (highlightedNode != null) {
 					if (highlightedNode.State != NodeState.SELECTED)
 						SetNodeState(highlightedNode, NodeState.ACTIVE);
@@ -75,7 +75,13 @@ namespace Controllers {
 				OnSelectedNodeChanged?.Invoke(previousNode, selectedNode);
 			}
 		}
-		
+
+		public bool IsNodeInteractable(int layer, string id) {
+			bool modeCondition = id == "" || (graphController.GraphMode.Value == GraphMode.FREE_FLIGHT ? layer == LayerMask.NameToLayer("Node")
+				                     : SelectedNode.ID.ToString() == id || layer == LayerMask.NameToLayer("Connection Node"));
+			return (highlightedNode != null ? highlightedNode.ID.ToString() : "") != id && modeCondition;
+		}
+
 		#endregion
 
 		#region Node Loading
@@ -105,7 +111,7 @@ namespace Controllers {
 			InitializeNode(model, ref nodeObject, position);
 			UpdateNodeObjectState(NodeState.ACTIVE, ref nodeObject);
 			nodeObject.GetComponent<SphereCollider>().radius = 1;
-			//nodeObject.GetComponentInChildren<Image>().gameObject.GetComponent<RectTransform>().localScale = Vector3.one * .6f;
+			nodeObject.layer = LayerMask.NameToLayer("Connection Node");
 			return nodeObject;
 		}
 
@@ -121,7 +127,7 @@ namespace Controllers {
 
 		private void UpdateNodeObjectState(NodeState state, ref GameObject nodeObject) {
 			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
-			nodeObject.GetComponentInChildren<Image>().color = NodeColors.First(node => node.State == state).Color;
+			nodeObject.GetComponentInChildren<Image>().color = GetStateColor(state);
 		}
 
 		#endregion
@@ -146,16 +152,21 @@ namespace Controllers {
 
 		private void SetNodeState(Node node, NodeState state) {
 			node.State = state;
-			var nodeObject = GraphController.Graph.NodeObjectMap[node];
-			nodeObject.GetComponentInChildren<Text>().enabled = node.State == NodeState.SELECTED || node.State == NodeState.HIGHLIGHTED;
-			SetNodeColor(node, state);
-			nodeObject.GetComponent<SphereCollider>().enabled = node.State != NodeState.DISABLED;
+			SetNodeObjectState(GraphController.Graph.NodeObjectMap[node], state);
+		}
+
+		private void SetNodeObjectState(GameObject nodeObject, NodeState state) {
+			nodeObject.GetComponentInChildren<Text>().enabled = state == NodeState.SELECTED || state == NodeState.HIGHLIGHTED;
+			nodeObject.GetComponentInChildren<Image>().color = GetStateColor(state);
+			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
 		}
 
 		private void SetNodeColor(Node node, NodeState state) {
 			var nodeObject = GraphController.Graph.NodeObjectMap[node];
-			nodeObject.GetComponentInChildren<Image>().color = NodeColors.First(nodeColor => nodeColor.State == state).Color;
+			nodeObject.GetComponentInChildren<Image>().color = GetStateColor(state);
 		}
+		
+		private Color GetStateColor(NodeState state) => NodeColors.First(nodeColor => nodeColor.State == state).Color;
 
 		public void ForceSetSelectedNode(Node node) {
 			if(node != null && node.State != NodeState.SELECTED)
