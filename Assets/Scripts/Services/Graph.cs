@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using Model;
 using UnityEngine;
 
 namespace Services {
 	public class Graph {
 		private readonly Logger<Graph> logger = new Logger<Graph>();
+		
 		public Dictionary<Node, GameObject> NodeObjectMap { get; } = new Dictionary<Node, GameObject>();
 		public Dictionary<Model.Connection.Connection, GameObject> ConnectionObjectMap { get; } = new Dictionary<Model.Connection.Connection, GameObject>();
 		public Dictionary<uint, Node> IdNodeMap { get; } = new Dictionary<uint, Node>();
@@ -17,6 +19,11 @@ namespace Services {
 				return null;
 			}
 			return IdNodeMap[id];
+		}
+		
+		public Model.Connection.Connection GetConnectionBetween(Node one, Node two) {
+			var compareCon = new Model.Connection.Connection(one, two);
+			return ConnectionObjectMap.Keys.ToList().FirstOrDefault(con => con == compareCon);
 		}
 	}
 }

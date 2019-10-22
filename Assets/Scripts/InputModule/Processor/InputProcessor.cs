@@ -9,7 +9,6 @@ namespace InputModule.Processor {
 		protected InputBinding Binding;
 		protected InputController Controller;
 
-
 		public InputProcessor(InputConfig config, InputBinding binding, InputController controller) {
 			Config = config;
 			Binding = binding;

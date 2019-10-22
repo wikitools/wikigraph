@@ -175,7 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1afe824797e1453ca533cadd8934bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Environment: 1
+  Environment: 0
   PCInputBinding:
     RotationInput:
       IsButtonActivated: 1
@@ -391,8 +391,12 @@ MonoBehaviour:
     ChildColor: {r: 0.3019608, g: 0.20784314, b: 0.85882354, a: 1}
     ParentColor: {r: 0.54901963, g: 0.27058825, b: 0.90588236, a: 1}
     DisabledColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0.2}
-  MaxVisibleConnections: 5
-  ChangeConnectionNumber: 1
+  ConnectionDistribution:
+    MaxVisibleConnections: 8
+    ChangeConnectionNumber: 2
+    MaxRowConnections: 6
+    RingAngleSpan: {x: 50, y: 80}
+    RingRadius: 5
   ScrollInterval: 0.5
 --- !u!114 &68664601
 MonoBehaviour:

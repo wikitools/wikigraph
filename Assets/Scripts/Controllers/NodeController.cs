@@ -12,6 +12,8 @@ using Random = UnityEngine.Random;
 
 namespace Controllers {
 	public class NodeController : MonoBehaviour {
+		private readonly Logger<NodeController> logger = new Logger<NodeController>();
+		
 		public NodeColor[] NodeColors;
 		public NodeSprites NodeSprites;
 
@@ -37,7 +39,7 @@ namespace Controllers {
 				if (highlightedNode == value || SelectedNode == null && value != null && value.State == NodeState.DISABLED) return;
 				if (highlightedNode != null) {
 					if (highlightedNode.State != NodeState.SELECTED)
-						SetNodeState(highlightedNode, NodeState.ACTIVE);
+						SetConditionalNodeState(highlightedNode, NodeState.ACTIVE);
 					else if(inputController.Environment == Environment.Cave)
 						SetNodeColor(highlightedNode, NodeState.SELECTED);
 				}
@@ -45,7 +47,7 @@ namespace Controllers {
 				highlightedNode = value;
 				if (highlightedNode != null) {
 					if (highlightedNode.State != NodeState.SELECTED)
-						SetNodeState(highlightedNode, NodeState.HIGHLIGHTED);
+						SetConditionalNodeState(highlightedNode, NodeState.HIGHLIGHTED);
 					else if(inputController.Environment == Environment.Cave)
 						SetNodeColor(highlightedNode, NodeState.HIGHLIGHTED);
 				}
@@ -150,9 +152,26 @@ namespace Controllers {
 			}
 		}
 
+		private void SetConditionalNodeState(Node node, NodeState state) {
+			if (graphController.GraphMode.Value == GraphMode.FREE_FLIGHT)
+				SetNodeState(node, state);
+			else
+				SetConnectionNodeState(node, state);
+		}
+
 		private void SetNodeState(Node node, NodeState state) {
 			node.State = state;
 			SetNodeObjectState(GraphController.Graph.NodeObjectMap[node], state);
+		}
+
+		private void SetConnectionNodeState(Node node, NodeState state) {
+			node.State = state;
+			var connection = GraphController.Graph.GetConnectionBetween(SelectedNode, node);
+			if (connection == null || !GraphController.Graph.ConnectionNodes.ContainsKey(connection)) {
+				logger.Error("No connection for node found.");
+				return;
+			}
+			SetNodeObjectState(GraphController.Graph.ConnectionNodes[connection], state);
 		}
 
 		private void SetNodeObjectState(GameObject nodeObject, NodeState state) {
