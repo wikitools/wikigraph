@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Model;
@@ -74,6 +75,10 @@ namespace Controllers {
 				selectedNode = value;
 				graphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
 				UpdateNodeStates();
+				if(previousNode != null)
+					ScaleNodeImage(previousNode, 1);
+				if(selectedNode != null)
+					ScaleNodeImage(selectedNode, 3f);
 				OnSelectedNodeChanged?.Invoke(previousNode, selectedNode);
 			}
 		}
@@ -178,6 +183,22 @@ namespace Controllers {
 			nodeObject.GetComponentInChildren<Text>().enabled = state == NodeState.SELECTED || state == NodeState.HIGHLIGHTED;
 			nodeObject.GetComponentInChildren<Image>().color = GetStateColor(state);
 			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
+		}
+
+		private void ScaleNodeImage(Node node, float scale) => StartCoroutine(AnimateScaleNodeImage(
+			GraphController.Graph.NodeObjectMap[node].GetComponentInChildren<Image>().GetComponent<RectTransform>(), scale));
+
+		private IEnumerator AnimateScaleNodeImage(RectTransform node, float scale) {
+			float incAmount = (scale - node.localScale.x) / 100f;
+			while (true) {
+				if (Mathf.Abs(node.localScale.x - scale) > Mathf.Abs(incAmount)) {
+					node.localScale = Vector3.one * (node.localScale.x + incAmount);
+					yield return new WaitForSeconds(.01f);
+				} else {
+					node.localScale = Vector3.one * scale;
+					break;
+				}
+			}
 		}
 
 		private void SetNodeColor(Node node, NodeState state) {
