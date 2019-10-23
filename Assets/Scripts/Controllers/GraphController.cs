@@ -43,16 +43,19 @@ namespace Controllers {
 
 		private void CreateRouteObjects() {
 			string[] names = getRoutesNames();
-			int i = 1;
+			int i = 0;
 			foreach(string name in names) {
 				GameObject temp = Instantiate(RouteTemplate);
 				temp.transform.parent = RoutesUI.transform;
-				if (i%2 == 0) temp.transform.position = new Vector3(temp.transform.position.x + 4 * i * 2 * -1, temp.transform.position.y, temp.transform.position.z);
-				else temp.transform.position = new Vector3(temp.transform.position.x + 4 * i * 2, temp.transform.position.y, temp.transform.position.z);
-				temp.GetComponentInChildren<Text>().text = name;
+				if(i%2 == 0) temp.transform.position = new Vector3((temp.transform.position.x + 4 * (int)(i/2) + 4) , temp.transform.position.y, 8); //todo z
+				else temp.transform.position = new Vector3(((temp.transform.position.x + 4 * (int)(i/2) + 4)*-1 ), temp.transform.position.y, 8); //todo z
+				var tmp = name.Split('/');
+				var tmp2 = tmp[tmp.Length-1].Split('.');
+				temp.GetComponentInChildren<Text>().text = tmp2[0];
 				//var routeImage = RouteTemplate.GetComponentInChildren<Image>();
 				//routeImage.sprite = 
 				temp.name = "Route" + i.ToString();
+				i++;
 			}
 		}
 

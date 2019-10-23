@@ -24,7 +24,6 @@ namespace Controllers {
 		}
 
 		private void Start() {
-			return;
 			if (networkController.IsServer()) {
 				HistoryService = new HistoryService();
 				nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using UnityEngine;
@@ -13,12 +14,13 @@ namespace Services.RoutesFiles {
 
 		private List<StreamReader> streams = new List<StreamReader>();
 
-		private readonly string DATA_FILE_PATH = Application.streamingAssetsPath + "\\Routes";
+		private readonly string DATA_FILE_PATH = Application.streamingAssetsPath + "/Routes/";
 		private const string DATA_FILE_EXTENSION = "wgroute";
 		private string[] fileNames;
 
 		public RoutesReader(string dataFilePostfix = "") {
-			fileNames = Directory.GetFiles(DATA_FILE_PATH);
+			fileNames = Directory.GetFiles(DATA_FILE_PATH).Where(name => !name.EndsWith(".meta")).ToArray();
+
 			foreach (string name in fileNames) {
 				loadDataFile(name, dataFilePostfix);
 			}
