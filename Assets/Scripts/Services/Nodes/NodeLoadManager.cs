@@ -1,8 +1,11 @@
+using System;
+using System.Collections;
 using Controllers;
 using Model;
 using Services.DataFiles;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace Services.Nodes {
 	public class NodeLoadManager {
@@ -28,8 +31,6 @@ namespace Services.Nodes {
 			GameObject nodeObject = controller.Nodes.Pool.Spawn();
 			InitializeNode(node, ref nodeObject, position);
 			GraphController.Graph.NodeObjectMap[node] = nodeObject;
-			//if(!skipScaling)
-			//	controller.ScaleNodeImage(node, 0, 1);
 
 			controller.OnNodeLoaded?.Invoke(node, position);
 			return node;
@@ -41,7 +42,6 @@ namespace Services.Nodes {
 			UpdateNodeObjectState(NodeState.ACTIVE, ref nodeObject);
 			nodeObject.GetComponent<SphereCollider>().radius = 1;
 			nodeObject.layer = LayerMask.NameToLayer("Connection Node");
-			controller.NodeStateManager.ScaleConnectionNodeImage(nodeObject, 0, 1);
 			return nodeObject;
 		}
 
@@ -55,8 +55,14 @@ namespace Services.Nodes {
 		}
 
 		public void UnloadConnectionNode(Model.Connection.Connection connection) {
-			controller.Nodes.Pool.Despawn(GraphController.Graph.ConnectionNodes[connection]);
+			var nodeObject = GraphController.Graph.ConnectionNodes[connection];
 			GraphController.Graph.ConnectionNodes.Remove(connection);
+			controller.Nodes.Pool.Despawn(nodeObject);
+		}
+		
+		private IEnumerator ExecuteAfter(Action action, float time) {
+			yield return new WaitForSeconds(time);
+			action();
 		}
 
 		private void UpdateNodeObjectState(NodeState state, ref GameObject nodeObject) {
