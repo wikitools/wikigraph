@@ -315,6 +315,14 @@ MonoBehaviour:
     RedoButton:
       Instance: 0
       Button: 2
+    ConnectionsScrollAxis:
+      ReverseAxisDirection: 0
+      PositiveButton:
+        Instance: 0
+        Button: 0
+      NegativeButton:
+        Instance: 0
+        Button: 0
   PCConfig:
     RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}
@@ -339,11 +347,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Infographic: {fileID: 1042168899}
-  WorldRadius: 100
   RouteTemplate: {fileID: 1720473536377000, guid: 304dd1bf551acaf46ae8aa840924f565,
     type: 2}
-  RoutesUI: {fileID: 1186007205}
-  WorldRadius: 50
+  RoutesUI: {fileID: 2129455143}
+  WorldRadius: 100
 --- !u!114 &68664597
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -175,7 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1afe824797e1453ca533cadd8934bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Environment: 1
+  Environment: 0
   PCInputBinding:
     RotationInput:
       IsButtonActivated: 1
@@ -248,6 +248,10 @@ MonoBehaviour:
       ButtonType: 0
       MouseButton: 0
       KeyboardButton: 113
+    RoutesUIToggle:
+      ButtonType: 0
+      MouseButton: 0
+      KeyboardButton: 0
   CaveInputBinding:
     MovementJoystick:
       IsButtonActivated: 0
@@ -283,18 +287,18 @@ MonoBehaviour:
       ReverseAxisDirection: 0
       PositiveButton:
         Instance: 0
-        Button: 3
+        Button: 0
       NegativeButton:
         Instance: 0
-        Button: 2
+        Button: 0
   PCConfig:
     RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}
     MovementSpeed: 0.2
   CaveConfig:
-    RotationSpeed: 20
-    MaxRotationSpeed: {x: 10, y: 10}
-    MovementSpeed: 0.2
+    RotationSpeed: 0
+    MaxRotationSpeed: {x: 0, y: 0}
+    MovementSpeed: 0
   Flysticks: []
   ShowFlystickRays: 0
 --- !u!114 &68664596
@@ -309,6 +313,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Infographic: {fileID: 0}
+  RouteTemplate: {fileID: 0}
+  RoutesUI: {fileID: 0}
   WorldRadius: 50
 --- !u!114 &68664597
 MonoBehaviour:
@@ -391,8 +397,8 @@ MonoBehaviour:
     ChildColor: {r: 0.3019608, g: 0.20784314, b: 0.85882354, a: 1}
     ParentColor: {r: 0.54901963, g: 0.27058825, b: 0.90588236, a: 1}
     DisabledColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0.2}
-  MaxVisibleConnections: 5
-  ChangeConnectionNumber: 1
+  MaxVisibleConnections: 8
+  ChangeConnectionNumber: 2
   ScrollInterval: 0.5
 --- !u!114 &68664601
 MonoBehaviour:

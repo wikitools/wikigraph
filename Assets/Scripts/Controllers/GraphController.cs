@@ -41,11 +41,6 @@ namespace Controllers {
 			historyController = GetComponent<HistoryController>();
 		}
 
-		private void Start() {
-			HistoryController.startLoading += () => CreateRouteObjects(); 
-		}
-
-
 		private void CreateRouteObjects() {
 			string[] names = getRoutesNames();
 			int i = 1;
@@ -62,6 +57,7 @@ namespace Controllers {
 		}
 
 		private void Start() {
+			HistoryController.startLoading += () => CreateRouteObjects(); 
 			GraphMode.OnValueChanged += mode => {
 				if (GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT)
 					ConnectionMode.Value = Controllers.ConnectionMode.CHILDREN;
