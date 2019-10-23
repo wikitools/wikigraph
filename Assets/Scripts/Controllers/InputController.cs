@@ -74,10 +74,10 @@ namespace Controllers {
 
 	[Serializable]
 	public class InputConfig {
-		public float RotationSpeed;
-		public Vector2 MaxRotationSpeed;
+		public float RotationSpeed = 20;
+		public Vector2 MaxRotationSpeed = new Vector2(10, 10);
 
-		public float MovementSpeed;
+		public float MovementSpeed = .2f;
 	}
 
 	public enum Environment {

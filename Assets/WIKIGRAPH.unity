@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.113663815, g: 0.19205695, b: 0.23063463, a: 1}
+  m_IndirectSpecularColor: {r: 0.11357183, g: 0.19203451, b: 0.23066843, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -374,6 +374,8 @@ MonoBehaviour:
     PreloadNumber: 200
   NodeLoadedLimit: 1000
   LoadTestNodeSet: 0
+  NodeScaleTime: 0.43
+  ConnectionNodeScaleTime: 0.19
 --- !u!114 &68664598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -426,8 +428,12 @@ MonoBehaviour:
     ChildColor: {r: 0.3019608, g: 0.20784314, b: 0.85882354, a: 1}
     ParentColor: {r: 0.54901963, g: 0.27058825, b: 0.90588236, a: 1}
     DisabledColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0.2}
-  MaxVisibleConnections: 8
-  ChangeConnectionNumber: 2
+  ConnectionDistribution:
+    MaxVisibleConnections: 8
+    ChangeConnectionNumber: 2
+    MaxRowConnections: 5
+    RingAngleSpan: {x: 50, y: 80}
+    RingRadius: 5
   ScrollInterval: 0.5
 --- !u!114 &68664601
 MonoBehaviour:
@@ -475,6 +481,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Entity: {fileID: 508853209}
+  HeaderObject: {fileID: 125188561}
   HeaderHeight: -6
   HeaderDeviation: -10
   HeaderDistance: 16
@@ -488,7 +495,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 125188563}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: Header
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -673,7 +680,7 @@ GameObject:
   - component: {fileID: 459829116}
   - component: {fileID: 459829118}
   - component: {fileID: 459829117}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: Header Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -821,7 +828,7 @@ GameObject:
   - component: {fileID: 686099625}
   - component: {fileID: 686099627}
   - component: {fileID: 686099626}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: Header Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
