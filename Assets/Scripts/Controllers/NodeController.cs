@@ -24,9 +24,9 @@ namespace Controllers {
 		public bool LoadTestNodeSet;
 
 		[Range(.1f, 2f)]
-		public float NodeScaleTime;
+		public float NodeScaleTime = .5f;
 		[Range(.1f, 2f)]
-		public float ConnectionNodeScaleTime;
+		public float ConnectionNodeScaleTime = 0.2f;
 
 		public Action<Node, Vector3> OnNodeLoaded;
 		public Action<Node> OnNodeUnloaded;

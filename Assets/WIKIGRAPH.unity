@@ -373,6 +373,8 @@ MonoBehaviour:
     PreloadNumber: 200
   NodeLoadedLimit: 1000
   LoadTestNodeSet: 0
+  NodeScaleTime: 0.43
+  ConnectionNodeScaleTime: 0.19
 --- !u!114 &68664598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -428,12 +430,10 @@ MonoBehaviour:
   ConnectionDistribution:
     MaxVisibleConnections: 8
     ChangeConnectionNumber: 2
-    MaxRowConnections: 6
+    MaxRowConnections: 5
     RingAngleSpan: {x: 50, y: 80}
     RingRadius: 5
   ScrollInterval: 0.5
-  ConnectionMarker: {fileID: 1824095325314408, guid: e0816aae4b18f47fc8fd2117484817c4,
-    type: 2}
 --- !u!114 &68664601
 MonoBehaviour:
   m_ObjectHideFlags: 0

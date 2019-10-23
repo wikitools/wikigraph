@@ -73,11 +73,11 @@ namespace Services.Connection {
 	
 	[Serializable]
 	public class ConnectionDistribution {
-		public int MaxVisibleConnections;
-		public int ChangeConnectionNumber;
+		public int MaxVisibleConnections = 8;
+		public int ChangeConnectionNumber = 2;
 		
-		public int MaxRowConnections;
-		public Vector2 RingAngleSpan;
-		public float RingRadius;
+		public int MaxRowConnections = 6;
+		public Vector2 RingAngleSpan = new Vector2(50, 80);
+		public float RingRadius = 5;
 	}
 }
