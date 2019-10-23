@@ -14,39 +14,39 @@ namespace Controllers {
         public float HeaderDistance = 16f;
         public string CurrentlySelectedText = "Selected:";
         public string CurrentlyLookingAtText = "Looking at:";
+
         private GameObject headerObject;
         private Vector3 targetPosition;
-
         private InputController inputController;
         private NodeController nodeController;
+
+        void Start() {
+            targetPosition = Entity.transform.position;
+            nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
+            nodeController.OnHighlightedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
+        }
 
         void Awake() {
             headerObject = GameObject.Find("Header");
             inputController = GetComponent<InputController>();
             nodeController = GetComponent<NodeController>();
-            nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelectOrHightlight;
-            nodeController.OnHighlightedNodeChanged += UpdateNodeHeaderAfterSelectOrHightlight;
         }
 
-        private void UpdateNodeHeaderAfterSelectOrHightlight(Node previousNode, Node selectedNode) {
+        private void UpdateNodeHeaderAfterSelectOrHighlight(Node previousNode, Node selectedNode) {
             TextMesh headerTitle = headerObject.transform.GetChild(0).GetComponent<TextMesh>();
             TextMesh headerValue = headerObject.transform.GetChild(1).GetComponent<TextMesh>();
             if (nodeController.HighlightedNode != null) {
-                targetPosition = Entity.transform.position;
                 headerTitle.text = CurrentlyLookingAtText;
                 headerValue.text = nodeController.HighlightedNode.Title;
             } else {
-                targetPosition = Entity.transform.position;
                 headerTitle.text = "";
                 headerValue.text = "";
             }
             if (nodeController.SelectedNode != null) {
                 if (nodeController.HighlightedNode != null && nodeController.HighlightedNode != nodeController.SelectedNode) {
-                    targetPosition = GraphController.Graph.NodeObjectMap[nodeController.SelectedNode].transform.position;
                     headerTitle.text = CurrentlyLookingAtText;
                     headerValue.text = nodeController.HighlightedNode.Title;
                 } else {
-                    targetPosition = GraphController.Graph.NodeObjectMap[nodeController.SelectedNode].transform.position;
                     headerTitle.text = CurrentlySelectedText;
                     headerValue.text = nodeController.SelectedNode.Title;
                 }
@@ -54,9 +54,7 @@ namespace Controllers {
         }
 
         void Update() {
-            if (nodeController.HighlightedNode != null && nodeController.SelectedNode == null) {
-                targetPosition = Entity.transform.position;
-            }
+            targetPosition = Entity.transform.position;
             if (inputController.Environment == Environment.Cave) {
                 headerObject.transform.position = targetPosition + new Vector3(Mathf.Sin(Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI) * HeaderDistance, HeaderHeight, Mathf.Cos(Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI) * HeaderDistance);
                 headerObject.transform.rotation = Quaternion.LookRotation(headerObject.transform.position - (targetPosition + new Vector3(0, HeaderDeviation, 0)));
