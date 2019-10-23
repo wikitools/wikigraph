@@ -31,10 +31,8 @@ namespace Services.Connection {
 			controller.Connections.Pool.Despawn(graph.ConnectionObjectMap[connection]);
 			graph.ConnectionObjectMap.Remove(connection);
 
-			if (graph.ConnectionNodes.ContainsKey(connection)) {
-				controller.NodeController.Nodes.Pool.Despawn(graph.ConnectionNodes[connection]);
-				graph.ConnectionNodes.Remove(connection);
-			}
+			if (graph.ConnectionNodes.ContainsKey(connection))
+				controller.NodeController.NodeLoadManager.UnloadConnectionNode(connection);
 			controller.OnConnectionUnloaded?.Invoke(connection);
 		}
 

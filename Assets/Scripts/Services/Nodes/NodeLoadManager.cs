@@ -55,6 +55,11 @@ namespace Services.Nodes {
 			nodeObject.name = model.ID.ToString();
 		}
 
+		public void UnloadConnectionNode(Model.Connection.Connection connection) {
+			controller.Nodes.Pool.Despawn(GraphController.Graph.ConnectionNodes[connection]);
+			GraphController.Graph.ConnectionNodes.Remove(connection);
+		}
+
 		private void UpdateNodeObjectState(NodeState state, ref GameObject nodeObject) {
 			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
 			nodeObject.GetComponentInChildren<Image>().color = controller.NodeStateManager.GetStateColor(state);

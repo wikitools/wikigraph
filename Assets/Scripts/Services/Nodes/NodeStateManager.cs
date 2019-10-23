@@ -68,7 +68,7 @@ namespace Services.Nodes {
 			var transform = node.GetComponentInChildren<Image>().GetComponent<RectTransform>();
 			if (from >= 0)
 				transform.localScale = Vector3.one * from;
-			controller.StartCoroutine(AnimateScaleNodeImage(transform, to, controller.NodeScaleTime));
+			controller.StartCoroutine(AnimateScaleNodeImage(transform, to, time));
 		}
 
 		public void ScaleConnectionNodeImage(GameObject node, float from, float to) {
