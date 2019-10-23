@@ -1,15 +1,14 @@
-using System.Collections;
 using Controllers;
 using Model;
 using Services.DataFiles;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Services {
-	public class NodeManager {
+namespace Services.Nodes {
+	public class NodeLoadManager {
 		private NodeController controller;
 
-		public NodeManager(NodeController controller) {
+		public NodeLoadManager(NodeController controller) {
 			this.controller = controller;
 			NodeLoader = new NodeLoader(controller.LoadTestNodeSet ? "-test" : "");
 		}
@@ -24,7 +23,7 @@ namespace Services {
 			if (GraphController.Graph.IdNodeMap.ContainsKey(id))
 				return GraphController.Graph.IdNodeMap[id];
 			Node node = NodeLoader.LoadNode(id);
-			node.State = controller.DefaultState;
+			node.State = controller.NodeStateManager.DefaultState;
 			GraphController.Graph.IdNodeMap[id] = node;
 			GameObject nodeObject = controller.Nodes.Pool.Spawn();
 			InitializeNode(node, ref nodeObject, position);
@@ -42,7 +41,7 @@ namespace Services {
 			UpdateNodeObjectState(NodeState.ACTIVE, ref nodeObject);
 			nodeObject.GetComponent<SphereCollider>().radius = 1;
 			nodeObject.layer = LayerMask.NameToLayer("Connection Node");
-			controller.ScaleConnectionNodeImage(nodeObject, 0, 1);
+			controller.NodeStateManager.ScaleConnectionNodeImage(nodeObject, 0, 1);
 			return nodeObject;
 		}
 
@@ -58,7 +57,7 @@ namespace Services {
 
 		private void UpdateNodeObjectState(NodeState state, ref GameObject nodeObject) {
 			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
-			nodeObject.GetComponentInChildren<Image>().color = controller.GetStateColor(state);
+			nodeObject.GetComponentInChildren<Image>().color = controller.NodeStateManager.GetStateColor(state);
 		}
 		
 	}

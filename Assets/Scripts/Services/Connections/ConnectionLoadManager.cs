@@ -5,14 +5,14 @@ using Model.Connection;
 using UnityEngine;
 
 namespace Services.Connection {
-	public class ConnectionManager {
-		private readonly Logger<ConnectionManager> logger = new Logger<ConnectionManager>();
+	public class ConnectionLoadManager {
+		private readonly Logger<ConnectionLoadManager> logger = new Logger<ConnectionLoadManager>();
 		
 		private readonly ConnectionController controller;
 
 		private Graph graph => GraphController.Graph;
 
-		public ConnectionManager(ConnectionController controller) {
+		public ConnectionLoadManager(ConnectionController controller) {
 			this.controller = controller;
 		}
 
@@ -55,7 +55,7 @@ namespace Services.Connection {
 			graph.ConnectionObjectMap.Add(connection, connectionObject);
 
 			if (distributionService.CentralNode == controller.NodeController.SelectedNode) {
-				GameObject conNode = controller.NodeController.NodeManager.LoadConnectionNode(otherNode, centerNode.transform.position + connection.Route.SpherePoint);
+				GameObject conNode = controller.NodeController.NodeLoadManager.LoadConnectionNode(otherNode, centerNode.transform.position + connection.Route.SpherePoint);
 				graph.ConnectionNodes.Add(connection, conNode);
 			}
 		}

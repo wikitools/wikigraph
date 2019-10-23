@@ -19,7 +19,7 @@ namespace Controllers {
 		public Action<Connection> OnConnectionLoaded;
 		public Action<Connection> OnConnectionUnloaded;
 
-		public ConnectionManager ConnectionManager { get; private set; }
+		public ConnectionLoadManager ConnectionLoadManager { get; private set; }
 		private ConnectionDistributionService selectedNodeDistribution;
 		private ConnectionDistributionService highlightedNodeDistribution;
 		private Graph graph => GraphController.Graph;
@@ -47,7 +47,7 @@ namespace Controllers {
 		}
 
 		private void ReloadSelectedNodeConnections(Node centerNode) {
-			graph.ConnectionObjectMap.Keys.ToList().ForEach(ConnectionManager.UnloadConnection);
+			graph.ConnectionObjectMap.Keys.ToList().ForEach(ConnectionLoadManager.UnloadConnection);
 
 			ResetTimer();
 
@@ -67,10 +67,10 @@ namespace Controllers {
 			if(NodeController.SelectedNode != null && (NodeController.SelectedNode == oldNode || NodeController.SelectedNode == newNode)) 
 				return;
 			if(oldNode != null) 
-				GetConnectionsAround(oldNode).Where(connection => !connection.Ends.Contains(NodeController.SelectedNode)).ToList().ForEach(ConnectionManager.UnloadConnection);
+				GetConnectionsAround(oldNode).Where(connection => !connection.Ends.Contains(NodeController.SelectedNode)).ToList().ForEach(ConnectionLoadManager.UnloadConnection);
 			if(newNode != null) {
 				highlightedNodeDistribution = new ConnectionDistributionService(newNode, this);
-				CreateConnectionsAround(newNode, ConnectionDistribution.MaxVisibleConnections).ToList().ForEach(con => ConnectionManager.LoadConnection(con, highlightedNodeDistribution));
+				CreateConnectionsAround(newNode, ConnectionDistribution.MaxVisibleConnections).ToList().ForEach(con => ConnectionLoadManager.LoadConnection(con, highlightedNodeDistribution));
 			}
 		}
 		
@@ -81,7 +81,7 @@ namespace Controllers {
 		public void UpdateVisibleConnections(int direction) {
 			var connections = CreateConnectionsAround(NodeController.SelectedNode);
 			if (connections.Count <= ConnectionDistribution.MaxVisibleConnections) {
-				connections.ForEach(con => ConnectionManager.LoadConnection(con, selectedNodeDistribution));
+				connections.ForEach(con => ConnectionLoadManager.LoadConnection(con, selectedNodeDistribution));
 				return;
 			}
 			var oldSubList = GetConnectionsAround(NodeController.SelectedNode);
@@ -90,13 +90,13 @@ namespace Controllers {
 			var newSubList = Utils.GetCircularListPart(connections, currentVisibleIndex, ConnectionDistribution.MaxVisibleConnections);
 			oldSubList.Where(connection => !newSubList.Contains(connection)).ToList().ForEach(connection => {
 				selectedNodeDistribution.OnConnectionUnloaded(connection);
-				ConnectionManager.UnloadConnection(connection);
+				ConnectionLoadManager.UnloadConnection(connection);
 			});
-			newSubList.Where(connection => !oldSubList.Contains(connection)).ToList().ForEach(con => ConnectionManager.LoadConnection(con, selectedNodeDistribution));
+			newSubList.Where(connection => !oldSubList.Contains(connection)).ToList().ForEach(con => ConnectionLoadManager.LoadConnection(con, selectedNodeDistribution));
 		}
 
 		private void SwitchConnectionTypes() {
-			GetConnectionsAround(NodeController.SelectedNode).ForEach(ConnectionManager.SetConnectionLineColor);
+			GetConnectionsAround(NodeController.SelectedNode).ForEach(ConnectionLoadManager.SetConnectionLineColor);
 		}
 
 		private List<Connection> CreateConnectionsAround(Node centerNode, int limit = -1) {
@@ -104,7 +104,7 @@ namespace Controllers {
 			var enumerable = GetNodeNeighbours(centerNode);
 			if (limit >= 0)
 				enumerable = enumerable.Take(limit);
-			var connections = enumerable.Select(id => new Connection(centerNode, NodeController.NodeManager.LoadNode(id))).ToList();
+			var connections = enumerable.Select(id => new Connection(centerNode, NodeController.NodeLoadManager.LoadNode(id))).ToList();
 			NodeController.OnNodeLoadSessionEnded?.Invoke(); //can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			return connections;
 		}
@@ -143,7 +143,7 @@ namespace Controllers {
 			GraphController.ConnectionMode.OnValueChanged += mode => ReloadSelectedNodeConnections(NodeController.SelectedNode);
 			NodeController.OnHighlightedNodeChanged += OnHighlightedNodeChanged;
 
-			ConnectionManager = new ConnectionManager(this);
+			ConnectionLoadManager = new ConnectionLoadManager(this);
 		}
 
 		private void Update() {
