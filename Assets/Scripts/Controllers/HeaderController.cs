@@ -21,10 +21,6 @@ namespace Controllers {
         private NetworkController networkController;
 
         void Start() {
-            if (networkController.IsClient()) {
-                return;
-            }
-
             if (inputController.Environment == Environment.PC) {
                 headerObject.transform.parent = Camera.main.transform;
             }
@@ -67,7 +63,7 @@ namespace Controllers {
             }
 
             targetPosition = Entity.transform.position;
-            if (inputController.Environment == Environment.Cave) {
+            if (inputController.Environment != Environment.Cave) {
                 headerObject.transform.position = targetPosition + new Vector3(Mathf.Sin(Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI) * HeaderDistance, HeaderHeight, Mathf.Cos(Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI) * HeaderDistance);
                 headerObject.transform.rotation = Quaternion.LookRotation(headerObject.transform.position - (targetPosition + new Vector3(0, HeaderDeviation, 0)));
             } else {
