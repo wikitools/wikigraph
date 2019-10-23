@@ -8,7 +8,6 @@ namespace Controllers {
     public class HeaderController : MonoBehaviour {
 
         public GameObject Entity;
-        public Canvas PCCanvas;
         public float HeaderHeight = -6f;
         public float HeaderDeviation = -10f;
         public float HeaderDistance = 16f;
@@ -19,15 +18,23 @@ namespace Controllers {
         private Vector3 targetPosition;
         private InputController inputController;
         private NodeController nodeController;
+        private NetworkController networkController;
 
         void Start() {
-            targetPosition = Entity.transform.position;
+            if (networkController.IsClient()) {
+                return;
+            }
+
+            if (inputController.Environment == Environment.PC) {
+                headerObject.transform.parent = Camera.main.transform;
+            }
             nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
             nodeController.OnHighlightedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
         }
 
         void Awake() {
             headerObject = GameObject.Find("Header");
+            networkController = GetComponent<NetworkController>();
             inputController = GetComponent<InputController>();
             nodeController = GetComponent<NodeController>();
         }
@@ -35,6 +42,7 @@ namespace Controllers {
         private void UpdateNodeHeaderAfterSelectOrHighlight(Node previousNode, Node selectedNode) {
             TextMesh headerTitle = headerObject.transform.GetChild(0).GetComponent<TextMesh>();
             TextMesh headerValue = headerObject.transform.GetChild(1).GetComponent<TextMesh>();
+
             if (nodeController.HighlightedNode != null) {
                 headerTitle.text = CurrentlyLookingAtText;
                 headerValue.text = nodeController.HighlightedNode.Title;
@@ -54,12 +62,15 @@ namespace Controllers {
         }
 
         void Update() {
+            if (networkController.IsClient()) {
+                return;
+            }
+
             targetPosition = Entity.transform.position;
             if (inputController.Environment == Environment.Cave) {
                 headerObject.transform.position = targetPosition + new Vector3(Mathf.Sin(Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI) * HeaderDistance, HeaderHeight, Mathf.Cos(Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI) * HeaderDistance);
                 headerObject.transform.rotation = Quaternion.LookRotation(headerObject.transform.position - (targetPosition + new Vector3(0, HeaderDeviation, 0)));
             } else {
-                headerObject.transform.parent = Camera.main.transform;
                 headerObject.transform.localPosition = Vector3.forward * 2 * HeaderDistance;
             }
         }

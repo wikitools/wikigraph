@@ -461,7 +461,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Entity: {fileID: 508853209}
+  PCCanvas: {fileID: 0}
   HeaderHeight: 8
+  HeaderDeviation: -10
   HeaderDistance: 18
   CurrentlySelectedText: 'Selected:'
   CurrentlyLookingAtText: 'Looking at:'
@@ -1027,6 +1029,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1274761912}
+  - component: {fileID: 1274761913}
   m_Layer: 9
   m_Name: Header
   m_TagString: Untagged
@@ -1049,6 +1052,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!148 &1274761913
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1274761911}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 1274761912}
+  m_ViewID:
+    m_ID: 5
+    m_Type: 1
 --- !u!1001 &1341895048
 Prefab:
   m_ObjectHideFlags: 0

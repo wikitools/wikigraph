@@ -448,7 +448,7 @@ NetworkView:
   m_GameObject: {fileID: 68664594}
   m_Enabled: 1
   m_StateSynchronization: 1
-  m_Observed: {fileID: 68664599}
+  m_Observed: {fileID: 68664602}
   m_ViewID:
     m_ID: 4
     m_Type: 1
@@ -475,7 +475,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Entity: {fileID: 508853209}
-  PCCanvas: {fileID: 0}
   HeaderHeight: -6
   HeaderDeviation: -10
   HeaderDistance: 16
