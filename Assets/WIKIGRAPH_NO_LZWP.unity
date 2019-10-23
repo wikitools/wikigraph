@@ -339,6 +339,8 @@ MonoBehaviour:
     PreloadNumber: 1000
   NodeLoadedLimit: 1000
   LoadTestNodeSet: 0
+  NodeScaleTime: 0.28
+  ConnectionNodeScaleTime: 0.13
 --- !u!114 &68664598
 MonoBehaviour:
   m_ObjectHideFlags: 0

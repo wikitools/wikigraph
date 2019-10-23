@@ -23,6 +23,11 @@ namespace Controllers {
 		public int NodeLoadedLimit;
 		public bool LoadTestNodeSet;
 
+		[Range(.1f, 2f)]
+		public float NodeScaleTime;
+		[Range(.1f, 2f)]
+		public float ConnectionNodeScaleTime;
+
 		public Action<Node, Vector3> OnNodeLoaded;
 		public Action<Node> OnNodeUnloaded;
 		public Action OnNodeLoadSessionEnded;
@@ -76,9 +81,9 @@ namespace Controllers {
 				graphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
 				UpdateNodeStates();
 				if(previousNode != null)
-					ScaleNodeImage(previousNode, 1);
+					ScaleNodeImage(previousNode, -1, 1);
 				if(selectedNode != null)
-					ScaleNodeImage(selectedNode, 3f);
+					ScaleNodeImage(selectedNode, -1, 3f);
 				OnSelectedNodeChanged?.Invoke(previousNode, selectedNode);
 			}
 		}
@@ -95,11 +100,11 @@ namespace Controllers {
 
 		private NodeLoader nodeLoader;
 
-		public Node LoadNode(uint id) {
-			return LoadNode(id, Random.insideUnitSphere * graphController.WorldRadius);
+		public Node LoadNode(uint id, bool skipScaling = false) {
+			return LoadNode(id, Random.insideUnitSphere * graphController.WorldRadius, skipScaling);
 		}
 
-		public Node LoadNode(uint id, Vector3 position) {
+		public Node LoadNode(uint id, Vector3 position, bool skipScaling = false) {
 			if (GraphController.Graph.IdNodeMap.ContainsKey(id))
 				return GraphController.Graph.IdNodeMap[id];
 			Node node = nodeLoader.LoadNode(id);
@@ -108,6 +113,8 @@ namespace Controllers {
 			GameObject nodeObject = Nodes.Pool.Spawn();
 			InitializeNode(node, ref nodeObject, position);
 			GraphController.Graph.NodeObjectMap[node] = nodeObject;
+			if(!skipScaling)
+				ScaleNodeImage(node, 0, 1);
 
 			OnNodeLoaded?.Invoke(node, position);
 			return node;
@@ -119,6 +126,7 @@ namespace Controllers {
 			UpdateNodeObjectState(NodeState.ACTIVE, ref nodeObject);
 			nodeObject.GetComponent<SphereCollider>().radius = 1;
 			nodeObject.layer = LayerMask.NameToLayer("Connection Node");
+			ScaleConnectionNodeImage(nodeObject, 0, 1);
 			return nodeObject;
 		}
 
@@ -185,11 +193,23 @@ namespace Controllers {
 			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
 		}
 
-		private void ScaleNodeImage(Node node, float scale) => StartCoroutine(AnimateScaleNodeImage(
-			GraphController.Graph.NodeObjectMap[node].GetComponentInChildren<Image>().GetComponent<RectTransform>(), scale));
+		private void ScaleNodeImage(GameObject node, float from, float to, float time) {
+			var transform = node.GetComponentInChildren<Image>().GetComponent<RectTransform>();
+			if (from >= 0)
+				transform.localScale = Vector3.one * from;
+			StartCoroutine(AnimateScaleNodeImage(transform, to, NodeScaleTime));
+		}
 
-		private IEnumerator AnimateScaleNodeImage(RectTransform node, float scale) {
-			float incAmount = (scale - node.localScale.x) / 100f;
+		private void ScaleConnectionNodeImage(GameObject node, float from, float to) {
+			ScaleNodeImage(node, from, to, ConnectionNodeScaleTime);
+		}
+
+		private void ScaleNodeImage(Node node, float from, float to) {
+			ScaleNodeImage(GraphController.Graph.NodeObjectMap[node], from, to, NodeScaleTime);
+		}
+
+		private IEnumerator AnimateScaleNodeImage(RectTransform node, float scale, float time) {
+			float incAmount = (scale - node.localScale.x) / 100f / time;
 			while (true) {
 				if (Mathf.Abs(node.localScale.x - scale) > Mathf.Abs(incAmount)) {
 					node.localScale = Vector3.one * (node.localScale.x + incAmount);
@@ -199,6 +219,8 @@ namespace Controllers {
 					break;
 				}
 			}
+			if(scale == 0)
+				Destroy(node.gameObject);
 		}
 
 		private void SetNodeColor(Node node, NodeState state) {
@@ -233,9 +255,8 @@ namespace Controllers {
 			nodeLoader = new NodeLoader(LoadTestNodeSet ? "-test" : "");
 
 			if (networkController.IsServer()) {
-				for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++) {
-					LoadNode(i);
-				}
+				for (uint i = 0; i < Math.Min(NodeLoadedLimit, nodeLoader.GetNodeNumber()); i++)
+					LoadNode(i, true);
 				OnNodeLoadSessionEnded?.Invoke();
 				graphController.GraphMode.OnValueChanged += mode => {
 					if (mode == GraphMode.FREE_FLIGHT)
