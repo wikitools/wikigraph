@@ -1,5 +1,7 @@
-﻿using Services.History.Actions;
+﻿using Model;
+using Services.History.Actions;
 using Services.RoutesFiles;
+using System;
 using System.Collections.Generic;
 
 namespace Services.History {
@@ -10,8 +12,12 @@ namespace Services.History {
 		private Stack<UserAction> redoSavedRoute = new Stack<UserAction>();
 		private Stack<UserAction> undoSavedRoute = new Stack<UserAction>();
 
-		private RoutesLoader routesLoader;
+		public RoutesLoader routesLoader;
 
+
+		public HistoryService(string prefix = "") {
+			routesLoader = new RoutesLoader();
+		}
 
 		public void RedoAction() {
 			if (redoActionStack.Count != 0) {
@@ -53,6 +59,10 @@ namespace Services.History {
 		public void loadChosenRoute(int index) {
 			redoSavedRoute = routesLoader.loadRoute(index);
 			undoSavedRoute.Clear();
+		}
+
+		public string[] getNames() {
+			return routesLoader.routesNames();
 		}
 	}
 }

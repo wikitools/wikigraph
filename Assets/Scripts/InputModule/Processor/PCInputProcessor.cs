@@ -20,6 +20,9 @@ namespace InputModule.Processor {
 
 			binding.UndoButton.OnPress += UndoUserAction;
 			binding.RedoButton.OnPress += RedoUserAction;
+
+			binding.RoutesUIToggle.OnPress += () => Controller.GraphController.RoutesUI.SetActive(!Controller.GraphController.RoutesUI.activeSelf);
+
 		}
 
 		private void OnMove(Vector2 direction) {

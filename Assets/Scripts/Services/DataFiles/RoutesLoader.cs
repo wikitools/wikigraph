@@ -20,7 +20,9 @@ namespace Services.RoutesFiles {
 
 		private RoutesReader routesReader;
 		private static char separator = ';';
-		
+		public static Func<uint, Node> getRouteNode;
+
+
 
 		public RoutesLoader(string dataFilePostfix = "") {
 			routesReader = new RoutesReader(dataFilePostfix);
@@ -30,12 +32,16 @@ namespace Services.RoutesFiles {
 			return routesReader.numberOfRoutes();
 		}
 
+		public string[] routesNames() {
+			return routesReader.namesOfRoutes();
+		}
+
 		public Stack<UserAction> loadRoute(int index) {
 			Stack<UserAction> userActions = new Stack<UserAction>();
 			Node old = null;
 			while (routesReader.isNotEOF(index)) {
 				string[] line = routesReader.readLine(index).Split(separator);
-				UserAction action;
+				UserAction action = null;
 				if (line[0] == USERACTION_TYPE.MODE_CHANGE.ToString()) {
 					if (line[1] == CONNECT_MODE.CHILDREN.ToString()) {
 						action = new ModeChangeAction<CONNECT_MODE>(CONNECT_MODE.CHILDREN);
@@ -45,10 +51,12 @@ namespace Services.RoutesFiles {
 					}
 				}
 				else if (line[0] == USERACTION_TYPE.NODE_SELECTED.ToString()) {
-					Node newNode = null;
+					Node newNode = getRouteNode(Convert.ToUInt32(line[1])); //possibility of bug
 					action = new NodeSelectedAction(old, newNode);
 					old = newNode;
 				}
+				
+				userActions.Push(action);
 			}
 			return userActions;
 		}

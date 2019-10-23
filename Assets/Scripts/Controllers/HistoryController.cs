@@ -1,5 +1,8 @@
-﻿using Services.History;
+﻿using Model;
+using Services.History;
 using Services.History.Actions;
+using Services.RoutesFiles;
+using System;
 using UnityEngine;
 
 namespace Controllers {
@@ -8,6 +11,7 @@ namespace Controllers {
 		private NetworkController networkController;
 		private GraphController graphController;
 		public HistoryService HistoryService { get; private set; }
+		public static Action startLoading;
 
 		bool nodeChangedByHistory = false;
 		bool modeChangedByHistory = false;
@@ -38,7 +42,16 @@ namespace Controllers {
 					modeChangedByHistory = true;
 					graphController.SetConnectionMode(mode);
 				};
-			}
+				RoutesLoader.getRouteNode = id => {
+					return nodeController.LoadNode(id); 
+				};
+
+				GraphController.getRoutesNames = () => {
+					return HistoryService.getNames();
+				};
+				startLoading();
+
+			};
 		}
 	}
 }

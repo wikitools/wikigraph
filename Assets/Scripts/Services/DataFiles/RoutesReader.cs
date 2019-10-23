@@ -13,7 +13,7 @@ namespace Services.RoutesFiles {
 
 		private List<StreamReader> streams = new List<StreamReader>();
 
-		private readonly string DATA_FILE_PATH = Application.streamingAssetsPath + "Routes//";
+		private readonly string DATA_FILE_PATH = Application.streamingAssetsPath + "\\Routes";
 		private const string DATA_FILE_EXTENSION = "wgroute";
 		private string[] fileNames;
 
@@ -36,8 +36,12 @@ namespace Services.RoutesFiles {
 			return streams.Count;
 		}
 
+		public string[] namesOfRoutes() {
+			return fileNames;
+		}
+
 		private void loadDataFile(string name, string dataFilePostfix) {
-			var filePath = Path.Combine(DATA_FILE_PATH, $"{name.ToString().ToLower() + dataFilePostfix}.{DATA_FILE_EXTENSION}");
+			var filePath = Path.Combine(DATA_FILE_PATH, $"{name.ToString().ToLower() + dataFilePostfix}");
 			streams.Add(new StreamReader(filePath));
 		}
 
