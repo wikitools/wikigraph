@@ -55,7 +55,7 @@ namespace Services.Connection {
 			graph.ConnectionObjectMap.Add(connection, connectionObject);
 
 			if (distributionService.CentralNode == controller.NodeController.SelectedNode) {
-				GameObject conNode = controller.NodeController.LoadConnectionNode(otherNode, centerNode.transform.position + connection.Route.SpherePoint);
+				GameObject conNode = controller.NodeController.NodeManager.LoadConnectionNode(otherNode, centerNode.transform.position + connection.Route.SpherePoint);
 				graph.ConnectionNodes.Add(connection, conNode);
 			}
 		}

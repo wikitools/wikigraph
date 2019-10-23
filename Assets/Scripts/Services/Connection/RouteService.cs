@@ -8,9 +8,6 @@ namespace Services.Connection {
 	public class RouteService {
 		private static readonly int CURVE_BASE_ANGLE = 30;
 		private static int CURVE_SKEW_ANGLE = 10;
-		
-		private static readonly int CURVE_ANGLE_HEIGHT = 80;
-		private static readonly float CURVE_BEND_PROPORTIONS = 0.5f;
 
 		public static Route GenerateRoute(Vector3 from, Vector3 to, Vector3 relSpherePoint) {
 			var controlPoints = new List<Vector3> {Vector3.zero};

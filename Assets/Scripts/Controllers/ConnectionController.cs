@@ -104,7 +104,7 @@ namespace Controllers {
 			var enumerable = GetNodeNeighbours(centerNode);
 			if (limit >= 0)
 				enumerable = enumerable.Take(limit);
-			var connections = enumerable.Select(id => new Connection(centerNode, NodeController.LoadNode(id))).ToList();
+			var connections = enumerable.Select(id => new Connection(centerNode, NodeController.NodeManager.LoadNode(id))).ToList();
 			NodeController.OnNodeLoadSessionEnded?.Invoke(); //can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			return connections;
 		}
