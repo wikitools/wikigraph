@@ -12,11 +12,14 @@ namespace InputModule.Event {
 		private ButtonInput cachedButton;
 		protected ButtonInput ActivationButton => cachedButton ?? (cachedButton = (ButtonInput) GetType().GetField("Button").GetValue(this));
 
-		public abstract void Init();
+		public virtual void Init() {
+			if (IsButtonActivated)
+				(ActivationButton as InputInitializer)?.Init();
+		}
 
-		public void CheckForInput() {
-			if (IsButtonActivated && typeof(InputPoller).IsAssignableFrom(ActivationButton.GetType()))
-				(ActivationButton as InputPoller).CheckForInput();
+		public virtual void CheckForInput() {
+			if (IsButtonActivated)
+				(ActivationButton as InputPoller)?.CheckForInput();
 		}
 
 #if UNITY_EDITOR

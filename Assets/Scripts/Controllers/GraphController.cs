@@ -16,15 +16,18 @@ namespace Controllers {
 		public ObservableProperty<GraphMode> GraphMode = new ObservableProperty<GraphMode>(Controllers.GraphMode.FREE_FLIGHT);
 		public ObservableProperty<ConnectionMode> ConnectionMode = new ObservableProperty<ConnectionMode>(Controllers.ConnectionMode.CHILDREN);
 
-		public void SwitchConnectionMode() {
-			SetConnectionMode(ConnectionMode.Value == Controllers.ConnectionMode.PARENTS
-				? Controllers.ConnectionMode.CHILDREN
-				: Controllers.ConnectionMode.PARENTS);
+		public ConnectionMode GetSwitchedConnectionMode() {
+			return ConnectionMode.Value == Controllers.ConnectionMode.PARENTS
+				? Controllers.ConnectionMode.CHILDREN : Controllers.ConnectionMode.PARENTS;
 		}
 
-		public void SetConnectionMode(ConnectionMode connectionMode) {
+		private void SetConnectionMode(ConnectionMode connectionMode) {
 			if (GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT) return;
 			networkController.SetConnectionMode(connectionMode);
+		}
+
+		public void SwitchConnectionMode() {
+			SetConnectionMode(GetSwitchedConnectionMode());
 		}
 
 		private NetworkController networkController;
@@ -56,6 +59,13 @@ namespace Controllers {
 				//routeImage.sprite = 
 				temp.name = "Route" + i.ToString();
 			}
+		}
+
+		private void Start() {
+			GraphMode.OnValueChanged += mode => {
+				if (GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT)
+					ConnectionMode.Value = Controllers.ConnectionMode.CHILDREN;
+			};
 		}
 	}
 

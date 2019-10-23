@@ -11,18 +11,16 @@ Interactive 3D visualization of Wikipedia articles and categories in a graph-lik
 
 ### Loading full Wikipedia node set
 - Download the [data files](https://drive.google.com/open?id=107n-Bm3Enm-WQO8gVqk42P70a9bcMWTR)
-- Unpack to ``Assets/StreamingAssets`` folder
+- Unpack to ``Assets/StreamingAssets/DataFiles`` folder
 - Uncheck the ``Load Test Node Set`` option
 - You might want to tweak the ``Node Loaded Limit`` - start with a couple hundred
 - Adjust the ``World Radius`` accordingly
 
 ## Current look
 
-![Screenshot_20190630_113505](https://user-images.githubusercontent.com/8643919/60394883-2c430700-9b2b-11e9-85f4-84a68901d451.png)
+![Screenshot_20191016_190428](https://user-images.githubusercontent.com/8643919/66942100-959e4580-f048-11e9-8f44-462c5f42f9c1.png)
 
-![Screenshot_20190630_113453](https://user-images.githubusercontent.com/8643919/60394882-2baa7080-9b2b-11e9-87b2-cc855d8e24bd.png)
-
-![Screenshot_20190630_113832](https://user-images.githubusercontent.com/8643919/60394921-e3d81900-9b2b-11e9-9b8a-e323cff3e381.png)
+![Screenshot_20191016_190851](https://user-images.githubusercontent.com/8643919/66942115-9afb9000-f048-11e9-8b99-7616167ed7d8.png)
 
 ## Development
 - [Our Jira Project Board](https://wikigraph.atlassian.net)

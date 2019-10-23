@@ -26,7 +26,7 @@ namespace InputModule.Event.Axis {
 			AxisState = direction;
 		}
 
-		public void CheckForInput() {
+		public virtual void CheckForInput() {
 			if (AxisState != 0) OnMove?.Invoke(AxisState);
 		}
 

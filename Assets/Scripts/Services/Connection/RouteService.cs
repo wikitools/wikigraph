@@ -2,12 +2,12 @@ using Model;
 using UnityEngine;
 
 namespace Services.Connection {
-	public class ConnectionService {
+	public class RouteService {
 		private static readonly int CURVE_ANGLE_HEIGHT = 80;
 		private static readonly float CURVE_BEND_PROPORTIONS = 0.5f;
 		private static int CURVE_SKEW_ANGLE = 20;
 
-		public Route GenerateConnection(Vector3 from, Vector3 to) {
+		public Route GenerateRoute(Vector3 from, Vector3 to) {
 			Vector3 direction = to - from;
 			Vector3 normalAxis = Vector3.Cross(direction, Vector3.up);
 			normalAxis = Quaternion.AngleAxis(CURVE_SKEW_ANGLE, direction) * normalAxis;

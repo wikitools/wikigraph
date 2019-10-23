@@ -17,6 +17,8 @@ namespace InputModule.Event.Button {
 				OnPress?.Invoke();
 			}
 			if (ButtonType == ButtonType.Mouse ? Input.GetMouseButtonUp((int) MouseButton) : Input.GetKeyUp(KeyboardButton)) {
+				if(!Pressed)
+					return;
 				Pressed = false;
 				OnRelease?.Invoke();
 			}
