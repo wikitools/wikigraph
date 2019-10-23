@@ -447,12 +447,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Entity: {fileID: 1122214240}
+  HeaderObject: {fileID: 408991892}
   HeaderHeight: -6
   HeaderDeviation: -10
   HeaderDistance: 16
   CurrentlySelectedText: 'Selected:'
   CurrentlyLookingAtText: 'Looking at:'
-  HeaderObject: {fileID: 408991892}
 --- !u!1 &187428513
 GameObject:
   m_ObjectHideFlags: 0

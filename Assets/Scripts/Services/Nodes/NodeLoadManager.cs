@@ -48,7 +48,6 @@ namespace Services.Nodes {
 		public void InitializeNode(Node model, ref GameObject nodeObject, Vector3 position) {
 			nodeObject.transform.parent = controller.Nodes.Container.transform;
 			nodeObject.transform.position = position;
-			nodeObject.GetComponentInChildren<Text>().text = model.Title;
 			UpdateNodeObjectState(model.State, ref nodeObject);
 			var nodeImage = nodeObject.GetComponentInChildren<Image>();
 			nodeImage.sprite = model.Type == NodeType.ARTICLE ? controller.NodeSprites.Article : controller.NodeSprites.Category;

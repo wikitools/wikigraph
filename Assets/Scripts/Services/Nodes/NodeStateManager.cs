@@ -59,7 +59,6 @@ namespace Services.Nodes {
 		}
 
 		private void SetNodeObjectState(GameObject nodeObject, NodeState state) {
-			//nodeObject.GetComponentInChildren<Text>().enabled = state == NodeState.SELECTED || state == NodeState.HIGHLIGHTED;
 			nodeObject.GetComponentInChildren<Image>().color = GetStateColor(state);
 			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
 		}
