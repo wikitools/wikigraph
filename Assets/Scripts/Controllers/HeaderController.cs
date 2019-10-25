@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,13 +10,8 @@ namespace Controllers {
 
         public GameObject Entity;
         public GameObject HeaderObject;
+        public HeaderConfig Config;
         
-        public float HeaderHeight = -6f;
-        public float HeaderDeviation = -10f;
-        public float HeaderDistance = 16f;
-        public string CurrentlySelectedText = "Selected:";
-        public string CurrentlyLookingAtText = "Looking at:";
-
         private Vector3 targetPosition;
         private InputController inputController;
         private NodeController nodeController;
@@ -40,7 +36,7 @@ namespace Controllers {
             TextMesh headerValue = HeaderObject.transform.GetChild(1).GetComponent<TextMesh>();
 
             if (nodeController.HighlightedNode != null) {
-                headerTitle.text = CurrentlyLookingAtText;
+                headerTitle.text = Config.CurrentlyLookingAtText;
                 headerValue.text = nodeController.HighlightedNode.Title;
             } else {
                 headerTitle.text = "";
@@ -48,10 +44,10 @@ namespace Controllers {
             }
             if (nodeController.SelectedNode != null) {
                 if (nodeController.HighlightedNode != null && nodeController.HighlightedNode != nodeController.SelectedNode) {
-                    headerTitle.text = CurrentlyLookingAtText;
+                    headerTitle.text = Config.CurrentlyLookingAtText;
                     headerValue.text = nodeController.HighlightedNode.Title;
                 } else {
-                    headerTitle.text = CurrentlySelectedText;
+                    headerTitle.text = Config.CurrentlySelectedText;
                     headerValue.text = nodeController.SelectedNode.Title;
                 }
             }
@@ -63,13 +59,23 @@ namespace Controllers {
             }
 
             targetPosition = Entity.transform.position;
-            if (inputController.Environment == Environment.Cave) {
-                HeaderObject.transform.position = targetPosition + new Vector3(Mathf.Sin(Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI) * HeaderDistance, HeaderHeight, Mathf.Cos(Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI) * HeaderDistance);
-                HeaderObject.transform.rotation = Quaternion.LookRotation(HeaderObject.transform.position - (targetPosition + new Vector3(0, HeaderDeviation, 0)));
+            if (inputController.Environment != Environment.Cave) {
+                var anglesY = Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI;
+                HeaderObject.transform.position = targetPosition + new Vector3(Mathf.Sin(anglesY) * Config.HeaderDistance, 
+                                                      Config.HeaderHeight, Mathf.Cos(anglesY) * Config.HeaderDistance);
+                HeaderObject.transform.rotation = Quaternion.LookRotation(HeaderObject.transform.position - (targetPosition + new Vector3(0, Config.HeaderDeviation, 0)));
             } else {
-                HeaderObject.transform.localPosition = Vector3.forward * 2 * HeaderDistance;
+                HeaderObject.transform.localPosition = Config.HeaderDistance * 2 * Vector3.forward;
             }
         }
-
+        
+        [Serializable]
+        public class HeaderConfig {
+            public float HeaderHeight = -6f;
+            public float HeaderDeviation = -10f;
+            public float HeaderDistance = 16f;
+            public string CurrentlySelectedText = "Selected:";
+            public string CurrentlyLookingAtText = "Looking at:";
+        }
     }
 }

@@ -20,7 +20,7 @@ MonoBehaviour:
   tools:
   - Unity 2018.1.9f2
   LzwpLibVersion: 2.8 (mock)
-  appGUID: 6739C586C13C449D8961B6A2701FB443
+  appGUID: 02287A738CB449BB9176EC7C2A18D8B8
   buildGUID: 
   defaultConfig:
     obstacleWallWarningScaleMultiplier: 1
