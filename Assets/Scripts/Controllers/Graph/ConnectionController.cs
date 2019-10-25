@@ -148,7 +148,6 @@ namespace Controllers {
 			NodeController.OnHighlightedNodeChanged += OnHighlightedNodeChanged;
 
 			ConnectionLoadManager = new ConnectionLoadManager(this);
-			OnConnectionRangeChanged += (i, i1, arg3) => Debug.Log(i + " " + i1 + " " + arg3);
 		}
 
 		private void Update() {
