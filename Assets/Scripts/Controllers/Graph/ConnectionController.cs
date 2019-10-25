@@ -18,6 +18,7 @@ namespace Controllers {
 
 		public Action<Connection> OnConnectionLoaded;
 		public Action<Connection> OnConnectionUnloaded;
+		public Action<int, int, int> OnConnectionRangeChanged;
 
 		public ConnectionLoadManager ConnectionLoadManager { get; private set; }
 		private ConnectionDistributionService selectedNodeDistribution;
@@ -82,6 +83,7 @@ namespace Controllers {
 			var connections = CreateConnectionsAround(NodeController.SelectedNode);
 			if (connections.Count <= ConnectionDistribution.MaxVisibleConnections) {
 				connections.ForEach(con => ConnectionLoadManager.LoadConnection(con, selectedNodeDistribution));
+				OnConnectionRangeChanged?.Invoke(Mathf.Min(1, connections.Count), connections.Count, connections.Count);
 				return;
 			}
 			var oldSubList = GetConnectionsAround(NodeController.SelectedNode);
@@ -93,6 +95,8 @@ namespace Controllers {
 				selectedNodeDistribution.OnConnectionUnloaded(connection);
 				ConnectionLoadManager.UnloadConnection(connection);
 			});
+			int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleConnections, connections.Count);
+			OnConnectionRangeChanged?.Invoke(currentVisibleIndex + 1, endIndex + 1, connections.Count);
 		}
 
 		private void SwitchConnectionTypes() {
@@ -144,6 +148,7 @@ namespace Controllers {
 			NodeController.OnHighlightedNodeChanged += OnHighlightedNodeChanged;
 
 			ConnectionLoadManager = new ConnectionLoadManager(this);
+			OnConnectionRangeChanged += (i, i1, arg3) => Debug.Log(i + " " + i1 + " " + arg3);
 		}
 
 		private void Update() {
