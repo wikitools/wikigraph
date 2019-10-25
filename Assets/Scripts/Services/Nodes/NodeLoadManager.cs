@@ -40,7 +40,6 @@ namespace Services.Nodes {
 			GameObject nodeObject = controller.Nodes.Pool.Spawn();
 			InitializeNode(model, ref nodeObject, position);
 			UpdateNodeObjectState(NodeState.ACTIVE, ref nodeObject);
-			nodeObject.GetComponent<SphereCollider>().radius = 1;
 			nodeObject.layer = LayerMask.NameToLayer("Connection Node");
 			return nodeObject;
 		}
