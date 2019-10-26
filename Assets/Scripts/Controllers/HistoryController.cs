@@ -4,6 +4,7 @@ using Services.History.Actions;
 using Services.RoutesFiles;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Controllers {
 	public class HistoryController : MonoBehaviour {
@@ -12,6 +13,9 @@ namespace Controllers {
 		private GraphController graphController;
 		public HistoryService HistoryService { get; private set; }
 		public static Action startLoading;
+
+		public GameObject RouteTemplate;
+		public GameObject RoutesUI;
 
 		bool nodeChangedByHistory;
 		bool connectionModeChangedByHistory;
@@ -46,12 +50,28 @@ namespace Controllers {
 					return nodeController.LoadNode(id); 
 				};
 
-				GraphController.getRoutesNames = () => {
-					return HistoryService.getNames();
-				};
-				startLoading();
+
+				CreateRouteObjects();
 
 			};
+		}
+
+		private void CreateRouteObjects() {
+			string[] names = HistoryService.getNames();
+			int i = 0;
+			foreach (string name in names) {
+				GameObject temp = Instantiate(RouteTemplate);
+				temp.transform.parent = RoutesUI.transform;
+				if (i % 2 == 0) temp.transform.position = new Vector3((temp.transform.position.x + 4 * (int)(i / 2) + 4), temp.transform.position.y, 8); //todo z
+				else temp.transform.position = new Vector3(((temp.transform.position.x + 4 * (int)(i / 2) + 4) * -1), temp.transform.position.y, 8); //todo z
+				var tmp = name.Split('/');
+				var tmp2 = tmp[tmp.Length - 1].Split('.');
+				temp.GetComponentInChildren<Text>().text = tmp2[0];
+				//var routeImage = RouteTemplate.GetComponentInChildren<Image>();
+				//routeImage.sprite = 
+				temp.name = "Route" + i.ToString();
+				i++;
+			}
 		}
 	}
 }

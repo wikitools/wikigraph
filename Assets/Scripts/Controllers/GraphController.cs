@@ -6,8 +6,7 @@ using UnityEngine.UI;
 namespace Controllers {
 	public class GraphController : MonoBehaviour {
 		public GameObject Infographic; //TODO: move
-		public GameObject RouteTemplate;
-		public GameObject RoutesUI;
+		
 
 		public float WorldRadius;
 
@@ -32,35 +31,15 @@ namespace Controllers {
 
 		private NetworkController networkController;
 		private NodeController nodeController;
-		private HistoryController historyController;
-		public static Func<string[]> getRoutesNames;
 
 		private void Awake() {
 			networkController = GetComponent<NetworkController>();
 			nodeController = GetComponent<NodeController>();
-			historyController = GetComponent<HistoryController>();
 		}
 
-		private void CreateRouteObjects() {
-			string[] names = getRoutesNames();
-			int i = 0;
-			foreach(string name in names) {
-				GameObject temp = Instantiate(RouteTemplate);
-				temp.transform.parent = RoutesUI.transform;
-				if(i%2 == 0) temp.transform.position = new Vector3((temp.transform.position.x + 4 * (int)(i/2) + 4) , temp.transform.position.y, 8); //todo z
-				else temp.transform.position = new Vector3(((temp.transform.position.x + 4 * (int)(i/2) + 4)*-1 ), temp.transform.position.y, 8); //todo z
-				var tmp = name.Split('/');
-				var tmp2 = tmp[tmp.Length-1].Split('.');
-				temp.GetComponentInChildren<Text>().text = tmp2[0];
-				//var routeImage = RouteTemplate.GetComponentInChildren<Image>();
-				//routeImage.sprite = 
-				temp.name = "Route" + i.ToString();
-				i++;
-			}
-		}
+		
 
 		private void Start() {
-			HistoryController.startLoading += () => CreateRouteObjects(); 
 			GraphMode.OnValueChanged += mode => {
 				if (GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT)
 					ConnectionMode.Value = Controllers.ConnectionMode.CHILDREN;

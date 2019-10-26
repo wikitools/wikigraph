@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.11357183, g: 0.19203451, b: 0.23066843, a: 1}
+  m_IndirectSpecularColor: {r: 0.113663815, g: 0.19205695, b: 0.23063463, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -275,15 +275,15 @@ MonoBehaviour:
     RedoButton:
       ButtonType: 0
       MouseButton: 0
-      KeyboardButton: 0
+      KeyboardButton: 101
     UndoButton:
       ButtonType: 0
       MouseButton: 0
-      KeyboardButton: 0
+      KeyboardButton: 113
     RoutesUIToggle:
       ButtonType: 0
       MouseButton: 0
-      KeyboardButton: 0
+      KeyboardButton: 32
   CaveInputBinding:
     MovementJoystick:
       IsButtonActivated: 0
@@ -347,9 +347,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Infographic: {fileID: 1042168899}
-  RouteTemplate: {fileID: 1720473536377000, guid: 304dd1bf551acaf46ae8aa840924f565,
-    type: 2}
-  RoutesUI: {fileID: 2129455143}
   WorldRadius: 100
 --- !u!114 &68664597
 MonoBehaviour:
@@ -469,6 +466,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 754cf6ea303545c45b5cbf6f44a2daaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RouteTemplate: {fileID: 1720473536377000, guid: 304dd1bf551acaf46ae8aa840924f565,
+    type: 2}
+  RoutesUI: {fileID: 1025397400}
 --- !u!1001 &327208665
 Prefab:
   m_ObjectHideFlags: 0
@@ -617,6 +617,57 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 0
   m_Loop: 0
+--- !u!1001 &458830429
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1025397401}
+    m_Modifications:
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114397615575642730, guid: 304dd1bf551acaf46ae8aa840924f565,
+        type: 2}
+      propertyPath: m_Text
+      value: Auto
+      objectReference: {fileID: 0}
+    - target: {fileID: 1720473536377000, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_Name
+      value: RouteAuto
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &467407752
 Prefab:
   m_ObjectHideFlags: 0
@@ -736,6 +787,35 @@ Transform:
   m_PrefabParentObject: {fileID: 4808286501495506, guid: 046e8e3d9442d9d49904a240ec65e869,
     type: 2}
   m_PrefabInternal: {fileID: 844107490}
+--- !u!1 &1025397400
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1025397401}
+  m_Layer: 0
+  m_Name: RoutesUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1025397401
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1025397400}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1477259284}
+  m_Father: {fileID: 844107491}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1042168899
 GameObject:
   m_ObjectHideFlags: 0
@@ -943,6 +1023,11 @@ Transform:
   m_PrefabParentObject: {fileID: 4098147441956056, guid: bf1ac880dbe997a46acfe269bbb72014,
     type: 2}
   m_PrefabInternal: {fileID: 1341895048}
+--- !u!4 &1477259284 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565,
+    type: 2}
+  m_PrefabInternal: {fileID: 458830429}
 --- !u!1 &1590207488
 GameObject:
   m_ObjectHideFlags: 0
