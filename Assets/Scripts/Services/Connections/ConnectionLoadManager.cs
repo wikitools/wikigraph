@@ -1,5 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Controllers;
+using DefaultNamespace;
 using Model;
 using Model.Connection;
 using UnityEngine;
@@ -9,6 +12,7 @@ namespace Services.Connection {
 		private readonly Logger<ConnectionLoadManager> logger = new Logger<ConnectionLoadManager>();
 		
 		private readonly ConnectionController controller;
+		private readonly Dictionary<GameObject, ConnectionAnimation> ConnectionAnimations = new Dictionary<GameObject, ConnectionAnimation>();
 
 		private Graph graph => GraphController.Graph;
 
@@ -28,11 +32,12 @@ namespace Services.Connection {
 		public void UnloadConnection(Model.Connection.Connection connection) {
 			if (!graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
-			controller.Connections.Pool.Despawn(graph.ConnectionObjectMap[connection]);
+			StartConnectionAnimation(connection, AnimationDirection.IN);
 			graph.ConnectionObjectMap.Remove(connection);
 
 			if (graph.ConnectionNodes.ContainsKey(connection))
 				controller.NodeController.NodeLoadManager.UnloadConnectionNode(connection);
+			
 			controller.OnConnectionUnloaded?.Invoke(connection);
 		}
 
@@ -48,9 +53,10 @@ namespace Services.Connection {
 			Node otherNode = connection.OtherEnd(distributionService.CentralNode);
 			distributionService.GenerateRoute(connection, otherNode);
 			var centerNode = graph.NodeObjectMap[distributionService.CentralNode];
-			InitConnectionObject(ref connectionObject, connection.Route, centerNode, 
+			InitConnectionObject(ref connectionObject, connection, centerNode, 
 				graph.NodeObjectMap[otherNode], GetConnectionLineColor(connection));
 			graph.ConnectionObjectMap.Add(connection, connectionObject);
+			StartConnectionAnimation(connection, AnimationDirection.OUT);
 
 			if (distributionService.CentralNode == controller.NodeController.SelectedNode) {
 				GameObject conNode = controller.NodeController.NodeLoadManager.LoadConnectionNode(otherNode, centerNode.transform.position + connection.Route.SpherePoint);
@@ -60,7 +66,7 @@ namespace Services.Connection {
 
 		private bool Connected(Node one, Node two) => one.GetConnections(controller.GraphController.ConnectionMode.Value).Contains(two.ID);
 
-		private void InitConnectionObject(ref GameObject connectionObject, Route route, GameObject from, GameObject to, Color color) {
+		private void InitConnectionObject(ref GameObject connectionObject, Model.Connection.Connection connection, GameObject from, GameObject to, Color color) {
 			var basePosition = from.transform.position;
 			connectionObject.name = from.name + " " + to.name;
 			connectionObject.transform.position = basePosition;
@@ -68,9 +74,39 @@ namespace Services.Connection {
 
 			var line = connectionObject.GetComponent<LineRenderer>();
 			line.material.color = color;
+			line.positionCount = 0;
+		}
 
-			line.positionCount = route.SegmentPoints.Length;
-			line.SetPositions(route.SegmentPoints);
+		private void StartConnectionAnimation(Model.Connection.Connection connection, AnimationDirection direction) {
+			var connectionObject = graph.ConnectionObjectMap[connection];
+			if (ConnectionAnimations.ContainsKey(connectionObject)) {
+				var connectionAnimation = ConnectionAnimations[connectionObject];
+				controller.StopCoroutine(connectionAnimation.Function);
+				ConnectionAnimations.Remove(connectionObject);
+				if(connectionAnimation.Direction == AnimationDirection.IN)
+					controller.Connections.Pool.Despawn(connectionObject);
+			}
+			var animation = AnimateConnection(connectionObject, connection, direction);
+			ConnectionAnimations.Add(connectionObject, new ConnectionAnimation(animation, direction));
+			controller.StartCoroutine(animation);
+		}
+		
+		private IEnumerator AnimateConnection(GameObject connectionObject, Model.Connection.Connection connection, AnimationDirection direction) {
+			var line = connectionObject.GetComponent<LineRenderer>();
+			var segmentPoints = connection.Route.SegmentPoints;
+			int currentCount = line.positionCount;
+			int dir = (direction == AnimationDirection.OUT ? 1 : -1) * ConnectionAnimation.SEGMENT_CHANGE_SPEED;
+			while (direction == AnimationDirection.OUT ? currentCount < segmentPoints.Length : currentCount > 0) {
+				currentCount = Mathf.Clamp(currentCount + dir, 0, segmentPoints.Length);
+				line.positionCount = currentCount;
+				if (direction == AnimationDirection.OUT)
+					for (int i = 1; i <= dir; i++)
+						line.SetPosition(currentCount - i, segmentPoints[currentCount - i]);
+				yield return new WaitForSeconds(.02f);
+			}
+			if(direction == AnimationDirection.IN)
+				controller.Connections.Pool.Despawn(connectionObject);
+			ConnectionAnimations.Remove(connectionObject);
 		}
 
 		public void SetConnectionLineColor(Model.Connection.Connection connection) {

@@ -83,7 +83,7 @@ namespace Services.Nodes {
 			while (true) {
 				if (Mathf.Abs(node.localScale.x - scale) > Mathf.Abs(incAmount)) {
 					node.localScale = Vector3.one * (node.localScale.x + incAmount);
-					yield return new WaitForSeconds(.01f);
+					yield return new WaitForSeconds(.02f);
 				} else {
 					node.localScale = Vector3.one * scale;
 					break;
