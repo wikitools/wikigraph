@@ -151,7 +151,7 @@ namespace Controllers {
 		}
 
 		private void Update() {
-			if (NetworkController.IsServer() && InputController.Environment == Environment.PC)
+			if (NetworkController.IsServer())
 				OnAdvanceScrollInput(scrollDirection);
 		}
 
