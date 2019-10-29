@@ -59,7 +59,7 @@ namespace Controllers {
             }
 
             targetPosition = Entity.transform.position;
-            if (inputController.Environment != Environment.Cave) {
+            if (inputController.Environment == Environment.Cave) {
                 var anglesY = Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI;
                 HeaderObject.transform.position = targetPosition + new Vector3(Mathf.Sin(anglesY) * Config.HeaderDistance, 
                                                       Config.HeaderHeight, Mathf.Cos(anglesY) * Config.HeaderDistance);
