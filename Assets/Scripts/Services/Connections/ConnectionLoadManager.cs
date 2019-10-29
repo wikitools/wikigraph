@@ -2,17 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Controllers;
-using DefaultNamespace;
 using Model;
 using Model.Connection;
+using Services.Animations;
 using UnityEngine;
+using Animation = Services.Animations.Animation;
 
 namespace Services.Connection {
 	public class ConnectionLoadManager {
 		private readonly Logger<ConnectionLoadManager> logger = new Logger<ConnectionLoadManager>();
 		
 		private readonly ConnectionController controller;
-		private readonly Dictionary<GameObject, ConnectionAnimation> ConnectionAnimations = new Dictionary<GameObject, ConnectionAnimation>();
+		private readonly Dictionary<GameObject, Animation> ConnectionAnimations = new Dictionary<GameObject, Animation>();
 
 		private Graph graph => GraphController.Graph;
 
@@ -87,7 +88,7 @@ namespace Services.Connection {
 					controller.Connections.Pool.Despawn(connectionObject);
 			}
 			var animation = AnimateConnection(connectionObject, connection, direction);
-			ConnectionAnimations.Add(connectionObject, new ConnectionAnimation(animation, direction));
+			ConnectionAnimations.Add(connectionObject, new Animation(animation, direction));
 			controller.StartCoroutine(animation);
 		}
 		
@@ -95,7 +96,7 @@ namespace Services.Connection {
 			var line = connectionObject.GetComponent<LineRenderer>();
 			var segmentPoints = connection.Route.SegmentPoints;
 			int currentCount = line.positionCount;
-			int dir = (direction == AnimationDirection.OUT ? 1 : -1) * ConnectionAnimation.SEGMENT_CHANGE_SPEED;
+			int dir = (direction == AnimationDirection.OUT ? 1 : -1) * Animation.SEGMENT_CHANGE_SPEED;
 			while (direction == AnimationDirection.OUT ? currentCount < segmentPoints.Length : currentCount > 0) {
 				currentCount = Mathf.Clamp(currentCount + dir, 0, segmentPoints.Length);
 				line.positionCount = currentCount;
