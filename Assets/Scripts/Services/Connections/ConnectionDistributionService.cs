@@ -8,9 +8,11 @@ using UnityEngine;
 
 namespace Services.Connection {
 	public class ConnectionDistributionService {
+		private readonly Logger<ConnectionDistributionService> logger = new Logger<ConnectionDistributionService>();
+		
 		public readonly Node CentralNode;
 		private readonly ConnectionController controller;
-		private readonly ConnectionDistribution connectionDistribution;
+		private readonly ConnectionDistribution distribution;
 		
 		private List<Vector3> freePlaces = new List<Vector3>();
 		private List<Vector3> takenPlaces = new List<Vector3>();
@@ -18,23 +20,26 @@ namespace Services.Connection {
 		public ConnectionDistributionService(Node centralNode, ConnectionController controller) {
 			CentralNode = centralNode;
 			this.controller = controller;
-			connectionDistribution = controller.ConnectionDistribution;
-			
+			distribution = controller.ConnectionDistribution;
+			if (distribution.ChangeBy > distribution.MaxVisibleNumber) {
+				logger.Warning("Connections can't change by amount grater than the max visible number is");
+				distribution.ChangeBy = distribution.MaxVisibleNumber;
+			}
 			DistributeConnections();
 		}
 
 		private void DistributeConnections() {
-			int connectionNumber = Mathf.Min(controller.GetNodeNeighbours(CentralNode).ToArray().Length, connectionDistribution.MaxVisibleConnections);
-			int totalNumber = connectionNumber + connectionDistribution.ChangeConnectionNumber;
-			int firstRowNumber = Mathf.Min(totalNumber, connectionDistribution.MaxRowConnections);
+			int connectionNumber = Mathf.Min(controller.GetNodeNeighbours(CentralNode).ToArray().Length, distribution.MaxVisibleNumber);
+			int totalNumber = connectionNumber + distribution.ChangeBy;
+			int firstRowNumber = Mathf.Min(totalNumber, Mathf.RoundToInt(distribution.MaxVisibleNumber * .75f));
 			
-			DistributeAtElevation(firstRowNumber, connectionDistribution.RingAngleSpan.y);
+			DistributeAtElevation(firstRowNumber, distribution.RingAngleSpan.y);
 			if(totalNumber > firstRowNumber)
-				DistributeAtElevation(totalNumber - firstRowNumber, connectionDistribution.RingAngleSpan.x, 15);
+				DistributeAtElevation(totalNumber - firstRowNumber, distribution.RingAngleSpan.x, 15);
 		}
 
 		private void DistributeAtElevation(int connectionNumber, float elevationAngle, float angleOffset = 0f) {
-			Vector3 baseVector = Quaternion.AngleAxis(elevationAngle - 90, Vector3.forward) * Vector3.right * connectionDistribution.RingRadius;
+			Vector3 baseVector = Quaternion.AngleAxis(elevationAngle - 90, Vector3.forward) * Vector3.right * distribution.RingRadius;
 			baseVector.y += 5;
 			var rotation = Quaternion.AngleAxis(360f / connectionNumber, Vector3.up);
 			if(angleOffset != 0)
@@ -73,10 +78,9 @@ namespace Services.Connection {
 	
 	[Serializable]
 	public class ConnectionDistribution {
-		public int MaxVisibleConnections = 8;
-		public int ChangeConnectionNumber = 2;
+		public int MaxVisibleNumber = 8;
+		public int ChangeBy = 2;
 		
-		public int MaxRowConnections = 6;
 		public Vector2 RingAngleSpan = new Vector2(50, 80);
 		public float RingRadius = 5;
 	}
