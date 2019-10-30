@@ -31,7 +31,7 @@ namespace Controllers {
 		[RPC]
 		private void syncNodes(string stream, bool loaded) {
 			if (loaded) //TODO add node unloading sync once we support it
-				NodeSyncBuffer.ParseLoadedNodes(stream).ForEach(node => nodeController.LoadNode(node.ID, node.Position));
+				NodeSyncBuffer.ParseLoadedNodes(stream).ForEach(node => nodeController.NodeLoadManager.LoadNode(node.ID, node.Position));
 		}
 
 		public void SetGraphMode(GraphMode mode) => Synchronize("setGraphMode", (int) mode);
@@ -59,7 +59,7 @@ namespace Controllers {
 
 		[RPC]
 		private void setSelectedNode(string id) {
-			nodeController.ForceSetSelectedNode(id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id));
+			nodeController.NodeStateManager.ForceSetSelectedNode(id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id));
 		}
 
 		private void Synchronize(string method, params object[] args) {
