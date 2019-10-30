@@ -1,19 +1,16 @@
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Controllers;
 using Model;
-using Model.Connection;
 using Services.Animations;
 using UnityEngine;
 using Animation = Services.Animations.Animation;
 
 namespace Services.Connection {
-	public class ConnectionLoadManager {
+	public class ConnectionLoadManager: LoadManager<ConnectionAnimation> {
 		private readonly Logger<ConnectionLoadManager> logger = new Logger<ConnectionLoadManager>();
 		
 		private readonly ConnectionController controller;
-		private readonly Dictionary<GameObject, Animation> ConnectionAnimations = new Dictionary<GameObject, Animation>();
 
 		private Graph graph => GraphController.Graph;
 
@@ -54,7 +51,7 @@ namespace Services.Connection {
 			Node otherNode = connection.OtherEnd(distributionService.CentralNode);
 			distributionService.GenerateRoute(connection, otherNode);
 			var centerNode = graph.NodeObjectMap[distributionService.CentralNode];
-			InitConnectionObject(ref connectionObject, connection, centerNode, 
+			InitConnectionObject(ref connectionObject, centerNode, 
 				graph.NodeObjectMap[otherNode], GetConnectionLineColor(connection));
 			graph.ConnectionObjectMap.Add(connection, connectionObject);
 			StartConnectionAnimation(connection, AnimationDirection.OUT);
@@ -67,7 +64,7 @@ namespace Services.Connection {
 
 		private bool Connected(Node one, Node two) => one.GetConnections(controller.GraphController.ConnectionMode.Value).Contains(two.ID);
 
-		private void InitConnectionObject(ref GameObject connectionObject, Model.Connection.Connection connection, GameObject from, GameObject to, Color color) {
+		private void InitConnectionObject(ref GameObject connectionObject, GameObject from, GameObject to, Color color) {
 			var basePosition = from.transform.position;
 			connectionObject.name = from.name + " " + to.name;
 			connectionObject.transform.position = basePosition;
@@ -80,15 +77,15 @@ namespace Services.Connection {
 
 		private void StartConnectionAnimation(Model.Connection.Connection connection, AnimationDirection direction) {
 			var connectionObject = graph.ConnectionObjectMap[connection];
-			if (ConnectionAnimations.ContainsKey(connectionObject)) {
-				var connectionAnimation = ConnectionAnimations[connectionObject];
+			if (ActiveAnimations.ContainsKey(connectionObject)) {
+				var connectionAnimation = ActiveAnimations[connectionObject];
 				controller.StopCoroutine(connectionAnimation.Function);
-				ConnectionAnimations.Remove(connectionObject);
+				ActiveAnimations.Remove(connectionObject);
 				if(connectionAnimation.Direction == AnimationDirection.IN)
 					controller.Connections.Pool.Despawn(connectionObject);
 			}
 			var animation = AnimateConnection(connectionObject, connection, direction);
-			ConnectionAnimations.Add(connectionObject, new Animation(animation, direction));
+			ActiveAnimations.Add(connectionObject, new ConnectionAnimation(animation, direction));
 			controller.StartCoroutine(animation);
 		}
 		
@@ -96,7 +93,7 @@ namespace Services.Connection {
 			var line = connectionObject.GetComponent<LineRenderer>();
 			var segmentPoints = connection.Route.SegmentPoints;
 			int currentCount = line.positionCount;
-			int dir = (direction == AnimationDirection.OUT ? 1 : -1) * Animation.SEGMENT_CHANGE_SPEED;
+			int dir = (direction == AnimationDirection.OUT ? 1 : -1) * controller.ConnectionLoadSpeed;
 			while (direction == AnimationDirection.OUT ? currentCount < segmentPoints.Length : currentCount > 0) {
 				currentCount = Mathf.Clamp(currentCount + dir, 0, segmentPoints.Length);
 				line.positionCount = currentCount;
@@ -107,7 +104,7 @@ namespace Services.Connection {
 			}
 			if(direction == AnimationDirection.IN)
 				controller.Connections.Pool.Despawn(connectionObject);
-			ConnectionAnimations.Remove(connectionObject);
+			ActiveAnimations.Remove(connectionObject);
 		}
 
 		public void SetConnectionLineColor(Model.Connection.Connection connection) {

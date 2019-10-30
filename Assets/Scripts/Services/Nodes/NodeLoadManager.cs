@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using Controllers;
 using Model;
+using Services.Animations;
 using Services.DataFiles;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace Services.Nodes {
-	public class NodeLoadManager {
+	public class NodeLoadManager: LoadManager<NodeAnimation> {
 		private NodeController controller;
 
 		public NodeLoadManager(NodeController controller) {
@@ -41,6 +42,7 @@ namespace Services.Nodes {
 			InitializeNode(model, ref nodeObject, position);
 			UpdateNodeObjectState(NodeState.ACTIVE, ref nodeObject);
 			nodeObject.layer = LayerMask.NameToLayer("Connection Node");
+			ScaleConnectionNodeImage(nodeObject, 0, 1);
 			return nodeObject;
 		}
 
@@ -56,12 +58,50 @@ namespace Services.Nodes {
 		public void UnloadConnectionNode(Model.Connection.Connection connection) {
 			var nodeObject = GraphController.Graph.ConnectionNodes[connection];
 			GraphController.Graph.ConnectionNodes.Remove(connection);
-			controller.Nodes.Pool.Despawn(nodeObject);
+			ScaleConnectionNodeImage(nodeObject, -1, 0);
+		}
+
+		private void ScaleNodeImage(GameObject node, float from, float to, float time) {
+			if (from >= 0)
+				nodeImgTransform(node).localScale = Vector3.one * from;
+			
+			if (ActiveAnimations.ContainsKey(node)) {
+				var nodeAnimation = ActiveAnimations[node];
+				controller.StopCoroutine(nodeAnimation.Function);
+				ActiveAnimations.Remove(node);
+				if(nodeAnimation.Scale == 0)
+					controller.Nodes.Pool.Despawn(node);
+			}
+			var animation = AnimateScaleNodeImage(node, to, time);
+			ActiveAnimations.Add(node, new NodeAnimation(animation, to));
+			controller.StartCoroutine(animation);
+		}
+
+		public void ScaleConnectionNodeImage(GameObject node, float from, float to) {
+			ScaleNodeImage(node, from, to, controller.ConnectionNodeScaleTime);
+		}
+
+		public void ScaleNodeImage(Node node, float from, float to) {
+			ScaleNodeImage(GraphController.Graph.NodeObjectMap[node], from, to, controller.NodeScaleTime);
 		}
 		
-		private IEnumerator ExecuteAfter(Action action, float time) {
-			yield return new WaitForSeconds(time);
-			action();
+		private RectTransform nodeImgTransform(GameObject node) => node.GetComponentInChildren<Image>().GetComponent<RectTransform>();
+		
+		private IEnumerator AnimateScaleNodeImage(GameObject node, float scale, float time) {
+			var transform = nodeImgTransform(node);
+			float incAmount = (scale - transform.localScale.x) * Time.deltaTime / time;
+			while (true) {
+				if (Mathf.Abs(transform.localScale.x - scale) > Mathf.Abs(incAmount)) {
+					transform.localScale = Vector3.one * (transform.localScale.x + incAmount);
+					yield return null;
+				} else {
+					transform.localScale = Vector3.one * scale;
+					break;
+				}
+			}
+			if(scale == 0)
+				controller.Nodes.Pool.Despawn(node);
+			ActiveAnimations.Remove(node);
 		}
 
 		private void UpdateNodeObjectState(NodeState state, ref GameObject nodeObject) {

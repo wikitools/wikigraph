@@ -15,6 +15,8 @@ namespace Controllers {
 		
 		public ConnectionDistribution ConnectionDistribution;
 		public float ScrollInterval;
+		[Range(1, 6)]
+		public int ConnectionLoadSpeed = 4;
 
 		public Action<Connection> OnConnectionLoaded;
 		public Action<Connection> OnConnectionUnloaded;

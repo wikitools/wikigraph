@@ -340,8 +340,8 @@ MonoBehaviour:
     PreloadNumber: 1000
   NodeLoadedLimit: 1000
   LoadTestNodeSet: 0
-  NodeScaleTime: 0.28
-  ConnectionNodeScaleTime: 0.13
+  NodeScaleTime: 0.8
+  ConnectionNodeScaleTime: 0.4
 --- !u!114 &68664598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,12 +395,12 @@ MonoBehaviour:
     ParentColor: {r: 0.54901963, g: 0.27058825, b: 0.90588236, a: 1}
     DisabledColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0.2}
   ConnectionDistribution:
-    MaxVisibleConnections: 8
-    ChangeConnectionNumber: 2
-    MaxRowConnections: 6
+    MaxVisibleNumber: 8
+    ChangeBy: 2
     RingAngleSpan: {x: 50, y: 80}
     RingRadius: 5
   ScrollInterval: 0.5
+  ConnectionLoadSpeed: 4
 --- !u!114 &68664601
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -23,9 +23,9 @@ namespace Controllers {
 		public int NodeLoadedLimit;
 		public bool LoadTestNodeSet;
 
-		[Range(.1f, 2f)]
+		[Range(.05f, 2f)]
 		public float NodeScaleTime = .5f;
-		[Range(.1f, 2f)]
+		[Range(.05f, 2f)]
 		public float ConnectionNodeScaleTime = 0.2f;
 
 		public Action<Node, Vector3> OnNodeLoaded;
@@ -84,9 +84,9 @@ namespace Controllers {
 				GraphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
 				NodeStateManager.UpdateNodeStates();
 				if(previousNode != null)
-					NodeStateManager.ScaleNodeImage(previousNode, -1, 1);
+					NodeLoadManager.ScaleNodeImage(previousNode, -1, 1);
 				if(selectedNode != null)
-					NodeStateManager.ScaleNodeImage(selectedNode, -1, 3f);
+					NodeLoadManager.ScaleNodeImage(selectedNode, -1, 3f);
 				OnSelectedNodeChanged?.Invoke(previousNode, selectedNode);
 			}
 		}
