@@ -88,15 +88,15 @@ namespace Controllers {
 			}
 			var oldSubList = GetConnectionsAround(NodeController.SelectedNode);
 
-			currentVisibleIndex = Utils.Mod(currentVisibleIndex + direction * ConnectionDistribution.ChangeConnectionNumber, connections.Count);
-			var newSubList = Utils.GetCircularListPart(connections, currentVisibleIndex, ConnectionDistribution.MaxVisibleConnections);
+			var newSubList = Utils.ScrollList(connections, ref currentVisibleIndex, 
+				direction * ConnectionDistribution.ChangeConnectionNumber, ConnectionDistribution.MaxVisibleConnections);
 			newSubList.Where(connection => !oldSubList.Contains(connection)).ToList().ForEach(con => ConnectionLoadManager.LoadConnection(con, selectedNodeDistribution));
 			oldSubList.Where(connection => !newSubList.Contains(connection)).ToList().ForEach(connection => {
 				selectedNodeDistribution.OnConnectionUnloaded(connection);
 				ConnectionLoadManager.UnloadConnection(connection);
 			});
 			int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleConnections, connections.Count);
-			OnConnectionRangeChanged?.Invoke(currentVisibleIndex + 1, endIndex + 1, connections.Count);
+			OnConnectionRangeChanged?.Invoke(currentVisibleIndex, endIndex, connections.Count);
 		}
 
 		private void SwitchConnectionTypes() {
@@ -148,6 +148,7 @@ namespace Controllers {
 			NodeController.OnHighlightedNodeChanged += OnHighlightedNodeChanged;
 
 			ConnectionLoadManager = new ConnectionLoadManager(this);
+			OnConnectionRangeChanged += (i, i1, arg3) => Debug.Log(i + " " + i1 + " " + arg3);
 		}
 
 		private void Update() {

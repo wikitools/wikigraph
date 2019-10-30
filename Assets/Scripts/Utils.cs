@@ -12,8 +12,13 @@ public static class Utils {
 		return (x % m + m) % m;
 	}
 
-	public static List<T> GetCircularListPart<T>(List<T> list, int startIndex, int elementNumber) {
-		startIndex = Mod(startIndex, list.Count);
+	public static List<T> ScrollList<T>(List<T> list, ref int startIndex, int scrollAmount, int elementNumber) {
+		if (scrollAmount != 0) {
+			var addedIndex = startIndex + scrollAmount;
+			startIndex = Mod(addedIndex, list.Count);
+			if(addedIndex != startIndex)
+				startIndex = (startIndex / Mathf.Abs(scrollAmount) + (scrollAmount > 0 ? 0 : 1)) * Mathf.Abs(scrollAmount);
+		}
 		if (elementNumber > list.Count)
 			elementNumber = list.Count;
 		List<T> subList = new List<T>(list.GetRange(startIndex, Math.Min(elementNumber, list.Count - startIndex)));
