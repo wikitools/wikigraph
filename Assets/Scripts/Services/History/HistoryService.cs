@@ -9,16 +9,6 @@ namespace Services.History {
 		private readonly Stack<UserAction> undoActionStack = new Stack<UserAction>();
 		private readonly Stack<UserAction> redoActionStack = new Stack<UserAction>();
 
-		private Stack<UserAction> redoSavedRoute = new Stack<UserAction>();
-		private Stack<UserAction> undoSavedRoute = new Stack<UserAction>();
-
-		public RoutesLoader routesLoader;
-
-
-		public HistoryService(string prefix = "") {
-			routesLoader = new RoutesLoader();
-		}
-
 		public void RedoAction() {
 			if (redoActionStack.Count != 0) {
 				UserAction userAction = redoActionStack.Pop();
@@ -39,6 +29,18 @@ namespace Services.History {
 			undoActionStack.Push(userAction);
 			redoActionStack.Clear();
 		}
+
+		private Stack<UserAction> redoSavedRoute = new Stack<UserAction>();
+		private Stack<UserAction> undoSavedRoute = new Stack<UserAction>();
+
+		public RoutesLoader routesLoader;
+
+
+		public HistoryService(string prefix = "") {
+			routesLoader = new RoutesLoader();
+		}
+
+		
 
 		public void RedoRoute() {
 			if (redoSavedRoute.Count != 0) {
