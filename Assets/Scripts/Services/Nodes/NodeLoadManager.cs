@@ -20,11 +20,11 @@ namespace Services.Nodes {
 
 		public NodeLoader NodeLoader;
 
-		public Node LoadNode(uint id, bool skipScaling = false) {
-			return LoadNode(id, Random.insideUnitSphere * controller.GraphController.WorldRadius, skipScaling);
+		public Node LoadNode(uint id) {
+			return LoadNode(id, Random.insideUnitSphere * controller.GraphController.WorldRadius);
 		}
 
-		public Node LoadNode(uint id, Vector3 position, bool skipScaling = false) {
+		public Node LoadNode(uint id, Vector3 position) {
 			if (GraphController.Graph.IdNodeMap.ContainsKey(id))
 				return GraphController.Graph.IdNodeMap[id];
 			Node node = NodeLoader.LoadNode(id);

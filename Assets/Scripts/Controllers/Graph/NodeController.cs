@@ -118,7 +118,7 @@ namespace Controllers {
 
 			if (networkController.IsServer()) {
 				for (uint i = 0; i < Math.Min(NodeLoadedLimit, NodeLoadManager.NodeLoader.GetNodeNumber()); i++)
-					NodeLoadManager.LoadNode(i, true);
+					NodeLoadManager.LoadNode(i);
 				OnNodeLoadSessionEnded?.Invoke();
 				GraphController.GraphMode.OnValueChanged += mode => {
 					if (mode == GraphMode.FREE_FLIGHT)
