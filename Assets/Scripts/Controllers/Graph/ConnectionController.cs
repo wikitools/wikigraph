@@ -96,7 +96,7 @@ namespace Controllers {
 				ConnectionLoadManager.UnloadConnection(connection);
 			});
 			int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleNumber, connections.Count);
-			OnConnectionRangeChanged?.Invoke(currentVisibleIndex, endIndex, connections.Count);
+			OnConnectionRangeChanged?.Invoke(currentVisibleIndex + 1, endIndex + 1, connections.Count);
 		}
 
 		private void SwitchConnectionTypes() {
@@ -148,7 +148,6 @@ namespace Controllers {
 			NodeController.OnHighlightedNodeChanged += OnHighlightedNodeChanged;
 
 			ConnectionLoadManager = new ConnectionLoadManager(this);
-			OnConnectionRangeChanged += (i, i1, arg3) => Debug.Log(i + " " + i1 + " " + arg3);
 		}
 
 		private void Update() {
