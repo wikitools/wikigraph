@@ -23,11 +23,6 @@ namespace Services.Nodes {
 				SetNodeState(controller.SelectedNode, NodeState.SELECTED);
 		}
 
-		private void UpdateNodeObjectState(NodeState state, ref GameObject nodeObject) {
-			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
-			nodeObject.GetComponentInChildren<Image>().color = GetStateColor(state);
-		}
-
 		public NodeState DefaultState => controller.GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT ? NodeState.ACTIVE : NodeState.DISABLED;
 
 		private void SetAllNodesAs(NodeState state) {
@@ -61,36 +56,6 @@ namespace Services.Nodes {
 		private void SetNodeObjectState(GameObject nodeObject, NodeState state) {
 			nodeObject.GetComponentInChildren<Image>().color = GetStateColor(state);
 			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
-		}
-
-		private void ScaleNodeImage(GameObject node, float from, float to, float time) {
-			var transform = node.GetComponentInChildren<Image>().GetComponent<RectTransform>();
-			if (from >= 0)
-				transform.localScale = Vector3.one * from;
-			controller.StartCoroutine(AnimateScaleNodeImage(transform, to, time));
-		}
-
-		public void ScaleConnectionNodeImage(GameObject node, float from, float to) {
-			ScaleNodeImage(node, from, to, controller.ConnectionNodeScaleTime);
-		}
-
-		public void ScaleNodeImage(Node node, float from, float to) {
-			ScaleNodeImage(GraphController.Graph.NodeObjectMap[node], from, to, controller.NodeScaleTime);
-		}
-
-		private IEnumerator AnimateScaleNodeImage(RectTransform node, float scale, float time) {
-			float incAmount = (scale - node.localScale.x) / 100f / time;
-			while (true) {
-				if (Mathf.Abs(node.localScale.x - scale) > Mathf.Abs(incAmount)) {
-					node.localScale = Vector3.one * (node.localScale.x + incAmount);
-					yield return new WaitForSeconds(.01f);
-				} else {
-					node.localScale = Vector3.one * scale;
-					break;
-				}
-			}
-			if(scale == 0)
-				GameObject.Destroy(node.gameObject);
 		}
 
 		public void SetNodeColor(Node node, NodeState state) {

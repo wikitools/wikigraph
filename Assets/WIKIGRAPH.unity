@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.113663815, g: 0.19205695, b: 0.23063463, a: 1}
+  m_IndirectSpecularColor: {r: 0.11357183, g: 0.19203451, b: 0.23066843, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -374,8 +374,8 @@ MonoBehaviour:
     PreloadNumber: 200
   NodeLoadedLimit: 1000
   LoadTestNodeSet: 0
-  NodeScaleTime: 0.43
-  ConnectionNodeScaleTime: 0.19
+  NodeScaleTime: 0.8
+  ConnectionNodeScaleTime: 0.4
 --- !u!114 &68664598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -429,12 +429,12 @@ MonoBehaviour:
     ParentColor: {r: 0.54901963, g: 0.27058825, b: 0.90588236, a: 1}
     DisabledColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0.2}
   ConnectionDistribution:
-    MaxVisibleConnections: 8
-    ChangeConnectionNumber: 2
-    MaxRowConnections: 5
+    MaxVisibleNumber: 8
+    ChangeBy: 2
     RingAngleSpan: {x: 50, y: 80}
     RingRadius: 5
   ScrollInterval: 0.5
+  ConnectionLoadSpeed: 4
 --- !u!114 &68664601
 MonoBehaviour:
   m_ObjectHideFlags: 0
