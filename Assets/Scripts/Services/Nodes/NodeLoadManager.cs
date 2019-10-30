@@ -9,11 +9,12 @@ using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace Services.Nodes {
-	public class NodeLoadManager: LoadManager<NodeAnimation> {
+	public class NodeLoadManager: AnimationManager<NodeAnimation> {
 		private NodeController controller;
 
-		public NodeLoadManager(NodeController controller) {
+		public NodeLoadManager(NodeController controller) : base(controller) {
 			this.controller = controller;
+			SetAnimationEndAction((node, animation) => AnimationEndAction(node, animation.Scale));
 			NodeLoader = new NodeLoader(controller.LoadTestNodeSet ? "-test" : "");
 		}
 
@@ -64,17 +65,8 @@ namespace Services.Nodes {
 		private void ScaleNodeImage(GameObject node, float from, float to, float time) {
 			if (from >= 0)
 				nodeImgTransform(node).localScale = Vector3.one * from;
-			
-			if (ActiveAnimations.ContainsKey(node)) {
-				var nodeAnimation = ActiveAnimations[node];
-				controller.StopCoroutine(nodeAnimation.Function);
-				ActiveAnimations.Remove(node);
-				if(nodeAnimation.Scale == 0)
-					controller.Nodes.Pool.Despawn(node);
-			}
-			var animation = AnimateScaleNodeImage(node, to, time);
-			ActiveAnimations.Add(node, new NodeAnimation(animation, to));
-			controller.StartCoroutine(animation);
+			var function = AnimateScaleNodeImage(node, to, time);
+			StartAnimation(node, new NodeAnimation(function, to));
 		}
 
 		public void ScaleConnectionNodeImage(GameObject node, float from, float to) {
@@ -86,6 +78,12 @@ namespace Services.Nodes {
 		}
 		
 		private RectTransform nodeImgTransform(GameObject node) => node.GetComponentInChildren<Image>().GetComponent<RectTransform>();
+
+		private void AnimationEndAction(GameObject node, float scale) {
+			if(scale == 0)
+				controller.Nodes.Pool.Despawn(node);
+			ActiveAnimations.Remove(node);
+		}
 		
 		private IEnumerator AnimateScaleNodeImage(GameObject node, float scale, float time) {
 			var transform = nodeImgTransform(node);
@@ -99,9 +97,7 @@ namespace Services.Nodes {
 					break;
 				}
 			}
-			if(scale == 0)
-				controller.Nodes.Pool.Despawn(node);
-			ActiveAnimations.Remove(node);
+			AnimationEndAction(node, scale);
 		}
 
 		private void UpdateNodeObjectState(NodeState state, ref GameObject nodeObject) {

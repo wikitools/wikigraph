@@ -4,18 +4,18 @@ using Controllers;
 using Model;
 using Services.Animations;
 using UnityEngine;
-using Animation = Services.Animations.Animation;
 
 namespace Services.Connection {
-	public class ConnectionLoadManager: LoadManager<ConnectionAnimation> {
+	public class ConnectionLoadManager: AnimationManager<ConnectionAnimation> {
 		private readonly Logger<ConnectionLoadManager> logger = new Logger<ConnectionLoadManager>();
 		
 		private readonly ConnectionController controller;
 
 		private Graph graph => GraphController.Graph;
 
-		public ConnectionLoadManager(ConnectionController controller) {
+		public ConnectionLoadManager(ConnectionController controller) : base(controller) {
 			this.controller = controller;
+			SetAnimationEndAction((node, animation) => AnimationEndAction(node, animation.Direction));
 		}
 
 		#region Connection Loading
@@ -77,16 +77,14 @@ namespace Services.Connection {
 
 		private void StartConnectionAnimation(Model.Connection.Connection connection, AnimationDirection direction) {
 			var connectionObject = graph.ConnectionObjectMap[connection];
-			if (ActiveAnimations.ContainsKey(connectionObject)) {
-				var connectionAnimation = ActiveAnimations[connectionObject];
-				controller.StopCoroutine(connectionAnimation.Function);
-				ActiveAnimations.Remove(connectionObject);
-				if(connectionAnimation.Direction == AnimationDirection.IN)
-					controller.Connections.Pool.Despawn(connectionObject);
-			}
-			var animation = AnimateConnection(connectionObject, connection, direction);
-			ActiveAnimations.Add(connectionObject, new ConnectionAnimation(animation, direction));
-			controller.StartCoroutine(animation);
+			var function = AnimateConnection(connectionObject, connection, direction);
+			StartAnimation(connectionObject, new ConnectionAnimation(function, direction));
+		}
+		
+		private void AnimationEndAction(GameObject connection, AnimationDirection direction) {
+			if(direction == AnimationDirection.IN)
+				controller.Connections.Pool.Despawn(connection);
+			ActiveAnimations.Remove(connection);
 		}
 		
 		private IEnumerator AnimateConnection(GameObject connectionObject, Model.Connection.Connection connection, AnimationDirection direction) {
@@ -102,9 +100,7 @@ namespace Services.Connection {
 						line.SetPosition(currentCount - i, segmentPoints[currentCount - i]);
 				yield return new WaitForSeconds(.02f);
 			}
-			if(direction == AnimationDirection.IN)
-				controller.Connections.Pool.Despawn(connectionObject);
-			ActiveAnimations.Remove(connectionObject);
+			AnimationEndAction(connectionObject, direction);
 		}
 
 		public void SetConnectionLineColor(Model.Connection.Connection connection) {

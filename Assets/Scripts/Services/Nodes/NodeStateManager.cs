@@ -23,11 +23,6 @@ namespace Services.Nodes {
 				SetNodeState(controller.SelectedNode, NodeState.SELECTED);
 		}
 
-		private void UpdateNodeObjectState(NodeState state, ref GameObject nodeObject) {
-			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
-			nodeObject.GetComponentInChildren<Image>().color = GetStateColor(state);
-		}
-
 		public NodeState DefaultState => controller.GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT ? NodeState.ACTIVE : NodeState.DISABLED;
 
 		private void SetAllNodesAs(NodeState state) {
