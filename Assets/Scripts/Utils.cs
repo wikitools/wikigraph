@@ -14,10 +14,10 @@ public static class Utils {
 
 	public static List<T> ScrollList<T>(List<T> list, ref int startIndex, int scrollAmount, int elementNumber) {
 		if (scrollAmount != 0) {
-			var addedIndex = startIndex + scrollAmount;
-			startIndex = Mod(addedIndex, list.Count);
-			if(addedIndex != startIndex)
-				startIndex = (startIndex / Mathf.Abs(scrollAmount) + (scrollAmount > 0 ? 0 : 1)) * Mathf.Abs(scrollAmount);
+			startIndex = Mod(startIndex + scrollAmount, list.Count);
+			var absScroll = Mathf.Abs(scrollAmount);
+			if(startIndex % absScroll != 0)
+				startIndex = (startIndex / absScroll + (scrollAmount > 0 ? 0 : 1)) * absScroll;
 		}
 		if (elementNumber > list.Count)
 			elementNumber = list.Count;

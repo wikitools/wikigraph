@@ -71,7 +71,7 @@ namespace Controllers {
 				GetConnectionsAround(oldNode).Where(connection => !connection.Ends.Contains(NodeController.SelectedNode)).ToList().ForEach(ConnectionLoadManager.UnloadConnection);
 			if(newNode != null) {
 				highlightedNodeDistribution = new ConnectionDistributionService(newNode, this);
-				CreateConnectionsAround(newNode, ConnectionDistribution.MaxVisibleConnections).ToList().ForEach(con => ConnectionLoadManager.LoadConnection(con, highlightedNodeDistribution));
+				CreateConnectionsAround(newNode, ConnectionDistribution.MaxVisibleNumber).ToList().ForEach(con => ConnectionLoadManager.LoadConnection(con, highlightedNodeDistribution));
 			}
 		}
 		
@@ -81,7 +81,7 @@ namespace Controllers {
 
 		public void UpdateVisibleConnections(int direction) {
 			var connections = CreateConnectionsAround(NodeController.SelectedNode);
-			if (connections.Count <= ConnectionDistribution.MaxVisibleConnections) {
+			if (connections.Count <= ConnectionDistribution.MaxVisibleNumber) {
 				connections.ForEach(con => ConnectionLoadManager.LoadConnection(con, selectedNodeDistribution));
 				OnConnectionRangeChanged?.Invoke(Mathf.Min(1, connections.Count), connections.Count, connections.Count);
 				return;
@@ -89,13 +89,13 @@ namespace Controllers {
 			var oldSubList = GetConnectionsAround(NodeController.SelectedNode);
 
 			var newSubList = Utils.ScrollList(connections, ref currentVisibleIndex, 
-				direction * ConnectionDistribution.ChangeConnectionNumber, ConnectionDistribution.MaxVisibleConnections);
+				direction * ConnectionDistribution.ChangeBy, ConnectionDistribution.MaxVisibleNumber);
 			newSubList.Where(connection => !oldSubList.Contains(connection)).ToList().ForEach(con => ConnectionLoadManager.LoadConnection(con, selectedNodeDistribution));
 			oldSubList.Where(connection => !newSubList.Contains(connection)).ToList().ForEach(connection => {
 				selectedNodeDistribution.OnConnectionUnloaded(connection);
 				ConnectionLoadManager.UnloadConnection(connection);
 			});
-			int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleConnections, connections.Count);
+			int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleNumber, connections.Count);
 			OnConnectionRangeChanged?.Invoke(currentVisibleIndex, endIndex, connections.Count);
 		}
 
