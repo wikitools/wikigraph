@@ -41,9 +41,9 @@ namespace Controllers {
 			headerIndicatorSecondaryRangeSprite = indicatorBase.GetChild(1).GetComponent<SpriteRenderer>();
 
 			// Render always on top of nodes and connections
-			HeaderObject.transform.GetChild(0).GetComponent<MeshRenderer>().sortingOrder = 50;
-			HeaderObject.transform.GetChild(1).GetComponent<MeshRenderer>().sortingOrder = 50;
-			HeaderObject.transform.GetChild(2).GetComponent<MeshRenderer>().sortingOrder = 50;
+			for (int i = 0; i < 3; i++) {
+				SetRendererSortingOrder(HeaderObject.transform.GetChild(i), 50);
+			}
 		}
 
 		void Awake() {
@@ -52,6 +52,10 @@ namespace Controllers {
 			nodeController = GetComponent<NodeController>();
 			nodeController = GetComponent<NodeController>();
 			connectionController = GetComponent<ConnectionController>();
+		}
+
+		private void SetRendererSortingOrder(Transform obj, int order) {
+			obj.GetComponent<MeshRenderer>().sortingOrder = order;
 		}
 
 		private void UpdateNodeHeaderAfterSelectOrHighlight(Node previousNode, Node selectedNode) {
@@ -69,31 +73,40 @@ namespace Controllers {
 				if (nodeController.HighlightedNode != null && nodeController.HighlightedNode != nodeController.SelectedNode) {
 					headerTitle.text = Config.CurrentlyLookingAtText;
 					headerValue.text = nodeController.HighlightedNode.Title;
-					ShowOnlyConnectionsCount(connectionController.GetNodeNeighbours(nodeController.HighlightedNode).ToArray().Length);
+					ShowConnectionRangeCount(connectionController.GetNodeNeighbours(nodeController.HighlightedNode).ToArray().Length);
 				} else {
 					headerTitle.text = Config.CurrentlySelectedText;
 					headerValue.text = nodeController.SelectedNode.Title;
-					ShowOnlyConnectionsCount(null);
+					ShowConnectionRangeCount(null);
 				}
 			} else {
 				connectionController.OnConnectionRangeChanged?.Invoke(0, 0, 0);
-				ShowOnlyConnectionsCount(connectionController.GetNodeNeighbours(nodeController.HighlightedNode).ToArray().Length);
+				if (nodeController.HighlightedNode != null) {
+					ShowConnectionRangeCount(connectionController.GetNodeNeighbours(nodeController.HighlightedNode).ToArray().Length);
+				}
 			}
 		}
 
-		private void ShowOnlyConnectionsCount(int? count) {
-			TextMesh headerConnectionsRangeText = HeaderObject.transform.GetChild(2).GetComponent<TextMesh>();
-			if(count != null) {
-				headerConnectionsRangeText.text = string.Format("{0} <color=white>{1}</color>", Config.CurrentConnectionRangeText, count);
-			} else {
-				if (currentCount <= connectionController.ConnectionDistribution.MaxVisibleNumber) {
-					headerConnectionsRangeText.text = string.Format("{0} <color=white>{1} {2}</color>", Config.CurrentConnectionRangeText, Config.AllConnectionRangeText, currentCount);
-				} else {
-					headerConnectionsRangeText.text = string.Format("{0} <color=white>[{1}-{2}/{3}]</color>", Config.CurrentConnectionRangeText, currentStart, currentEnd, currentCount);
-				}
-			}
+		private void ShowConnectionRangeCount(int? count) {
+			ConnectionRangeTextUpdate(count);
 			HeaderObject.transform.GetChild(2).localPosition = new Vector3(0, (count != null) ? 15.6f : 15f, 4.5f);
 			HeaderObject.transform.GetChild(3).gameObject.SetActive(count == null);
+		}
+
+		private void ConnectionRangeTextUpdate(int? count) {
+			TextMesh headerConnectionsRangeText = HeaderObject.transform.GetChild(2).GetComponent<TextMesh>();
+			string textPrepend = $"{Config.CurrentConnectionRangeText} <color=white>";
+			string textAppend = $"</color>";
+
+			if (count != null) {
+				headerConnectionsRangeText.text = textPrepend + $"{count}" + textAppend;
+			} else {
+				if (currentCount <= connectionController.ConnectionDistribution.MaxVisibleNumber) {
+					headerConnectionsRangeText.text = textPrepend + $"{Config.AllConnectionRangeText} {currentCount}" + textAppend;
+				} else {
+					headerConnectionsRangeText.text = textPrepend + $"[{currentStart}-{currentEnd}/{currentCount}]" + textAppend;
+				}
+			}
 		}
 
 		private void UpdateNodeHeaderAfterConnectionRangeChange(int start, int end, int count) {
@@ -101,11 +114,11 @@ namespace Controllers {
 
 			if (nodeController.SelectedNode != null && count > 0) {
 				HeaderObject.transform.GetChild(3).gameObject.SetActive(true);
-				
+
 				// Primary range size & position
 				float primaryRangeWidth = (float)(end > start ? end - start + 1 : count - start + 1) / count * indicatorWidth;
 				targetPrimaryRangeSize = new Vector2(primaryRangeWidth, indicatorHeight);
-				targetPrimaryRangePosition = new Vector3(-(indicatorWidth - primaryRangeWidth) / 2.0f + ((start-1) * indicatorWidth / count), 0, 0);
+				targetPrimaryRangePosition = new Vector3(-(indicatorWidth - primaryRangeWidth) / 2.0f + ((start - 1) * indicatorWidth / count), 0, 0);
 
 				if (end <= start) {
 					// Second range size & position
@@ -117,15 +130,10 @@ namespace Controllers {
 					targetSecondaryRangePosition = new Vector3(-indicatorWidth / 2.0f, 0, 0);
 				}
 
-				// Connections range text
-				if (count <= connectionController.ConnectionDistribution.MaxVisibleNumber) {
-					headerConnectionsRangeText.text = string.Format("{0} <color=white>{1} {2}</color>", Config.CurrentConnectionRangeText, Config.AllConnectionRangeText, count);
-				} else {
-					headerConnectionsRangeText.text = string.Format("{0} <color=white>[{1}-{2}/{3}]</color>", Config.CurrentConnectionRangeText, start, end, count);
-				}
 				currentStart = start;
 				currentEnd = end;
 				currentCount = count;
+				ShowConnectionRangeCount(null);
 			} else {
 				HeaderObject.transform.GetChild(3).gameObject.SetActive(false);
 				headerConnectionsRangeText.text = string.Empty;
