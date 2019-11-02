@@ -268,11 +268,11 @@ MonoBehaviour:
       PositiveButton:
         ButtonType: 0
         MouseButton: 0
-        KeyboardButton: 0
+        KeyboardButton: 122
       NegativeButton:
         ButtonType: 0
         MouseButton: 0
-        KeyboardButton: 0
+        KeyboardButton: 120
     RedoButton:
       ButtonType: 0
       MouseButton: 0
@@ -1542,6 +1542,10 @@ Prefab:
         type: 2}
       propertyPath: trackedType
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1390819586400066, guid: b6165818436e3294c9f7ce5e53106f44, type: 2}
+      propertyPath: m_Name
+      value: MainGlasses
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b6165818436e3294c9f7ce5e53106f44, type: 2}
