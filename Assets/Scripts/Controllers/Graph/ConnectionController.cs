@@ -97,7 +97,7 @@ namespace Controllers {
 				selectedNodeDistribution.OnConnectionUnloaded(connection);
 				ConnectionLoadManager.UnloadConnection(connection);
 			});
-			int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleNumber, connections.Count);
+			int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleNumber - 1, connections.Count);
 			OnConnectionRangeChanged?.Invoke(currentVisibleIndex + 1, endIndex + 1, connections.Count);
 		}
 
