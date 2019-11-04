@@ -45,8 +45,7 @@ namespace Controllers {
 
 		void Start() {
 			if(Environment == Environment.Cave)
-				foreach (var flystick in Flysticks)
-					flystick.GetComponent<LineRenderer>().enabled = ShowFlystickRays;
+				Flysticks[0].GetComponent<LineRenderer>().enabled = ShowFlystickRays;
 			
 			if (!NetworkController.IsServer())
 				return;
