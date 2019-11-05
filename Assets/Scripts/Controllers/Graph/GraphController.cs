@@ -30,14 +30,10 @@ namespace Controllers {
 		}
 
 		private NetworkController networkController;
-		private NodeController nodeController;
 
 		private void Awake() {
 			networkController = GetComponent<NetworkController>();
-			nodeController = GetComponent<NodeController>();
 		}
-
-		
 
 		private void Start() {
 			GraphMode.OnValueChanged += mode => {

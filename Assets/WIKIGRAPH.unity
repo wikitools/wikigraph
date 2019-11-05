@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.113663815, g: 0.19205695, b: 0.23063463, a: 1}
+  m_IndirectSpecularColor: {r: 0.11357183, g: 0.19203451, b: 0.23066843, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1afe824797e1453ca533cadd8934bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Environment: 1
+  Environment: 0
   PCInputBinding:
     RotationInput:
       IsButtonActivated: 1
@@ -378,8 +378,8 @@ MonoBehaviour:
     PreloadNumber: 200
   NodeLoadedLimit: 1000
   LoadTestNodeSet: 0
-  NodeScaleTime: 0.43
-  ConnectionNodeScaleTime: 0.19
+  NodeScaleTime: 0.5
+  ConnectionNodeScaleTime: 0.2
 --- !u!114 &68664598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -435,7 +435,7 @@ MonoBehaviour:
   ConnectionDistribution:
     MaxVisibleConnections: 8
     ChangeConnectionNumber: 2
-    MaxRowConnections: 5
+    MaxRowConnections: 6
     RingAngleSpan: {x: 50, y: 80}
     RingRadius: 5
   ScrollInterval: 0.5
@@ -782,6 +782,57 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!1001 &458830429
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1025397401}
+    m_Modifications:
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4725598630084254, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114397615575642730, guid: 304dd1bf551acaf46ae8aa840924f565,
+        type: 2}
+      propertyPath: m_Text
+      value: Auto
+      objectReference: {fileID: 0}
+    - target: {fileID: 1720473536377000, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+      propertyPath: m_Name
+      value: RouteAuto
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 304dd1bf551acaf46ae8aa840924f565, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &467407752
 Prefab:
   m_ObjectHideFlags: 0
@@ -1539,5 +1590,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

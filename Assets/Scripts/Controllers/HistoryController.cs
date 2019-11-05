@@ -47,7 +47,11 @@ namespace Controllers {
 					networkController.SetConnectionMode(mode);
 				};
 				RoutesLoader.getRouteNode = id => {
+<<<<<<< HEAD
 					return nodeController.NodeLoadManager.LoadNode(id);
+=======
+					return nodeController.NodeLoadManager.LoadNode(id); 
+>>>>>>> 47a07382c82592e3c7672c291ff77daa00c83d57
 				};
 
 
