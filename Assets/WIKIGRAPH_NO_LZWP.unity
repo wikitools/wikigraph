@@ -314,13 +314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Infographic: {fileID: 0}
-<<<<<<< HEAD
-  RouteTemplate: {fileID: 0}
-  RoutesUI: {fileID: 0}
-  WorldRadius: 50
-=======
   WorldRadius: 100
->>>>>>> master
 --- !u!114 &68664597
 MonoBehaviour:
   m_ObjectHideFlags: 0
