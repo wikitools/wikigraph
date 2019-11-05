@@ -28,7 +28,8 @@ namespace Controllers {
 				};
 				NodeSelectedAction.selectNodeAction = node => {
 					nodeChangedByHistory = true;
-					networkController.SetSelectedNode(node.ID.ToString());
+					if(node == null) networkController.SetSelectedNode("");
+					else networkController.SetSelectedNode(node.ID.ToString());
 				};
 				graphController.ConnectionMode.OnValueChanged += mode => {
 					if (!connectionModeChangedByHistory) HistoryService.RegisterAction(new ModeChangeAction<ConnectionMode>(mode));
