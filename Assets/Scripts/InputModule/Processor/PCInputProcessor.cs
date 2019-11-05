@@ -21,7 +21,7 @@ namespace InputModule.Processor {
 			binding.UndoButton.OnPress += UndoUserAction;
 			binding.RedoButton.OnPress += RedoUserAction;
 
-			binding.RoutesUIToggle.OnPress += () => Controller.HistoryController.RoutesUI.SetActive(!Controller.HistoryController.RoutesUI.activeSelf);
+			//binding.RoutesUIToggle.OnPress += () => Controller.HistoryController.RoutesUI.SetActive(!Controller.HistoryController.RoutesUI.activeSelf);
 
 		}
 
