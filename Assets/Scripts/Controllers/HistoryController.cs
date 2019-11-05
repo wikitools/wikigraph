@@ -49,17 +49,7 @@ namespace Controllers {
 				RoutesLoader.getRouteNode = id => {
 					return nodeController.NodeLoadManager.LoadNode(id); 
 				};
-
-
-				//CreateRouteObjects();
-
 			};
-		}
-
-		private void CreateRouteObjects() {
-			string[] names = HistoryService.getNames();
-			int i = 0;
-			
 		}
 	}
 }

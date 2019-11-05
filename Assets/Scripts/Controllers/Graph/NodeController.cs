@@ -78,7 +78,6 @@ namespace Controllers {
 						GraphController.ConnectionMode.Value = GraphController.GetSwitchedConnectionMode();
 					return;
 				}
-				if(value != null) if (value.State == NodeState.DISABLED) return;
 				Node previousNode = selectedNode;
 				selectedNode = value;
 				GraphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;

@@ -51,7 +51,7 @@ namespace Services.RoutesFiles {
 					}
 				}
 				else if (line[0] == USERACTION_TYPE.NODE_SELECTED.ToString()) {
-					Node newNode = getRouteNode(Convert.ToUInt32(line[1])); //possibility of bug
+					Node newNode = getRouteNode(Convert.ToUInt32(line[1]));
 					action = new NodeSelectedAction(old, newNode);
 					old = newNode;
 				}
