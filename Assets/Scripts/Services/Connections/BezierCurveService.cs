@@ -6,7 +6,7 @@ namespace Services.Connection {
 	public static class BezierCurveService {
 		private static readonly int B_SPLINE_DEGREE = 4;
 		
-		private static readonly float BEND_PRECISION_MULTIPLIER = 2, STRAIGHT_PRECISION_MULTIPLIER = .5f;
+		private static readonly float BEND_PRECISION_MULTIPLIER = 3, STRAIGHT_PRECISION_MULTIPLIER = 1;
 
 		public static Vector3[] GenerateBSpline(Vector3[] controlPoints, int lastPrecisionPointIndex) {
 			var knots = CalcKnotPoints(controlPoints.Length);

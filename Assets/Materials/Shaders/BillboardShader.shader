@@ -42,6 +42,7 @@ Shader "BillboardShader"
         Cull Off
         Lighting Off
         ZWrite Off
+        ZWrite Off
         ZTest [_ZTest]
         Blend SrcAlpha OneMinusSrcAlpha
         ColorMask [_ColorMask]
