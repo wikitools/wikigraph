@@ -24,15 +24,12 @@ namespace InputModule.Binding {
 
 		public PCButton RedoButton;
 		public PCButton UndoButton;
-<<<<<<< HEAD
 
 		public PCButton TestRoute;
 
 		
-=======
 		
 		[UnblockableEvent]
 		public PCButton OperatorConsoleToggle;
->>>>>>> master
 	}
 }
