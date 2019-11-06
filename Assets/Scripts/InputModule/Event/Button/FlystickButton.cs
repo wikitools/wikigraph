@@ -20,13 +20,15 @@ namespace InputModule.Event.Button {
 		});
 		public virtual void Init() {
 			GetButton(Button).OnPress += () => {
+				if(Blocked)
+					return;
 				if(BUTTONS.Where(button => button != Button).Any(id => GetButton(id).isActive))
 					return;
 				Pressed = true;
 				OnPress?.Invoke();
 			};
 			GetButton(Button).OnRelease += () => {
-				if(!Pressed)
+				if(Blocked || !Pressed)
 					return;
 				if(BUTTONS.Where(button => button != Button).Any(id => GetButton(id).isActive))
 					return;

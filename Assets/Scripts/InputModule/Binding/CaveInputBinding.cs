@@ -5,6 +5,7 @@ using InputModule.Event.Axis;
 using InputModule.Event.Button;
 using InputModule.Event.Cursor;
 using InputModule.Event.Pointer;
+using Inspector;
 using Services;
 using UnityEngine;
 
@@ -21,6 +22,9 @@ namespace InputModule.Binding {
 		public FlystickButton RedoButton;
 		
 		public FlystickButtonPairAxis ConnectionsScrollAxis;
+		
+		[UnblockableEvent]
+		public PCButton OperatorConsoleToggle; // PC type on purpose
 
 		private static Dictionary<FlystickInstance, int> FlystickBinding = new Dictionary<FlystickInstance, int>();
 		public static LzwpInput.Flystick Flystick(FlystickInstance instance) => Lzwp.input.flysticks[FlystickBinding[instance]];
