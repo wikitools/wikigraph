@@ -6,12 +6,10 @@ using UnityEngine;
 namespace InputModule.Processor {
 	public abstract class InputProcessor {
 		protected InputConfig Config;
-		protected InputBinding Binding;
 		protected InputController Controller;
 
-		public InputProcessor(InputConfig config, InputBinding binding, InputController controller) {
+		public InputProcessor(InputConfig config, InputController controller) {
 			Config = config;
-			Binding = binding;
 			Controller = controller;
 		}
 
@@ -26,6 +24,7 @@ namespace InputModule.Processor {
 
 		protected void RedoUserAction() => Controller.HistoryController.HistoryService.RedoAction();
 		protected void UndoUserAction() => Controller.HistoryController.HistoryService.UndoAction();
+		protected void ToggleOperatorConsole() => Controller.ConsoleController.ToggleVisibility();
 
 
 		protected void OnNodeChosen(Ray ray) {

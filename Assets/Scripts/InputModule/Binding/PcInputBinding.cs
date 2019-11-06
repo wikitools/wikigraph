@@ -3,6 +3,7 @@ using InputModule.Event;
 using InputModule.Event.Button;
 using InputModule.Event.Cursor;
 using InputModule.Event.Pointer;
+using Inspector;
 
 namespace InputModule.Binding {
 	[Serializable]
@@ -23,9 +24,15 @@ namespace InputModule.Binding {
 
 		public PCButton RedoButton;
 		public PCButton UndoButton;
+<<<<<<< HEAD
 
 		public PCButton TestRoute;
 
 		
+=======
+		
+		[UnblockableEvent]
+		public PCButton OperatorConsoleToggle;
+>>>>>>> master
 	}
 }

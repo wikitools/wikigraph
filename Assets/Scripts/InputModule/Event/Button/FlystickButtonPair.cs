@@ -7,19 +7,19 @@ namespace InputModule.Event.Button {
 		
 		public override void Init() {
 			GetButton(ModifierButton).OnRelease += () => {
-				if(!Pressed)
+				if(Blocked || !Pressed)
 					return;
 				Pressed = false;
 				OnRelease?.Invoke();
 			};
 			GetButton(Button).OnPress += () => {
-				if(!GetButton(ModifierButton).isActive)
+				if(Blocked || !GetButton(ModifierButton).isActive)
 					return;
 				Pressed = true;
 				OnPress?.Invoke();
 			};
 			GetButton(Button).OnRelease += () => {
-				if(!Pressed)
+				if(Blocked || !Pressed)
 					return;
 				if(!GetButton(ModifierButton).isActive)
 					return;

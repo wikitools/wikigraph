@@ -110,6 +110,8 @@ namespace Services.Connection {
 		private Color GetConnectionLineColor(Model.Connection.Connection connection) {
 			if (!connection.Ends.Contains(controller.NodeController.SelectedNode))
 				return controller.Colors.DisabledColor;
+			if (controller.GraphController.ConnectionMode.Value == ConnectionMode.CHILDREN && (connection.Item1.Type == NodeType.CATEGORY || connection.Item2.Type == NodeType.CATEGORY))
+				return controller.Colors.CategoryColor;
 			return controller.GraphController.ConnectionMode.Value == ConnectionMode.PARENTS ? controller.Colors.ParentColor : controller.Colors.ChildColor;
 		}
 

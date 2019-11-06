@@ -13,17 +13,21 @@ namespace InputModule.Event.Pointer {
 			base.Init();
 			if (!IsButtonActivated) return;
 			if (ActivationType == PointerActivationType.Press) {
-				ActivationButton.OnPress += () => OnPointed?.Invoke(GetPointerRay());
+				ActivationButton.OnPress += InvokeOnPointed;
 			} else {
-				ActivationButton.OnRelease += () => OnPointed?.Invoke(GetPointerRay());
+				ActivationButton.OnRelease += InvokeOnPointed;
 			}
 		}
 
 		public override void CheckForInput() {
 			base.CheckForInput();
-			if (!IsButtonActivated) {
+			if (!IsButtonActivated)
+				InvokeOnPointed();
+		}
+
+		private void InvokeOnPointed() {
+			if(!Blocked)
 				OnPointed?.Invoke(GetPointerRay());
-			}
 		}
 	}
 

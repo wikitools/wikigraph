@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace InputModule.Processor {
 	public class PCInputProcessor : InputProcessor {
-		public PCInputProcessor(InputConfig config, PcInputBinding binding, InputController controller) : base(config, binding, controller) {
+		public PCInputProcessor(InputConfig config, PcInputBinding binding, InputController controller) : base(config, controller) {
 			binding.RotationInput.OnMove += OnRotate;
 			binding.MainMovementAxis.OnMove += dir => OnMove(new Vector2(dir, 0));
 			binding.CrossMovementAxis.OnMove += dir => OnMove(new Vector2(0, dir));
@@ -21,9 +21,7 @@ namespace InputModule.Processor {
 			binding.UndoButton.OnPress += UndoUserAction;
 			binding.RedoButton.OnPress += RedoUserAction;
 
-			binding.TestRoute.OnPress += () => Controller.HistoryController.HistoryService.startRoute(0);
-
-			//binding.RoutesUIToggle.OnPress += () => Controller.HistoryController.RoutesUI.SetActive(!Controller.HistoryController.RoutesUI.activeSelf);
+			binding.OperatorConsoleToggle.OnRelease += ToggleOperatorConsole;
 
 		}
 

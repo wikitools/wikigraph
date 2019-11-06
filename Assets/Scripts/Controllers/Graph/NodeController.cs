@@ -15,8 +15,7 @@ using Random = UnityEngine.Random;
 namespace Controllers {
 	public class NodeController : MonoBehaviour {
 		
-		public NodeColor[] NodeColors;
-		public NodeSprites NodeSprites;
+		public NodeSprite[] NodeSprites;
 
 		public GraphPooledObject Nodes;
 
@@ -50,7 +49,7 @@ namespace Controllers {
 					if (highlightedNode.State != NodeState.SELECTED)
 						NodeStateManager.SetConditionalNodeState(highlightedNode, NodeState.ACTIVE);
 					else if(inputController.Environment == Environment.Cave)
-						NodeStateManager.SetNodeColor(highlightedNode, NodeState.SELECTED);
+						NodeStateManager.SetNodeSprite(highlightedNode, NodeState.SELECTED);
 				}
 				Node previousNode = highlightedNode;
 				highlightedNode = value;
@@ -58,7 +57,7 @@ namespace Controllers {
 					if (highlightedNode.State != NodeState.SELECTED)
 						NodeStateManager.SetConditionalNodeState(highlightedNode, NodeState.HIGHLIGHTED);
 					else if(inputController.Environment == Environment.Cave)
-						NodeStateManager.SetNodeColor(highlightedNode, NodeState.HIGHLIGHTED);
+						NodeStateManager.SetNodeSprite(highlightedNode, NodeState.HIGHLIGHTED);
 				}
 				OnHighlightedNodeChanged?.Invoke(previousNode, highlightedNode);
 			}
@@ -134,14 +133,10 @@ namespace Controllers {
 	}
 
 	[Serializable]
-	public class NodeColor {
+	public class NodeSprite {
+		public NodeType Type;
 		public NodeState State;
-		public Color Color;
+		public Sprite Sprite;
 	}
-
-	[Serializable]
-	public class NodeSprites {
-		public Sprite Article;
-		public Sprite Category;
-	}
+	
 }
