@@ -652,20 +652,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!64 &804804006
-MeshCollider:
+--- !u!148 &804804006
+NetworkView:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 804804005}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_SkinWidth: 0.01
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 804804009}
+  m_ViewID:
+    m_ID: 7
+    m_Type: 1
 --- !u!23 &804804007
 MeshRenderer:
   m_ObjectHideFlags: 0

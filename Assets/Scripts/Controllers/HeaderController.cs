@@ -149,12 +149,11 @@ namespace Controllers {
 			headerIndicatorSecondaryRangeSprite.size = targetSecondaryRangeSize;
 			HeaderObject.transform.GetChild(3).GetChild(1).localPosition = targetSecondaryRangePosition;
 
-			Grid.transform.position = new Vector3(Entity.transform.position.x, Entity.transform.position.y + Config.GridHeight, Entity.transform.position.z);
-
 			if (networkController.IsClient()) {
 				return;
 			}
 			
+			Grid.transform.position = new Vector3(Entity.transform.position.x, Entity.transform.position.y + Config.GridHeight, Entity.transform.position.z);
 			targetPosition = Entity.transform.position;
 			if (inputController.Environment == Environment.Cave) {
 				var anglesY = Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI;
