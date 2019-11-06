@@ -163,6 +163,7 @@ namespace Controllers {
 		public class ConnectionColors {
 			public Color ChildColor;
 			public Color ParentColor;
+			public Color CategoryColor;
 			public Color DisabledColor;
 		}
 	}

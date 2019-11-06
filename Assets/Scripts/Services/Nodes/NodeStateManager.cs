@@ -40,7 +40,7 @@ namespace Services.Nodes {
 
 		private void SetNodeState(Node node, NodeState state) {
 			node.State = state;
-			SetNodeObjectState(GraphController.Graph.NodeObjectMap[node], state);
+			SetNodeObjectState(GraphController.Graph.NodeObjectMap[node], node.Type, state);
 		}
 
 		private void SetConnectionNodeState(Node node, NodeState state) {
@@ -50,20 +50,20 @@ namespace Services.Nodes {
 				logger.Error("No connection for node found.");
 				return;
 			}
-			SetNodeObjectState(GraphController.Graph.ConnectionNodes[connection], state);
+			SetNodeObjectState(GraphController.Graph.ConnectionNodes[connection], node.Type, state);
 		}
-
-		private void SetNodeObjectState(GameObject nodeObject, NodeState state) {
-			nodeObject.GetComponentInChildren<Image>().color = GetStateColor(state);
+		
+		private void SetNodeObjectState(GameObject nodeObject, NodeType type, NodeState state) {
+			nodeObject.GetComponentInChildren<Image>().sprite = GetStateSprite(type, state);
 			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
 		}
-
-		public void SetNodeColor(Node node, NodeState state) {
+		
+		public void SetNodeSprite(Node node, NodeState state) {
 			var nodeObject = GraphController.Graph.NodeObjectMap[node];
-			nodeObject.GetComponentInChildren<Image>().color = GetStateColor(state);
+			nodeObject.GetComponentInChildren<Image>().sprite = GetStateSprite(node.Type, state);
 		}
-
-		public Color GetStateColor(NodeState state) => controller.NodeColors.First(nodeColor => nodeColor.State == state).Color;
+		
+		public Sprite GetStateSprite(NodeType type, NodeState state) => controller.NodeSprites.First(node => node.State == state && node.Type == type).Sprite;
 
 		public void ForceSetSelectedNode(Node node) {
 			if(node != null && node.State != NodeState.SELECTED)

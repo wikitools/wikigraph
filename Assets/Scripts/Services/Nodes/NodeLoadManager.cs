@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Controllers;
 using Model;
 using Services.Animations;
@@ -41,7 +42,7 @@ namespace Services.Nodes {
 		public GameObject LoadConnectionNode(Node model, Vector3 position) {
 			GameObject nodeObject = controller.Nodes.Pool.Spawn();
 			InitializeNode(model, ref nodeObject, position);
-			UpdateNodeObjectState(NodeState.ACTIVE, ref nodeObject);
+			UpdateNodeObjectState(model.Type, NodeState.ACTIVE, ref nodeObject);
 			nodeObject.layer = LayerMask.NameToLayer("Connection Node");
 			ScaleConnectionNodeImage(nodeObject, 0, 1);
 			return nodeObject;
@@ -50,9 +51,9 @@ namespace Services.Nodes {
 		public void InitializeNode(Node model, ref GameObject nodeObject, Vector3 position) {
 			nodeObject.transform.parent = controller.Nodes.Container.transform;
 			nodeObject.transform.position = position;
-			UpdateNodeObjectState(model.State, ref nodeObject);
+			UpdateNodeObjectState(model.Type, model.State, ref nodeObject);
 			var nodeImage = nodeObject.GetComponentInChildren<Image>();
-			nodeImage.sprite = model.Type == NodeType.ARTICLE ? controller.NodeSprites.Article : controller.NodeSprites.Category;
+			nodeImage.sprite = controller.NodeSprites.First(node => node.Type == model.Type && node.State == model.State).Sprite;
 			nodeObject.name = model.ID.ToString();
 		}
 
@@ -100,10 +101,10 @@ namespace Services.Nodes {
 			AnimationEndAction(node, scale);
 		}
 
-		private void UpdateNodeObjectState(NodeState state, ref GameObject nodeObject) {
+		private void UpdateNodeObjectState(NodeType type, NodeState state, ref GameObject nodeObject) {
 			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
-			nodeObject.GetComponentInChildren<Image>().color = controller.NodeStateManager.GetStateColor(state);
+			nodeObject.GetComponentInChildren<Image>().sprite = controller.NodeStateManager.GetStateSprite(type, state);
 		}
-		
+
 	}
 }
