@@ -6,10 +6,11 @@ using Inspector;
 using UnityEditor;
 
 namespace InputModule.Event {
-	public abstract class ActivatedInput : InputInitializer, InputPoller, CustomInspectorProperty {
+	public abstract class ActivatedInput : InputInitializer, InputPoller, CustomInspectorProperty, InputBlocker {
 		public bool IsButtonActivated;
 
 		private ButtonInput cachedButton;
+		protected bool Blocked;
 		protected ButtonInput ActivationButton => cachedButton ?? (cachedButton = (ButtonInput) GetType().GetField("Button").GetValue(this));
 
 		public virtual void Init() {
@@ -20,6 +21,10 @@ namespace InputModule.Event {
 		public virtual void CheckForInput() {
 			if (IsButtonActivated)
 				(ActivationButton as InputPoller)?.CheckForInput();
+		}
+		
+		public void SetBlocked(bool blocked) {
+			Blocked = blocked;
 		}
 
 #if UNITY_EDITOR

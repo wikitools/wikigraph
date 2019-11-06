@@ -5,12 +5,13 @@ using Inspector;
 using UnityEditor;
 
 namespace InputModule.Event.Axis {
-	public class ButtonPair : CustomInspectorProperty, InputPoller {
+	public class ButtonPair : CustomInspectorProperty, InputPoller, InputBlocker {
 		public bool ReverseAxisDirection;
 		public Action<int> OnMove;
 		public Action<int> OnInputChange;
 
 		protected int AxisState;
+		protected bool Blocked;
 
 		protected void Init(ButtonInput positiveButton, ButtonInput negativeButton) {
 			positiveButton.OnPress += () => OnAxisChange(1);
@@ -20,6 +21,8 @@ namespace InputModule.Event.Axis {
 		}
 
 		private void OnAxisChange(int direction) {
+			if(Blocked)
+				return;
 			direction *= ReverseAxisDirection ? -1 : 1;
 			if (AxisState != direction)
 				OnInputChange?.Invoke(direction);
@@ -27,7 +30,11 @@ namespace InputModule.Event.Axis {
 		}
 
 		public virtual void CheckForInput() {
-			if (AxisState != 0) OnMove?.Invoke(AxisState);
+			if (!Blocked && AxisState != 0) OnMove?.Invoke(AxisState);
+		}
+		
+		public void SetBlocked(bool blocked) {
+			Blocked = blocked;
 		}
 
 #if UNITY_EDITOR

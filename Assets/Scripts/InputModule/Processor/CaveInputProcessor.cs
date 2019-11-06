@@ -7,7 +7,7 @@ namespace InputModule.Processor {
 	public class CaveInputProcessor : InputProcessor {
 		private readonly CaveInputBinding binding;
 
-		public CaveInputProcessor(InputConfig config, CaveInputBinding binding, InputController controller) : base(config, binding, controller) {
+		public CaveInputProcessor(InputConfig config, CaveInputBinding binding, InputController controller) : base(config, controller) {
 			this.binding = binding;
 
 			binding.MovementJoystick.OnXAxisMove += Rotate;

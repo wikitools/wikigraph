@@ -13,6 +13,8 @@ namespace InputModule.Event.Cursor {
 		protected abstract Vector2 GetCursorPosition();
 
 		public override void CheckForInput() {
+			if(Blocked)
+				return;
 			base.CheckForInput();
 			if (IsButtonActivated && !ActivationButton.Pressed)
 				return;

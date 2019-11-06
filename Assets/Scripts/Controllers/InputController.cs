@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
+using InputModule.Attributes;
 using InputModule.Binding;
+using InputModule.Event.Interfaces;
 using InputModule.Processor;
 using Inspector;
 using UnityEditor;
@@ -52,12 +54,10 @@ namespace Controllers {
 			
 			if (!NetworkController.IsServer())
 				return;
-			InputProcessor input = Environment == Environment.PC
-				? (InputProcessor) new PCInputProcessor(PCConfig, PCInputBinding, this)
-				: new CaveInputProcessor(CaveConfig, CaveInputBinding, this);
-			binding = Environment == Environment.PC ? (InputBinding) PCInputBinding : CaveInputBinding;
+			InputProcessor input = GetEnvDependent((InputProcessor) new PCInputProcessor(PCConfig, PCInputBinding, this),
+				 new CaveInputProcessor(CaveConfig, CaveInputBinding, this));
+			binding = GetEnvDependent((InputBinding) PCInputBinding, CaveInputBinding);
 
-			// TODO: let user choose the main flystick
 			CaveInputBinding.SetPrimaryFlystick(0);
 			binding.Init();
 		}
@@ -72,6 +72,12 @@ namespace Controllers {
 				return;
 			binding.CheckForInput();
 		}
+
+		public void SetBlockInput(bool block) {
+			binding.CallFieldsOfType<InputBlocker>(field => field.SetBlocked(block), field => field.GetCustomAttribute<UnblockableEvent>() == null);
+		}
+
+		private T GetEnvDependent<T>(T pc, T cave) => Environment == Environment.Cave ? cave : pc;
 	}
 
 	[Serializable]

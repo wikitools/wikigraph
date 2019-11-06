@@ -12,6 +12,8 @@ namespace InputModule.Event.Button {
 		public KeyCode KeyboardButton;
 
 		public void CheckForInput() {
+			if(Blocked)
+				return;
 			if (ButtonType == ButtonType.Mouse ? Input.GetMouseButtonDown((int) MouseButton) : Input.GetKeyDown(KeyboardButton)) {
 				Pressed = true;
 				OnPress?.Invoke();

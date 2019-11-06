@@ -1,14 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Model;
+﻿using UnityEngine;
 
 namespace Controllers {
 	public class ConsoleWindowController : MonoBehaviour {
 
 		public GameObject ConsoleWindowCanvas;
-
-		private bool isServer;
+		
 		private NetworkController networkController;
 		private InputController inputController;
 		private NodeController nodeController;
@@ -20,12 +16,13 @@ namespace Controllers {
 			inputController = GetComponent<InputController>();
 			nodeController = GetComponent<NodeController>();
 			connectionController = GetComponent<ConnectionController>();
-			isServer = networkController.IsServer();
 		}
 
 		public void ToggleVisibility() {
-			if(isServer)
-				ConsoleWindowCanvas.SetActive(!ConsoleWindowCanvas.activeSelf);
+			if(!networkController.IsServer())
+				return;
+			ConsoleWindowCanvas.SetActive(!ConsoleWindowCanvas.activeSelf);
+			inputController.SetBlockInput(ConsoleWindowCanvas.activeSelf);
 		}
 	}
 }
