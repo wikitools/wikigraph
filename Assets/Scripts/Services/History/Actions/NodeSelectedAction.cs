@@ -26,12 +26,7 @@ namespace Services.History.Actions {
 
 		//do action backward
 		public void UnExecute() {
-			if (oldSelectedNode == null) {
-				return;
-			}
-			else {
-				passSelectAction(oldSelectedNode);
-			}
+			passSelectAction(oldSelectedNode);
 		}
 		#endregion
 	}

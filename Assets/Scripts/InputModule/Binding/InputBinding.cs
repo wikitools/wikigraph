@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using InputModule.Event.Interfaces;
 using Inspector;
 using UnityEditor;
@@ -24,10 +25,12 @@ namespace InputModule.Binding {
 			CallFieldsOfType<InputInitializer>(field => field.Init());
 		}
 
-		private void CallFieldsOfType<T>(Action<T> function) where T : class {
+		public void CallFieldsOfType<F>(Action<F> function) where F : class => CallFieldsOfType(function, f => true);
+
+		public void CallFieldsOfType<F>(Action<F> function, Func<FieldInfo, bool> condition) where F : class {
 			foreach (var field in GetType().GetFields()) {
-				if (typeof(T).IsAssignableFrom(field.FieldType))
-					function(field.GetValue(this) as T);
+				if (typeof(F).IsAssignableFrom(field.FieldType) && condition(field))
+					function(field.GetValue(this) as F);
 			}
 		}
 	}

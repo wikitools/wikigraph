@@ -36,6 +36,7 @@ namespace Controllers {
 		}
 
 		private void Start() {
+			SkyboxMaterial.SetFloat("_Blend", 0f);
 			GraphMode.OnValueChanged += mode => {
 				if (GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT)
 					ConnectionMode.Value = Controllers.ConnectionMode.CHILDREN;
