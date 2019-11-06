@@ -10,6 +10,7 @@ namespace Controllers {
 	public class HeaderController : MonoBehaviour {
 		public GameObject Entity;
 		public GameObject HeaderObject;
+		public GameObject Grid;
 		public HeaderConfig Config;
 
 		private Vector3 targetPosition;
@@ -44,6 +45,7 @@ namespace Controllers {
 			for (int i = 0; i < 3; i++) {
 				SetRendererSortingOrder(HeaderObject.transform.GetChild(i), 50);
 			}
+			SetRendererSortingOrder(Grid.transform, -10);
 		}
 
 		void Awake() {
@@ -139,7 +141,7 @@ namespace Controllers {
 				headerConnectionsRangeText.text = string.Empty;
 			}
 		}
-
+		
 		void Update() {
 			// Connection indicator update
 			headerIndicatorPrimaryRangeSprite.size = targetPrimaryRangeSize;
@@ -151,6 +153,7 @@ namespace Controllers {
 				return;
 			}
 			
+			Grid.transform.position = new Vector3(Entity.transform.position.x, Entity.transform.position.y + Config.GridHeight, Entity.transform.position.z);
 			targetPosition = Entity.transform.position;
 			if (inputController.Environment == Environment.Cave) {
 				var anglesY = Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI;
@@ -165,6 +168,7 @@ namespace Controllers {
 
 		[Serializable]
 		public class HeaderConfig {
+			public float GridHeight = -6f;
 			public float HeaderHeight = -6f;
 			public float HeaderDeviation = -10f;
 			public float HeaderDistance = 16f;
