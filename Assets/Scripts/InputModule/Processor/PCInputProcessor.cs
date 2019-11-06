@@ -20,6 +20,7 @@ namespace InputModule.Processor {
 
 			binding.UndoButton.OnPress += UndoUserAction;
 			binding.RedoButton.OnPress += RedoUserAction;
+			binding.OperatorConsoleToggle.OnRelease += ToggleOperatorConsole;
 		}
 
 		private void OnMove(Vector2 direction) {

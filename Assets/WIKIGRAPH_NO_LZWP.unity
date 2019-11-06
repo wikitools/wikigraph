@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.113663815, g: 0.19205695, b: 0.23063463, a: 1}
+  m_IndirectSpecularColor: {r: 0.11357183, g: 0.19203451, b: 0.23066843, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -305,7 +305,7 @@ MonoBehaviour:
     ConnectionModeToggle:
       ButtonType: 0
       MouseButton: 0
-      KeyboardButton: 99
+      KeyboardButton: 109
     ConnectionScroll:
       ReverseAxisDirection: 0
       PositiveButton:
@@ -324,6 +324,10 @@ MonoBehaviour:
       ButtonType: 0
       MouseButton: 0
       KeyboardButton: 113
+    OperatorConsoleToggle:
+      ButtonType: 0
+      MouseButton: 0
+      KeyboardButton: 99
   CaveInputBinding:
     MovementJoystick:
       IsButtonActivated: 0
@@ -363,6 +367,10 @@ MonoBehaviour:
       NegativeButton:
         Instance: 0
         Button: 2
+    OperatorConsoleToggle:
+      ButtonType: 0
+      MouseButton: 0
+      KeyboardButton: 0
   PCConfig:
     RotationSpeed: 20
     MaxRotationSpeed: {x: 10, y: 10}

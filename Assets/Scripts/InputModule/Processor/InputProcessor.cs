@@ -22,6 +22,7 @@ namespace InputModule.Processor {
 
 		protected void RedoUserAction() => Controller.HistoryController.HistoryService.RedoAction();
 		protected void UndoUserAction() => Controller.HistoryController.HistoryService.UndoAction();
+		protected void ToggleOperatorConsole() => Controller.ConsoleController.ToggleVisibility();
 
 		protected void OnNodeChosen(Ray ray) {
 			RaycastHit raycastHit;

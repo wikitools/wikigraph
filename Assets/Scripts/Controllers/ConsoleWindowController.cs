@@ -23,14 +23,9 @@ namespace Controllers {
 			isServer = networkController.IsServer();
 		}
 
-		// Use this for initialization
-		void Start() {
-
-		}
-
-		// Update is called once per frame
-		void Update() {
-
+		public void ToggleVisibility() {
+			if(isServer)
+				ConsoleWindowCanvas.SetActive(!ConsoleWindowCanvas.activeSelf);
 		}
 	}
 }

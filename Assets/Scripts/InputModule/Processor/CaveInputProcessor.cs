@@ -19,6 +19,7 @@ namespace InputModule.Processor {
 			binding.UndoButton.OnPress += UndoUserAction;
 			
 			binding.ConnectionsScrollAxis.OnInputChange += direction => Controller.ConnectionController.OnScrollInputChanged(direction);
+			binding.OperatorConsoleToggle.OnRelease += ToggleOperatorConsole;
 		}
 
 		private void Rotate(float amount) {

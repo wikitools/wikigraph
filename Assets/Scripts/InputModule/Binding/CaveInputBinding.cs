@@ -21,6 +21,8 @@ namespace InputModule.Binding {
 		public FlystickButton RedoButton;
 		
 		public FlystickButtonPairAxis ConnectionsScrollAxis;
+		
+		public PCButton OperatorConsoleToggle; // PC type on purpose
 
 		private static Dictionary<FlystickInstance, int> FlystickBinding = new Dictionary<FlystickInstance, int>();
 		public static LzwpInput.Flystick Flystick(FlystickInstance instance) => Lzwp.input.flysticks[FlystickBinding[instance]];

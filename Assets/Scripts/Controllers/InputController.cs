@@ -33,6 +33,7 @@ namespace Controllers {
 		public NodeController NodeController { get; private set; }
 		public ConnectionController ConnectionController { get; private set; }
 		public HistoryController HistoryController { get; private set; }
+		public ConsoleWindowController ConsoleController { get; private set; }
 
 		void Awake() {
 			NetworkController = GetComponent<NetworkController>();
@@ -41,6 +42,7 @@ namespace Controllers {
 			NodeController = GetComponent<NodeController>();
 			ConnectionController = GetComponent<ConnectionController>();
 			HistoryController = GetComponent<HistoryController>();
+			ConsoleController = GetComponent<ConsoleWindowController>();
 		}
 
 		void Start() {
