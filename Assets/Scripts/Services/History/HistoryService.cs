@@ -34,7 +34,7 @@ namespace Services.History {
 
 		private Stack<UserAction> redoSavedRoute = new Stack<UserAction>();
 		private Stack<UserAction> undoSavedRoute = new Stack<UserAction>();
-
+		public bool playsRoute = false;
 		public RoutesLoader routesLoader;
 
 
@@ -71,18 +71,22 @@ namespace Services.History {
 
 		public void startRoute(int index) {
 			loadChosenRoute(index);
-			RedoRoute();
 			startRouteAutoAction();
 		}
 
 		public IEnumerator autoRoutes() {
-			while(redoSavedRoute.Count != 0) {
-				yield return new UnityEngine.WaitForSeconds(7f);
+			playsRoute = true;
+			while(redoSavedRoute.Count != 0 && playsRoute) {
 				RedoRoute();
+				yield return new UnityEngine.WaitForSeconds(7f);
 			}
+			playsRoute = false;
 			
 		}
 
+		public void stopPlayingRoute() {
+			playsRoute = false;
+		}
 
 
 	}

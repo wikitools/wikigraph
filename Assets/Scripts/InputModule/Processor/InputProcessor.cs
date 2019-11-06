@@ -17,7 +17,11 @@ namespace InputModule.Processor {
 
 		protected Transform EntityTransform => Controller.CameraController.Entity.transform;
 
-		protected void ExitNodeTraverseMode() => Controller.NetworkController.SetGraphMode(GraphMode.FREE_FLIGHT);
+		protected void ExitNodeTraverseMode() 
+		{
+			if (Controller.HistoryController.HistoryService.playsRoute) Controller.HistoryController.HistoryService.stopPlayingRoute();
+			else Controller.NetworkController.SetGraphMode(GraphMode.FREE_FLIGHT);
+		}
 
 
 		protected void RedoUserAction() => Controller.HistoryController.HistoryService.RedoAction();

@@ -13,7 +13,6 @@ namespace Controllers {
 		private GraphController graphController;
 		public HistoryService HistoryService { get; private set; }
 		public static Action startLoading;
-
 		
 
 		bool nodeChangedByHistory;
@@ -53,6 +52,10 @@ namespace Controllers {
 					StartCoroutine(HistoryService.autoRoutes());
 				};
 			};
+		}
+
+		public bool isPlayingRoute() {
+			return HistoryService.playsRoute;
 		}
 	}
 }
