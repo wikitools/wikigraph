@@ -249,10 +249,10 @@ MonoBehaviour:
       ButtonType: 0
       MouseButton: 0
       KeyboardButton: 113
-    RoutesUIToggle:
+    TestRoute:
       ButtonType: 0
       MouseButton: 0
-      KeyboardButton: 0
+      KeyboardButton: 116
   CaveInputBinding:
     MovementJoystick:
       IsButtonActivated: 0

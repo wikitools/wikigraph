@@ -31,7 +31,12 @@ namespace Services.RoutesFiles {
 		}
 
 		public bool isNotEOF(int fileIndex) {
-			return streams[fileIndex].Peek() >= 0;
+			if(streams[fileIndex].Peek() < 0) {
+				streams[fileIndex].DiscardBufferedData();
+				streams[fileIndex].BaseStream.Seek(0, System.IO.SeekOrigin.Begin);
+				return false;
+			}
+			return true;
 		}
 
 		public int numberOfRoutes() {

@@ -2,12 +2,14 @@
 using Services.History.Actions;
 using Services.RoutesFiles;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Services.History {
 	public class HistoryService {
 		private readonly Stack<UserAction> undoActionStack = new Stack<UserAction>();
 		private readonly Stack<UserAction> redoActionStack = new Stack<UserAction>();
+		public static Action startRouteAutoAction;
 
 		public void RedoAction() {
 			if (redoActionStack.Count != 0) {
@@ -65,6 +67,20 @@ namespace Services.History {
 
 		public string[] getNames() {
 			return routesLoader.routesNames();
+		}
+
+		public void startRoute(int index) {
+			loadChosenRoute(index);
+			RedoRoute();
+			startRouteAutoAction();
+		}
+
+		public IEnumerator autoRoutes() {
+			while(redoSavedRoute.Count != 0) {
+				yield return new UnityEngine.WaitForSeconds(7f);
+				RedoRoute();
+			}
+			
 		}
 
 

@@ -24,6 +24,8 @@ namespace InputModule.Binding {
 		public PCButton RedoButton;
 		public PCButton UndoButton;
 
-		public PCButton RoutesUIToggle;
+		public PCButton TestRoute;
+
+		
 	}
 }

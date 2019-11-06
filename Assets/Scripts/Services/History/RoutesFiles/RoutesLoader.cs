@@ -13,10 +13,7 @@ namespace Services.RoutesFiles {
 			NODE_SELECTED
 		};
 
-		private enum CONNECT_MODE {
-			CHILDREN,
-			PARENTS
-		};
+		
 
 		private RoutesReader routesReader;
 		private static char separator = ';';
@@ -42,15 +39,15 @@ namespace Services.RoutesFiles {
 			while (routesReader.isNotEOF(index)) {
 				string[] line = routesReader.readLine(index).Split(separator);
 				UserAction action = null;
-				if (line[0] == USERACTION_TYPE.MODE_CHANGE.ToString()) {
-					if (line[1] == CONNECT_MODE.CHILDREN.ToString()) {
-						action = new ModeChangeAction<CONNECT_MODE>(CONNECT_MODE.CHILDREN);
+				if (line[0] == USERACTION_TYPE.MODE_CHANGE.ToString("d")) {
+					if (line[1] == ConnectionMode.CHILDREN.ToString("d")) {
+						action = new ModeChangeAction<ConnectionMode>(ConnectionMode.CHILDREN);
 					}
-					else if (line[1] == CONNECT_MODE.PARENTS.ToString()) {
-						action = new ModeChangeAction<CONNECT_MODE>(CONNECT_MODE.PARENTS);
+					else if (line[1] == ConnectionMode.PARENTS.ToString("d")) {
+						action = new ModeChangeAction<ConnectionMode>(ConnectionMode.PARENTS);
 					}
 				}
-				else if (line[0] == USERACTION_TYPE.NODE_SELECTED.ToString()) {
+				else if (line[0] == USERACTION_TYPE.NODE_SELECTED.ToString("d")) {
 					Node newNode = getRouteNode(Convert.ToUInt32(line[1]));
 					action = new NodeSelectedAction(old, newNode);
 					old = newNode;
@@ -58,7 +55,13 @@ namespace Services.RoutesFiles {
 				
 				userActions.Push(action);
 			}
-			return userActions;
+
+			Stack<UserAction> rev = new Stack<UserAction>();
+			while(userActions.Count!=0) {
+				rev.Push(userActions.Pop());
+			}
+
+			return rev;
 		}
 
 		public void Dispose() {

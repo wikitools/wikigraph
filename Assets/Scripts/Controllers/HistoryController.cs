@@ -49,6 +49,9 @@ namespace Controllers {
 				RoutesLoader.getRouteNode = id => {
 					return nodeController.NodeLoadManager.LoadNode(id); 
 				};
+				HistoryService.startRouteAutoAction = () => {
+					StartCoroutine(HistoryService.autoRoutes());
+				};
 			};
 		}
 	}
