@@ -44,7 +44,7 @@ namespace Controllers {
 			NodeController = GetComponent<NodeController>();
 			ConnectionController = GetComponent<ConnectionController>();
 			HistoryController = GetComponent<HistoryController>();
-			ConsoleController = GetComponent<ConsoleWindowController>();
+			ConsoleController = GameObject.Find("/Console Window").GetComponent<ConsoleWindowController>();
 		}
 
 		void Start() {
