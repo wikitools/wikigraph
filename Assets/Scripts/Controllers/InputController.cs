@@ -7,6 +7,7 @@ using InputModule.Processor;
 using Inspector;
 using UnityEditor;
 using UnityEngine;
+using System.Linq;
 
 namespace Controllers {
 	public class InputController : MonoBehaviour {
@@ -44,7 +45,7 @@ namespace Controllers {
 			NodeController = GetComponent<NodeController>();
 			ConnectionController = GetComponent<ConnectionController>();
 			HistoryController = GetComponent<HistoryController>();
-			ConsoleController = GameObject.Find("/Console Window").GetComponent<ConsoleWindowController>();
+			ConsoleController = (ConsoleWindowController) Resources.FindObjectsOfTypeAll(typeof(ConsoleWindowController))[0];
 		}
 
 		void Start() {

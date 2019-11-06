@@ -10,6 +10,10 @@ namespace Controllers {
 		public GameObject Header;
 		public ConsoleWindowConfig Config;
 
+		private Canvas canvas;
+		private Text headerHint, headerTitle;
+		private Image headerIcon;
+
 		private NetworkController networkController;
 		private InputController inputController;
 		private NodeController nodeController;
@@ -24,16 +28,16 @@ namespace Controllers {
 		}
 
 		void Start() {
+			headerHint = transform.Find("ConsoleHeader/NodeHint").GetComponent<Text>();
+			headerTitle = transform.Find("ConsoleHeader/NodeName").GetComponent<Text>();
+			headerIcon = transform.Find("ConsoleHeader/NodeIcon").GetComponent<Image>();
+			canvas = gameObject.GetComponent<Canvas>();
+			headerHint.text = Config.CurrentlySelectedText;
 			nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelect;
 			UpdateNodeHeaderAfterSelect(null, null);
-			Text headerHint = transform.Find("ConsoleHeader/NodeHint").GetComponent<Text>();
-			headerHint.text = Config.CurrentlySelectedText;
-			gameObject.SetActive(false);
 		}
 
 		private void UpdateNodeHeaderAfterSelect(Node previousNode, Node selectedNode) {
-			Text headerTitle = transform.Find("ConsoleHeader/NodeName").GetComponent<Text>();
-			Image headerIcon = transform.Find("ConsoleHeader/NodeIcon").GetComponent<Image>();
 			headerTitle.text = selectedNode != null ? selectedNode.Title : Config.NothingSelectedText;
 			headerIcon.sprite = selectedNode != null ? (selectedNode.Type == NodeType.ARTICLE ? Config.ArticleIconSprite : Config.CategoryIconSprite) : Config.MaskSprite;
 		}
@@ -41,9 +45,9 @@ namespace Controllers {
 		public void ToggleVisibility() {
 			if(!networkController.IsServer())
 				return;
-			Header.SetActive(gameObject.activeSelf);
-			gameObject.SetActive(!gameObject.activeSelf);
-			inputController.SetBlockInput(gameObject.activeSelf);
+			canvas.enabled = !canvas.enabled;
+			Header.SetActive(!canvas.enabled);
+			inputController.SetBlockInput(canvas.enabled);
 		}
 
 		[Serializable]
