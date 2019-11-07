@@ -82,9 +82,9 @@ namespace Controllers {
 				GraphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
 				NodeStateManager.UpdateNodeStates();
 				if(previousNode != null)
-					NodeLoadManager.ScaleNodeImage(previousNode, -1, 1);
+					NodeLoadManager.AnimScaleNodeSize(previousNode, -1, NodeLoadManager.GetNodeTypeScale(previousNode.Type));
 				if(selectedNode != null)
-					NodeLoadManager.ScaleNodeImage(selectedNode, -1, 3f);
+					NodeLoadManager.AnimScaleNodeSize(selectedNode, -1, 3f * NodeLoadManager.GetNodeTypeScale(selectedNode.Type));
 				OnSelectedNodeChanged?.Invoke(previousNode, selectedNode);
 			}
 		}
