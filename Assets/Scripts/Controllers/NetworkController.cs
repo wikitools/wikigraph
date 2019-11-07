@@ -41,11 +41,13 @@ namespace Controllers {
 			graphController.GraphMode.Value = (GraphMode) value;
 		}
 
+		public void SetHighlightedNode(Node node) => SetHighlightedNode(NodeToID(node));
+
 		public void SetHighlightedNode(string id) => Synchronize("setHighlightedNode", id);
 
 		[RPC]
 		private void setHighlightedNode(string id) {
-			nodeController.HighlightedNode = id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
+			nodeController.HighlightedNode = IDToNode(id);
 		}
 
 		public void SetConnectionMode(ConnectionMode mode) => Synchronize("setConnectionMode", (int) mode);
@@ -55,11 +57,13 @@ namespace Controllers {
 			graphController.ConnectionMode.Value = (ConnectionMode) mode;
 		}
 
+		public void SetSelectedNode(Node node) => SetSelectedNode(NodeToID(node));
+
 		public void SetSelectedNode(string id) => Synchronize("setSelectedNode", id);
 
 		[RPC]
 		private void setSelectedNode(string id) {
-			nodeController.NodeStateManager.ForceSetSelectedNode(id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id));
+			nodeController.NodeStateManager.ForceSetSelectedNode(IDToNode(id));
 		}
 
 		private void Synchronize(string method, params object[] args) {
@@ -67,6 +71,9 @@ namespace Controllers {
 		}
 
 		#endregion
+
+		private string NodeToID(Node node) => node != null ? node.ID.ToString() : "";
+		private Node IDToNode(string id) => id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
 
 		public bool IsServer() {
 			return Environment == Environment.PC && Application.isEditor || Environment == Environment.Cave && Lzwp.sync.isMaster;

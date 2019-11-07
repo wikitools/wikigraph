@@ -120,7 +120,7 @@ namespace Controllers {
 				OnNodeLoadSessionEnded?.Invoke();
 				GraphController.GraphMode.OnValueChanged += mode => {
 					if (mode == GraphMode.FREE_FLIGHT)
-						networkController.SetSelectedNode("");
+						networkController.SetSelectedNode((Node) null);
 				};
 			}
 		}
