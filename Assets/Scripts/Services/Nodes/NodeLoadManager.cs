@@ -18,7 +18,7 @@ namespace Services.Nodes {
 		public NodeLoadManager(NodeController controller) : base(controller) {
 			this.controller = controller;
 			SetAnimationEndAction((node, animation) => AnimationEndAction(node, animation.Scale));
-			NodeLoader = new NodeLoader(controller.LoadTestNodeSet ? "-test" : "");
+			NodeLoader = new NodeLoader(controller.DataPack);
 		}
 
 		public NodeLoader NodeLoader;

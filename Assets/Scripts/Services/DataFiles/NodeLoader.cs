@@ -18,8 +18,8 @@ namespace Services.DataFiles {
 			public const ushort ID_SIZE = 3;
 		}
 
-		public NodeLoader(string dataFilePostfix = "") {
-			fileReader = new DataFileReader(dataFilePostfix);
+		public NodeLoader(string dataPack) {
+			fileReader = new DataFileReader(dataPack);
 		}
 
 		public Node LoadNode(uint id) {

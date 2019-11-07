@@ -17,5 +17,10 @@ namespace Services {
 		public void Exception(Exception exception) {
 			Lzwp.debug?.Exception(exception);
 		}
+
+		public void Exception(string message, Exception exception) {
+			Error(message);
+			Lzwp.debug?.Exception(exception);
+		}
 	}
 }
