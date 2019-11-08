@@ -13,7 +13,9 @@ namespace Controllers {
 		private GraphController graphController;
 		public HistoryService HistoryService { get; private set; }
 		public static Action startLoading;
-		
+		public GameObject RouteTemplate;
+		public GameObject RouteParent;
+
 
 		bool nodeChangedByHistory;
 		bool connectionModeChangedByHistory;
@@ -51,11 +53,26 @@ namespace Controllers {
 				HistoryService.startRouteAutoAction = () => {
 					StartCoroutine(HistoryService.autoRoutes());
 				};
+				createRoutesObjects();
 			};
 		}
 
 		public bool isPlayingRoute() {
 			return HistoryService.playsRoute;
+		}
+
+		public void createRoutesObjects() {
+			int i = 0;
+			foreach(string name in HistoryService.getNames()) {
+				GameObject temp = Instantiate(RouteTemplate, RouteParent.transform);
+				string[] getFileName = name.Split('/');
+				temp.transform.GetChild(0).GetComponent<Text>().text = getFileName[getFileName.Length - 1].Split('.')[0];
+				temp.transform.GetChild(1).GetComponent<Text>().text = "Route Length: <color=black>1</color>";
+				temp.transform.position = temp.transform.position + new Vector3(0, -64*i, 0);
+				i++;
+			}
+			
+			
 		}
 	}
 }
