@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.15158325, g: 0.21595481, b: 0.3097374, a: 1}
+  m_IndirectSpecularColor: {r: 0.096282564, g: 0.18263027, b: 0.23722896, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -489,6 +489,7 @@ MonoBehaviour:
   - {fileID: 327208667}
   - {fileID: 2060724263}
   ShowFlystickRays: 1
+  Eyes: {fileID: 1289948322}
 --- !u!114 &68664596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -543,8 +544,10 @@ MonoBehaviour:
     Container: {fileID: 2007395970}
     Prefab: {fileID: 1534031500408350, guid: 4fca75af5504140b6814370e66ce13db, type: 2}
     PreloadNumber: 200
+  NodeMaterial: {fileID: 0}
   NodeLoadedLimit: 1000
-  LoadTestNodeSet: 0
+  DataPack: pl-wiki
+  DataPackDate: 20191023
   NodeScaleTime: 0.8
   ConnectionNodeScaleTime: 0.4
 --- !u!114 &68664598
@@ -1131,7 +1134,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1507118958}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999999
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

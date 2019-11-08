@@ -11,6 +11,7 @@ namespace Controllers {
 		public NodeSprite[] NodeSprites;
 
 		public GraphPooledObject Nodes;
+		public Material NodeMaterial;
 
 		public int NodeLoadedLimit;
 		[HideInInspector]
@@ -119,6 +120,11 @@ namespace Controllers {
 						networkController.SetSelectedNode((Node) null);
 				};
 			}
+		}
+
+		private void Update() {
+			var eyes = inputController.Eyes.position;
+			NodeMaterial.SetVector("_FaceObject", new Vector4(eyes.x, eyes.y, eyes.z));
 		}
 
 		private void OnDestroy() {

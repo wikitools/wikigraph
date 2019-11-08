@@ -2,10 +2,11 @@ Shader "BillboardShader"
 {
     Properties
     {
+        _FaceObject ("Face Object", Vector) = (0, 0, 0, 0)
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
-	_Scaling("Scaling", Float) = 1.0
-	[Toggle] _KeepConstantScaling("Keep Constant Scaling", Float) = 1
-	[Enum(RenderOnTop, 0,RenderWithTest, 4)] _ZTest("Render on top", Int) = 1
+	    _Scaling("Scaling", Float) = 1.0
+	    [Toggle] _KeepConstantScaling("Keep Constant Scaling", Float) = 1
+	    [Enum(RenderOnTop, 0,RenderWithTest, 4)] _ZTest("Render on top", Int) = 1
         _Color ("Tint", Color) = (1,1,1,1)
 
         _StencilComp ("Stencil Comparison", Float) = 8
@@ -80,8 +81,9 @@ Shader "BillboardShader"
             fixed4 _Color;
             fixed4 _TextureSampleAdd;
             float4 _ClipRect;
-	    float _KeepConstantScaling;
-	    float _Scaling;
+	        float _KeepConstantScaling;
+	        float _Scaling;
+	        float4 _FaceObject;
 
             v2f vert(appdata_t v)
             {
@@ -89,8 +91,30 @@ Shader "BillboardShader"
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 
-		float relativeScaler =  (_KeepConstantScaling) ? distance(mul(unity_ObjectToWorld, v.vertex), _WorldSpaceCameraPos) : 1;
-		OUT.vertex = mul(UNITY_MATRIX_P, mul(UNITY_MATRIX_MV, float4(0.0, 0.0, 0.0, 1.0)) + float4(v.vertex.x, v.vertex.y, 0.0, 0.0) * relativeScaler * _Scaling);
+                float3 vertNormal = float3(0, 0, 1);
+                float4 vertWorldPos = mul(unity_ObjectToWorld, float4(0.0, 0.0, 0.0, 1.0));
+                if(vertWorldPos.z > _FaceObject.z)
+                    vertNormal.z = -1;
+                float4 faceModelPos = normalize(_FaceObject - vertWorldPos);
+                float dotProd = dot(vertNormal, faceModelPos.xyz);
+                float3 crossProd = cross(vertNormal, faceModelPos.xyz);
+                float4x4 vMat = {
+                    0, crossProd.z, -crossProd.y, 0,
+                    -crossProd.z, 0, crossProd.x, 0,
+                    crossProd.y, -crossProd.x, 0, 0,
+                    0, 0, 0, 1
+                };
+                float4x4 unit = {
+                    1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1
+                };
+                float4x4 rot = unit + vMat + mul(mul(vMat, vMat), 1 / (1 + dotProd));
+		        float relativeScaler = (_KeepConstantScaling) ? distance(mul(unity_ObjectToWorld, v.vertex), _WorldSpaceCameraPos) : 1;
+		        OUT.vertex = UnityObjectToClipPos(mul(v.vertex, rot));
+		        //OUT.vertex = UnityObjectToClipPos(mul(mul(v.vertex, unity_ObjectToWorld) + faceModelPos, unity_WorldToObject));
+		        //OUT.vertex = mul(UNITY_MATRIX_P, mul(UNITY_MATRIX_MV, float4(0.0, 0.0, 0.0, 1.0)) + float4(v.vertex.x, v.vertex.y, 0.0, 0.0) * relativeScaler * _Scaling);
                 OUT.texcoord = v.texcoord;
                 OUT.color = v.color * _Color;
                 return OUT;
