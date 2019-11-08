@@ -2,6 +2,7 @@
 using Services.History.Actions;
 using Services.RoutesFiles;
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -20,6 +21,9 @@ namespace Controllers {
 		bool nodeChangedByHistory;
 		bool connectionModeChangedByHistory;
 		bool graphModeChangedByHistory;
+		GameObject[] routesTiles;
+		int routeIndex;
+		IEnumerator autoRouteCoroutine;
 
 		void Awake() {
 			networkController = GetComponent<NetworkController>();
@@ -51,35 +55,53 @@ namespace Controllers {
 					return nodeController.NodeLoadManager.LoadNode(id);
 				};
 				HistoryService.startRouteAutoAction = () => {
-					StartCoroutine(HistoryService.autoRoutes());
+					autoRouteCoroutine = HistoryService.autoRoutes();
+					StartCoroutine(autoRouteCoroutine);
 				};
+				HistoryService.endRouteAutoAction = () => {
+					makeDefaultColorOnRouteTile();
+				};
+
 				createRoutesObjects();
 			};
 		}
 
 		public bool isPlayingRoute() {
-			return HistoryService.playsRoute;
+			return HistoryService.isPlayingRoute();
 		}
 
 		public void createRoutesObjects() {
 			int i = 0;
 			int[] lengths = HistoryService.getLengths();
+			routesTiles = new GameObject[lengths.Length];
 			foreach (string name in HistoryService.getNames()) {
-				GameObject temp = Instantiate(RouteTemplate, RouteParent.transform);
+				routesTiles[i] = Instantiate(RouteTemplate, RouteParent.transform);
 				string[] getFileName = name.Split('/');
-				temp.transform.GetChild(0).GetComponent<Text>().text = getFileName[getFileName.Length - 1].Split('.')[0];
-				temp.transform.GetChild(1).GetComponent<Text>().text = "Route Length: <color=black>" + lengths[i].ToString() + "</color>";
-				temp.transform.GetChild(2).name = i.ToString();
-				temp.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => onRouteButtonClicked());
-				temp.transform.position = temp.transform.position + new Vector3(0, -64 * i, 0);
+				routesTiles[i].transform.GetChild(0).GetComponent<Text>().text = getFileName[getFileName.Length - 1].Split('.')[0];
+				routesTiles[i].transform.GetChild(1).GetComponent<Text>().text = "Route Length: <color=black>" + lengths[i].ToString() + "</color>";
+				routesTiles[i].transform.GetChild(2).name = i.ToString();
+				routesTiles[i].transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => onRouteButtonClicked());
+				routesTiles[i].transform.position = routesTiles[i].transform.position + new Vector3(0, -64 * i, 0);
 				i++;
 			}
 		}
 
 		public void onRouteButtonClicked() {
-			int index = 0;
-			if (Int32.TryParse(EventSystem.current.currentSelectedGameObject.name, out index))
-				HistoryService.startRoute(index);
+			if (HistoryService.isPlayingRoute()) onRouteExit();
+			if (Int32.TryParse(EventSystem.current.currentSelectedGameObject.name, out routeIndex)) {
+				HistoryService.startRoute(routeIndex);
+				routesTiles[routeIndex].transform.GetComponent<Image>().color = new Color(0.341f, 0.58f, 0.808f, 1.0f);
+			}
+		}
+
+		public void makeDefaultColorOnRouteTile() {
+			routesTiles[routeIndex].transform.GetComponent<Image>().color = new Color(0.91f, 0.91f, 0.91f, 0.404f);
+		}
+
+		public void onRouteExit() {
+			makeDefaultColorOnRouteTile();
+			StopCoroutine(autoRouteCoroutine);
+			HistoryService.stopPlayingRoute();
 		}
 	}
 }

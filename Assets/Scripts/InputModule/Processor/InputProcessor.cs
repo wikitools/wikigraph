@@ -1,6 +1,4 @@
 using Controllers;
-using InputModule.Binding;
-using Services;
 using UnityEngine;
 
 namespace InputModule.Processor {
@@ -15,9 +13,8 @@ namespace InputModule.Processor {
 
 		protected Transform EntityTransform => Controller.CameraController.Entity.transform;
 
-		protected void ExitNodeTraverseMode() 
-		{
-			if (Controller.HistoryController.HistoryService.playsRoute) Controller.HistoryController.HistoryService.stopPlayingRoute();
+		protected void ExitNodeTraverseMode() {
+			if (Controller.HistoryController.HistoryService.isPlayingRoute()) Controller.HistoryController.onRouteExit();
 			else Controller.NetworkController.SetGraphMode(GraphMode.FREE_FLIGHT);
 		}
 

@@ -6,9 +6,12 @@ using System.Collections.Generic;
 
 namespace Services.History {
 	public class HistoryService {
+
+		#region History
 		private readonly Stack<UserAction> undoActionStack = new Stack<UserAction>();
 		private readonly Stack<UserAction> redoActionStack = new Stack<UserAction>();
-		public static Action startRouteAutoAction;
+
+
 
 
 		public void RedoAction() {
@@ -32,11 +35,14 @@ namespace Services.History {
 			redoActionStack.Clear();
 		}
 
+		#endregion
+		#region Routes
 		private Stack<UserAction> redoSavedRoute = new Stack<UserAction>();
 		private Stack<UserAction> undoSavedRoute = new Stack<UserAction>();
-		public bool playsRoute = false;
+		bool playsRoute = false;
 		public RoutesLoader routesLoader;
-
+		public static Action startRouteAutoAction;
+		public static Action endRouteAutoAction;
 
 		public HistoryService(string prefix = "") {
 			routesLoader = new RoutesLoader();
@@ -82,17 +88,22 @@ namespace Services.History {
 			playsRoute = true;
 			while (redoSavedRoute.Count != 0 && playsRoute) {
 				RedoRoute();
-				yield return new UnityEngine.WaitForSeconds(7f);
+				if (redoSavedRoute.Count > 0) yield return new UnityEngine.WaitForSeconds(7f);
 			}
 			playsRoute = false;
+			endRouteAutoAction();
 		}
 
 		public void stopPlayingRoute() {
 			playsRoute = false;
 		}
 
+		public bool isPlayingRoute() {
+			return playsRoute;
+		}
 
 
+		#endregion
 
 	}
 }
