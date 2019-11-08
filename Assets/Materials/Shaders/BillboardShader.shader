@@ -92,12 +92,10 @@ Shader "BillboardShader"
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 
                 float3 vertNormal = float3(0, 0, 1);
-                float4 vertWorldPos = mul(unity_ObjectToWorld, float4(0.0, 0.0, 0.0, 1.0));
-                if(vertWorldPos.z > _FaceObject.z)
-                    vertNormal.z = -1;
-                float4 faceModelPos = normalize(_FaceObject - vertWorldPos);
-                float dotProd = dot(vertNormal, faceModelPos.xyz);
-                float3 crossProd = cross(vertNormal, faceModelPos.xyz);
+                float3 vertWorldPos = mul(unity_ObjectToWorld, float4(0.0, 0.0, 0.0, 1.0)).xyz;
+                float3 faceModelPos = normalize(_FaceObject.xyz - vertWorldPos);
+                float dotProd = dot(vertNormal, faceModelPos);
+                float3 crossProd = cross(vertNormal, faceModelPos);
                 float4x4 vMat = {
                     0, crossProd.z, -crossProd.y, 0,
                     -crossProd.z, 0, crossProd.x, 0,
