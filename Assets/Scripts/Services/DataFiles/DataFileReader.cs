@@ -15,14 +15,14 @@ namespace Services.DataFiles {
 		public static readonly string DATA_FILE_PATH = Path.Combine(Application.streamingAssetsPath, "DataFiles");
 		private const string DATA_FILE_EXTENSION = "wg";
 
-		public DataFileReader(string dataPack) {
+		public DataFileReader(string dataPack, string dataPackDate) {
 			Dispose();
-			LoadDataPack(dataPack);
+			LoadDataPack(dataPack, dataPackDate);
 		}
 
-		public void LoadDataPack(string dataPack) {
+		private void LoadDataPack(string dataPack, string dataPackDate) {
 			foreach (DataFileType type in Enum.GetValues(typeof(DataFileType)))
-				loadDataFile(type, dataPack);
+				loadDataFile(type, dataPack, dataPackDate);
 		}
 
 		public ulong ReadLong(DataFileType file, long offset) {
@@ -59,9 +59,9 @@ namespace Services.DataFiles {
 			return streams[file].Length;
 		}
 
-		private void loadDataFile(DataFileType type, string dataPack) {
+		private void loadDataFile(DataFileType type, string dataPack, string dataPackDate) {
 			var file = $"{dataPack}.{DATA_FILE_EXTENSION + type.ToString().ToLower()[0]}";
-			var filePath = Path.Combine(DATA_FILE_PATH, dataPack, file);
+			var filePath = Path.Combine(DATA_FILE_PATH, dataPack, dataPackDate, file);
 			FileStream stream = null;
 			try {
 				stream = new FileStream(filePath, FileMode.Open, FileSystemRights.Read, FileShare.Read, 4096, FileOptions.RandomAccess);

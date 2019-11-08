@@ -1,13 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Model;
 using Services;
-using Services.DataFiles;
 using Services.Nodes;
 using Services.ObjectPool;
-using UnityEditor;
 using UnityEngine;
 
 namespace Controllers {
@@ -20,6 +15,8 @@ namespace Controllers {
 		public int NodeLoadedLimit;
 		[HideInInspector]
 		public string DataPack;
+		[HideInInspector]
+		public string DataPackDate;
 
 		[Range(.05f, 2f)]
 		public float NodeScaleTime = .8f;
@@ -137,44 +134,4 @@ namespace Controllers {
 		public NodeState State;
 		public Sprite Sprite;
 	}
-
-#if UNITY_EDITOR
-	[CustomEditor(typeof(NodeController))]
-	public class NodeInspector: Editor {
-		private List<string> dataPacks = new List<string>();
-		
-		private SerializedProperty dataPack;
-		private SerializedObject script;
-		private GUIStyle labelStyle = new GUIStyle();
-		
-		private void OnEnable() {
-			script = new SerializedObject(target);
-			dataPack = script.FindProperty("DataPack");
-			ScanDataPacks();
-			labelStyle.alignment = TextAnchor.MiddleCenter;
-		}
-
-		public override void OnInspectorGUI() {
-			base.OnInspectorGUI();
-			if (EditorApplication.isPlaying) 
-				GUI.enabled = false;
-			
-			if (dataPacks.Count == 0)
-				EditorGUILayout.LabelField("No Data Packs found", labelStyle);
-			else {
-				var index = dataPacks.IndexOf(dataPack.stringValue);
-				int selectedDataPack = EditorGUILayout.Popup("Data Pack", Mathf.Clamp(index, 0, dataPacks.Count), dataPacks.ToArray());
-				dataPack.stringValue = dataPacks[selectedDataPack];
-			}
-			if (GUILayout.Button("Reload Data Packs"))
-				ScanDataPacks();
-			GUI.enabled = true;
-			script.ApplyModifiedProperties();
-		}
-
-		private void ScanDataPacks() {
-			dataPacks = Directory.GetDirectories(DataFileReader.DATA_FILE_PATH).Select(Path.GetFileName).ToList();
-		}
-	}
-#endif
 }
