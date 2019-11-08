@@ -53,9 +53,14 @@ namespace Services.Nodes {
 			SetNodeObjectState(GraphController.Graph.ConnectionNodes[connection], node.Type, state);
 		}
 		
-		private void SetNodeObjectState(GameObject nodeObject, NodeType type, NodeState state) {
+		public void SetNodeObjectState(GameObject nodeObject, NodeType type, NodeState state) {
 			nodeObject.GetComponentInChildren<Image>().sprite = GetStateSprite(type, state);
 			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
+			if(state == NodeState.DISABLED) {
+				nodeObject.GetComponentInChildren<Image>().color = Random.ColorHSV(0.5f, 0.6f, 0.5f, 0.7f, 0.4f, 0.6f, 0.75f, 1f);
+			} else {
+				nodeObject.GetComponentInChildren<Image>().color = new Color(255, 255, 255);
+			}
 		}
 		
 		public void SetNodeSprite(Node node, NodeState state) {

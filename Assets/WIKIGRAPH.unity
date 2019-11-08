@@ -518,7 +518,7 @@ MonoBehaviour:
   NodeSprites:
   - Type: 0
     State: 0
-    Sprite: {fileID: 21300000, guid: 56b2d260107c3294086ca1ec1e8c1005, type: 3}
+    Sprite: {fileID: 21300000, guid: 7d36a44c5e7c0574daaf07b28f7c7dac, type: 3}
   - Type: 0
     State: 1
     Sprite: {fileID: 21300000, guid: 6f07ee0882d7d7249881e7c431d2f3c3, type: 3}
@@ -530,7 +530,7 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 6f07ee0882d7d7249881e7c431d2f3c3, type: 3}
   - Type: 1
     State: 0
-    Sprite: {fileID: 21300000, guid: bcff9b66336a2654baf327d3ced5c0c2, type: 3}
+    Sprite: {fileID: 21300000, guid: 7d36a44c5e7c0574daaf07b28f7c7dac, type: 3}
   - Type: 1
     State: 1
     Sprite: {fileID: 21300000, guid: 344fcbeeb63121f4280f980034e94734, type: 3}

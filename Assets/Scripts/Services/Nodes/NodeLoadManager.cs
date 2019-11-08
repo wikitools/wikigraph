@@ -54,8 +54,6 @@ namespace Services.Nodes {
 			nodeObject.transform.parent = controller.Nodes.Container.transform;
 			nodeObject.transform.position = position;
 			UpdateNodeObjectState(model.Type, model.State, ref nodeObject);
-			var nodeImage = nodeObject.GetComponentInChildren<Image>();
-			nodeImage.sprite = controller.NodeSprites.First(node => node.Type == model.Type && node.State == model.State).Sprite;
 			nodeObject.name = model.ID.ToString();
 			ScaleNodeSize(nodeObject, GetNodeTypeScale(model.Type));
 		}
@@ -116,8 +114,7 @@ namespace Services.Nodes {
 		}
 
 		private void UpdateNodeObjectState(NodeType type, NodeState state, ref GameObject nodeObject) {
-			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
-			nodeObject.GetComponentInChildren<Image>().sprite = controller.NodeStateManager.GetStateSprite(type, state);
+			controller.NodeStateManager.SetNodeObjectState(nodeObject, type, state);
 		}
 
 	}
