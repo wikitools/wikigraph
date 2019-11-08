@@ -17,12 +17,23 @@ namespace Services.RoutesFiles {
 		private readonly string DATA_FILE_PATH = Application.streamingAssetsPath + "/Routes/";
 		private const string DATA_FILE_EXTENSION = "wgroute";
 		private string[] fileNames;
+		private int[] routeLength;
 
 		public RoutesReader(string dataFilePostfix = "") {
+			
 			fileNames = Directory.GetFiles(DATA_FILE_PATH).Where(name => !name.EndsWith(".meta")).ToArray();
 
 			foreach (string name in fileNames) {
 				loadDataFile(name, dataFilePostfix);
+			}
+			routeLength = new int[numberOfRoutes()];
+			for (int i=0; i<numberOfRoutes();i++) {
+				int lines = 0;
+				while (isNotEOF(i)) {
+					lines++;
+					readLine(i);
+				}
+				routeLength[i] = lines;
 			}
 		}
 
@@ -45,6 +56,10 @@ namespace Services.RoutesFiles {
 
 		public string[] namesOfRoutes() {
 			return fileNames;
+		}
+
+		public int[] lengthOfRoutes() {
+			return routeLength;
 		}
 
 		private void loadDataFile(string name, string dataFilePostfix) {

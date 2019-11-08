@@ -33,6 +33,10 @@ namespace Services.RoutesFiles {
 			return routesReader.namesOfRoutes();
 		}
 
+		public int[] routeLengths() {
+			return routesReader.lengthOfRoutes();
+		}
+
 		public Stack<UserAction> loadRoute(int index) {
 			Stack<UserAction> userActions = new Stack<UserAction>();
 			Node old = null;

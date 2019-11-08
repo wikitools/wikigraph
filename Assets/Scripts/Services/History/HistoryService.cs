@@ -1,17 +1,15 @@
-﻿using Model;
-using Services.History.Actions;
+﻿using Services.History.Actions;
 using Services.RoutesFiles;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Services.History {
 	public class HistoryService {
 		private readonly Stack<UserAction> undoActionStack = new Stack<UserAction>();
 		private readonly Stack<UserAction> redoActionStack = new Stack<UserAction>();
 		public static Action startRouteAutoAction;
-		
+
 
 		public void RedoAction() {
 			if (redoActionStack.Count != 0) {
@@ -44,7 +42,7 @@ namespace Services.History {
 			routesLoader = new RoutesLoader();
 		}
 
-		
+
 
 		public void RedoRoute() {
 			if (redoSavedRoute.Count != 0) {
@@ -71,6 +69,10 @@ namespace Services.History {
 			return routesLoader.routesNames();
 		}
 
+		public int[] getLengths() {
+			return routesLoader.routeLengths();
+		}
+
 		public void startRoute(int index) {
 			loadChosenRoute(index);
 			startRouteAutoAction();
@@ -78,17 +80,18 @@ namespace Services.History {
 
 		public IEnumerator autoRoutes() {
 			playsRoute = true;
-			while(redoSavedRoute.Count != 0 && playsRoute) {
+			while (redoSavedRoute.Count != 0 && playsRoute) {
 				RedoRoute();
 				yield return new UnityEngine.WaitForSeconds(7f);
 			}
 			playsRoute = false;
-			
 		}
 
 		public void stopPlayingRoute() {
 			playsRoute = false;
 		}
+
+
 
 
 	}
