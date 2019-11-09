@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.15158325, g: 0.21595481, b: 0.3097374, a: 1}
+  m_IndirectSpecularColor: {r: 0.096282564, g: 0.18263027, b: 0.23722896, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -544,7 +544,7 @@ MonoBehaviour:
     Container: {fileID: 2007395970}
     Prefab: {fileID: 1534031500408350, guid: 4fca75af5504140b6814370e66ce13db, type: 2}
     PreloadNumber: 2000
-  NodeMaterial: {fileID: 0}
+  NodeMaterial: {fileID: 2100000, guid: b9514d8527b8e47f9b3ff643b0420608, type: 2}
   NodeLoadedLimit: 1000
   DataPack: pl-wiki
   DataPackDate: 20191023
@@ -1133,8 +1133,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1507118959}
   m_HandleRect: {fileID: 1507118958}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.9999999
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5185,7 +5185,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00003704289}
+  m_AnchoredPosition: {x: 0, y: -0.0000098868495}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1737072746
