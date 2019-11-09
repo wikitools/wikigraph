@@ -81,7 +81,6 @@ namespace Services.Nodes {
 
 		private void ScaleNodeSize(GameObject node, float scale) {
 			GetNodeRectTransform<Canvas>(node).localScale = Vector3.one * scale;
-			GetNodeRectTransform<Image>(node).localScale = Vector3.one * scale;
 		}
 		
 		private RectTransform GetNodeRectTransform<C>(GameObject node) where C: Component => node.GetComponentInChildren<C>().GetComponent<RectTransform>();
@@ -96,17 +95,14 @@ namespace Services.Nodes {
 		
 		private IEnumerator AnimateNodeSize(GameObject node, float scale, float time) {
 			var canvasRect = GetNodeRectTransform<Canvas>(node);
-			var imgRect = GetNodeRectTransform<Image>(node);
 			float incAmount = (scale - canvasRect.localScale.x) * Time.deltaTime / time;
 			while (true) {
 				if (Mathf.Abs(canvasRect.localScale.x - scale) > Mathf.Abs(incAmount)) {
 					var newScale = Vector3.one * (canvasRect.localScale.x + incAmount);
 					canvasRect.localScale = newScale;
-					imgRect.localScale = newScale;
 					yield return null;
 				} else {
 					canvasRect.localScale = Vector3.one * scale;
-					imgRect.localScale = Vector3.one * scale;
 					break;
 				}
 			}

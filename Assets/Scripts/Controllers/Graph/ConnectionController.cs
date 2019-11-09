@@ -50,6 +50,7 @@ namespace Controllers {
 		}
 
 		private void ReloadSelectedNodeConnections(Node centerNode) {
+			currentVisibleIndex = 0;
 			graph.ConnectionObjectMap.Keys.ToList().ForEach(ConnectionLoadManager.UnloadConnection);
 
 			ResetTimer();
@@ -145,10 +146,7 @@ namespace Controllers {
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
 			
-			NodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
-				currentVisibleIndex = 0;
-				ReloadSelectedNodeConnections(newNode);
-			};
+			NodeController.OnSelectedNodeChanged += (oldNode, newNode) => ReloadSelectedNodeConnections(newNode);
 			GraphController.ConnectionMode.OnValueChanged += mode => ReloadSelectedNodeConnections(NodeController.SelectedNode);
 			NodeController.OnHighlightedNodeChanged += OnHighlightedNodeChanged;
 
