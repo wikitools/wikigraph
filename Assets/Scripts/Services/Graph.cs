@@ -10,7 +10,7 @@ namespace Services {
 		public Dictionary<Node, GameObject> NodeObjectMap { get; } = new Dictionary<Node, GameObject>();
 		public Dictionary<Model.Connection.Connection, GameObject> ConnectionObjectMap { get; } = new Dictionary<Model.Connection.Connection, GameObject>();
 		public Dictionary<uint, Node> IdNodeMap { get; } = new Dictionary<uint, Node>();
-		public Dictionary<Model.Connection.Connection, GameObject> ConnectionNodes = new Dictionary<Model.Connection.Connection, GameObject>();
+		public Dictionary<Model.Connection.Connection, GameObject> ConnectionNodes { get; } = new Dictionary<Model.Connection.Connection, GameObject>();
 
 		public Node GetNodeFromGameObjectName(string name) {
 			uint id;
