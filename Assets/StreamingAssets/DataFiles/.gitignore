@@ -1,3 +1,6 @@
 *
-!*-test.wg*
+!test/
+!test/*
+!test/*/
+!test/*/*
 !.gitignore

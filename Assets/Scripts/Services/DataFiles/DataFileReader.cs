@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using Model;
@@ -9,17 +8,21 @@ using UnityEngine;
 
 namespace Services.DataFiles {
 	public class DataFileReader : IDisposable {
-		private readonly Logger<DataFileReader> LOGGER = new Logger<DataFileReader>();
+		private readonly Logger<DataFileReader> logger = new Logger<DataFileReader>();
 
 		private Dictionary<DataFileType, DataFile> streams = new Dictionary<DataFileType, DataFile>();
 
-		private readonly string DATA_FILE_PATH = Path.Combine(Application.streamingAssetsPath, "DataFiles");
+		public static readonly string DATA_FILE_PATH = Path.Combine(Application.streamingAssetsPath, "DataFiles");
 		private const string DATA_FILE_EXTENSION = "wg";
 
-		public DataFileReader(string dataFilePostfix = "") {
-			foreach (DataFileType type in Enum.GetValues(typeof(DataFileType))) {
-				loadDataFile(type, dataFilePostfix);
-			}
+		public DataFileReader(string dataPack, string dataPackDate) {
+			Dispose();
+			LoadDataPack(dataPack, dataPackDate);
+		}
+
+		private void LoadDataPack(string dataPack, string dataPackDate) {
+			foreach (DataFileType type in Enum.GetValues(typeof(DataFileType)))
+				loadDataFile(type, dataPack, dataPackDate);
 		}
 
 		public ulong ReadLong(DataFileType file, long offset) {
@@ -56,9 +59,15 @@ namespace Services.DataFiles {
 			return streams[file].Length;
 		}
 
-		private void loadDataFile(DataFileType type, string dataFilePostfix) {
-			var filePath = Path.Combine(DATA_FILE_PATH, $"{type.ToString().ToLower() + dataFilePostfix}.{DATA_FILE_EXTENSION}");
-			var stream = new FileStream(filePath, FileMode.Open, FileSystemRights.Read, FileShare.Read, 4096, FileOptions.RandomAccess);
+		private void loadDataFile(DataFileType type, string dataPack, string dataPackDate) {
+			var file = $"{dataPack}.{DATA_FILE_EXTENSION + type.ToString().ToLower()[0]}";
+			var filePath = Path.Combine(DATA_FILE_PATH, dataPack, dataPackDate, file);
+			FileStream stream = null;
+			try {
+				stream = new FileStream(filePath, FileMode.Open, FileSystemRights.Read, FileShare.Read, 4096, FileOptions.RandomAccess);
+			} catch (Exception e) {
+				logger.Exception($"Could not load data file {file}", e);
+			}
 			streams[type] = new DataFile {Stream = stream, Length = new FileInfo(filePath).Length};
 		}
 
@@ -67,7 +76,7 @@ namespace Services.DataFiles {
 			streams[file].Stream.Position = offset;
 			int bytesRead = streams[file].Stream.Read(bytes, 0, count);
 			if (bytesRead < count) {
-				LOGGER.Warning($"DataFileReader bytes requested: {count}, bytes read: {bytesRead}");
+				logger.Warning($"DataFileReader bytes requested: {count}, bytes read: {bytesRead}");
 			}
 			return bytes;
 		}

@@ -7,16 +7,18 @@ using Services.Animations;
 using Services.DataFiles;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = System.Object;
 using Random = UnityEngine.Random;
 
 namespace Services.Nodes {
 	public class NodeLoadManager: AnimationManager<NodeAnimation> {
+		private const float CATEGORY_SCALE = 1.25F;
 		private NodeController controller;
 
 		public NodeLoadManager(NodeController controller) : base(controller) {
 			this.controller = controller;
 			SetAnimationEndAction((node, animation) => AnimationEndAction(node, animation.Scale));
-			NodeLoader = new NodeLoader(controller.LoadTestNodeSet ? "-test" : "");
+			NodeLoader = new NodeLoader(controller.DataPack, controller.DataPackDate);
 		}
 
 		public NodeLoader NodeLoader;
@@ -44,7 +46,7 @@ namespace Services.Nodes {
 			InitializeNode(model, ref nodeObject, position);
 			UpdateNodeObjectState(model.Type, NodeState.ACTIVE, ref nodeObject);
 			nodeObject.layer = LayerMask.NameToLayer("Connection Node");
-			ScaleConnectionNodeImage(nodeObject, 0, 1);
+			AnimScaleConnectionNodeSize(nodeObject, 0, GetNodeTypeScale(model.Type));
 			return nodeObject;
 		}
 
@@ -53,46 +55,54 @@ namespace Services.Nodes {
 			nodeObject.transform.position = position;
 			UpdateNodeObjectState(model.Type, model.State, ref nodeObject);
 			nodeObject.name = model.ID.ToString();
+			ScaleNodeSize(nodeObject, GetNodeTypeScale(model.Type));
 		}
 
 		public void UnloadConnectionNode(Model.Connection.Connection connection) {
 			var nodeObject = GraphController.Graph.ConnectionNodes[connection];
 			GraphController.Graph.ConnectionNodes.Remove(connection);
-			ScaleConnectionNodeImage(nodeObject, -1, 0);
+			AnimScaleConnectionNodeSize(nodeObject, -1, 0);
 		}
 
-		private void ScaleNodeImage(GameObject node, float from, float to, float time) {
+		private void AnimScaleNodeSize(GameObject node, float from, float to, float time) {
 			if (from >= 0)
-				nodeImgTransform(node).localScale = Vector3.one * from;
-			var function = AnimateScaleNodeImage(node, to, time);
+				ScaleNodeSize(node, from);
+			var function = AnimateNodeSize(node, to, time);
 			StartAnimation(node, new NodeAnimation(function, to));
 		}
 
-		public void ScaleConnectionNodeImage(GameObject node, float from, float to) {
-			ScaleNodeImage(node, from, to, controller.ConnectionNodeScaleTime);
+		public void AnimScaleConnectionNodeSize(GameObject node, float from, float to) {
+			AnimScaleNodeSize(node, from, to, controller.ConnectionNodeScaleTime);
 		}
 
-		public void ScaleNodeImage(Node node, float from, float to) {
-			ScaleNodeImage(GraphController.Graph.NodeObjectMap[node], from, to, controller.NodeScaleTime);
+		public void AnimScaleNodeSize(Node node, float from, float to) {
+			AnimScaleNodeSize(GraphController.Graph.NodeObjectMap[node], from, to, controller.NodeScaleTime);
+		}
+
+		private void ScaleNodeSize(GameObject node, float scale) {
+			GetNodeRectTransform<Canvas>(node).localScale = Vector3.one * scale;
 		}
 		
-		private RectTransform nodeImgTransform(GameObject node) => node.GetComponentInChildren<Image>().GetComponent<RectTransform>();
+		private RectTransform GetNodeRectTransform<C>(GameObject node) where C: Component => node.GetComponentInChildren<C>().GetComponent<RectTransform>();
 
 		private void AnimationEndAction(GameObject node, float scale) {
 			if(scale == 0)
 				controller.Nodes.Pool.Despawn(node);
 			ActiveAnimations.Remove(node);
 		}
+
+		public float GetNodeTypeScale(NodeType type) => type == NodeType.ARTICLE ? 1 : CATEGORY_SCALE;
 		
-		private IEnumerator AnimateScaleNodeImage(GameObject node, float scale, float time) {
-			var transform = nodeImgTransform(node);
-			float incAmount = (scale - transform.localScale.x) * Time.deltaTime / time;
+		private IEnumerator AnimateNodeSize(GameObject node, float scale, float time) {
+			var canvasRect = GetNodeRectTransform<Canvas>(node);
+			float incAmount = (scale - canvasRect.localScale.x) * Time.deltaTime / time;
 			while (true) {
-				if (Mathf.Abs(transform.localScale.x - scale) > Mathf.Abs(incAmount)) {
-					transform.localScale = Vector3.one * (transform.localScale.x + incAmount);
+				if (Mathf.Abs(canvasRect.localScale.x - scale) > Mathf.Abs(incAmount)) {
+					var newScale = Vector3.one * (canvasRect.localScale.x + incAmount);
+					canvasRect.localScale = newScale;
 					yield return null;
 				} else {
-					transform.localScale = Vector3.one * scale;
+					canvasRect.localScale = Vector3.one * scale;
 					break;
 				}
 			}

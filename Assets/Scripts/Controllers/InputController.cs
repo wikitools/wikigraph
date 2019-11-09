@@ -30,6 +30,8 @@ namespace Controllers {
 		[EnvironmentField(Environment.Cave)]
 		public bool ShowFlystickRays;
 
+		public Transform Eyes;
+
 		public NetworkController NetworkController { get; private set; }
 		public CameraController CameraController { get; private set; }
 		public GraphController GraphController { get; private set; }
