@@ -47,7 +47,7 @@ namespace Services.Nodes {
 			node.State = state;
 			var connection = GraphController.Graph.GetConnectionBetween(controller.SelectedNode, node);
 			if (connection == null || !GraphController.Graph.ConnectionNodes.ContainsKey(connection)) {
-				logger.Error("No connection for node found.");
+				logger.Warning("No connection for node found");
 				return;
 			}
 			SetNodeObjectState(GraphController.Graph.ConnectionNodes[connection], node.Type, state);
