@@ -86,4 +86,4 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FaceObject: {r: 1.8801152, g: 21.690374, b: -11.4965725, a: 0}
+    - _FaceObject: {r: -10.223126, g: 12.879717, b: 22.746103, a: 0}
