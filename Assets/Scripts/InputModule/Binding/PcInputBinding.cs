@@ -16,15 +16,14 @@ namespace InputModule.Binding {
 		public PCPointer NodePointer;
 		public PCPointer NodeChooser;
 		public PCButton ExitNodeTraverseMode;
-
-		public PCButton InfographicToggle;
+		
 		public PCButton ConnectionModeToggle;
-
 		public PCButtonAxis ConnectionScroll;
 
 		public PCButton RedoButton;
 		public PCButton UndoButton;
-		
+		public PCButton InfoSpaceToggle;
+
 		[UnblockableEvent]
 		public PCButton OperatorConsoleToggle;
 	}

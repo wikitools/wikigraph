@@ -17,7 +17,8 @@ namespace InputModule.Processor {
 			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
 			binding.RedoButton.OnPress += RedoUserAction;
 			binding.UndoButton.OnPress += UndoUserAction;
-			
+			binding.InfoSpaceToggle.OnPress += ToggleInfoSpace;
+
 			binding.ConnectionsScrollAxis.OnInputChange += direction => Controller.ConnectionController.OnScrollInputChanged(direction);
 			binding.OperatorConsoleToggle.OnRelease += ToggleOperatorConsole;
 		}

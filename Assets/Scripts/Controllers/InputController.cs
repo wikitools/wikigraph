@@ -39,6 +39,7 @@ namespace Controllers {
 		public ConnectionController ConnectionController { get; private set; }
 		public HistoryController HistoryController { get; private set; }
 		public ConsoleWindowController ConsoleController { get; private set; }
+		public InfoSpaceController InfoSpaceController { get; private set; }
 
 		void Awake() {
 			NetworkController = GetComponent<NetworkController>();
@@ -48,6 +49,7 @@ namespace Controllers {
 			ConnectionController = GetComponent<ConnectionController>();
 			HistoryController = GetComponent<HistoryController>();
 			ConsoleController = (ConsoleWindowController) Resources.FindObjectsOfTypeAll(typeof(ConsoleWindowController))[0];
+			InfoSpaceController = (InfoSpaceController) Resources.FindObjectsOfTypeAll(typeof(InfoSpaceController))[0];
 		}
 
 		void Start() {

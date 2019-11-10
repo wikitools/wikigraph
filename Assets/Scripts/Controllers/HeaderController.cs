@@ -8,9 +8,10 @@ using System.Linq;
 
 namespace Controllers {
 	public class HeaderController : MonoBehaviour {
+
 		public GameObject Entity;
+		public GameObject Graph;
 		public GameObject HeaderObject;
-		public GameObject Grid;
 		public HeaderConfig Config;
 
 		private Vector3 targetPosition;
@@ -45,15 +46,14 @@ namespace Controllers {
 			for (int i = 0; i < 3; i++) {
 				SetRendererSortingOrder(HeaderObject.transform.GetChild(i), 50);
 			}
-			SetRendererSortingOrder(Grid.transform, -10);
 		}
 
 		void Awake() {
-			networkController = GetComponent<NetworkController>();
-			inputController = GetComponent<InputController>();
-			nodeController = GetComponent<NodeController>();
-			nodeController = GetComponent<NodeController>();
-			connectionController = GetComponent<ConnectionController>();
+			networkController = Graph.GetComponent<NetworkController>();
+			inputController = Graph.GetComponent<InputController>();
+			nodeController = Graph.GetComponent<NodeController>();
+			nodeController = Graph.GetComponent<NodeController>();
+			connectionController = Graph.GetComponent<ConnectionController>();
 		}
 
 		private void SetRendererSortingOrder(Transform obj, int order) {
@@ -153,7 +153,6 @@ namespace Controllers {
 				return;
 			}
 			
-			Grid.transform.position = new Vector3(Entity.transform.position.x, Entity.transform.position.y + Config.GridHeight, Entity.transform.position.z);
 			targetPosition = Entity.transform.position;
 			if (inputController.Environment == Environment.Cave) {
 				var anglesY = Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI;
@@ -168,7 +167,6 @@ namespace Controllers {
 
 		[Serializable]
 		public class HeaderConfig {
-			public float GridHeight = -6f;
 			public float HeaderHeight = -6f;
 			public float HeaderDeviation = -10f;
 			public float HeaderDistance = 16f;

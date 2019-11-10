@@ -20,7 +20,8 @@ namespace InputModule.Binding {
 		public FlystickButton ExitNodeTraverseMode;
 		public FlystickButton UndoButton;
 		public FlystickButton RedoButton;
-		
+		public FlystickButton InfoSpaceToggle;
+
 		public FlystickButtonPairAxis ConnectionsScrollAxis;
 		
 		[UnblockableEvent]
