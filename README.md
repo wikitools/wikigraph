@@ -18,9 +18,11 @@ Interactive 3D visualization of Wikipedia articles and categories in a graph-lik
 
 ## Current look
 
-![Screenshot_20191016_190428](https://user-images.githubusercontent.com/8643919/66942100-959e4580-f048-11e9-8f44-462c5f42f9c1.png)
+![Screenshot_20191111_161452](https://user-images.githubusercontent.com/8643919/68598850-d6e71100-049f-11ea-8868-ad54bff2238c.png)
 
-![Screenshot_20191016_190851](https://user-images.githubusercontent.com/8643919/66942115-9afb9000-f048-11e9-8b99-7616167ed7d8.png)
+![Screenshot_20191111_161725](https://user-images.githubusercontent.com/8643919/68598852-d77fa780-049f-11ea-85a5-0154d9fc9119.png)
+
+![Screenshot_20191111_162427](https://user-images.githubusercontent.com/8643919/68598853-d77fa780-049f-11ea-9ff4-b3a490e1ba41.png)
 
 ## Development
 - [Our Jira Project Board](https://wikigraph.atlassian.net)
