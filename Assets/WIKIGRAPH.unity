@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.15133008, g: 0.21595052, b: 0.30976254, a: 1}
+  m_IndirectSpecularColor: {r: 0.15158325, g: 0.21595481, b: 0.3097374, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -417,14 +417,16 @@ MonoBehaviour:
         ButtonType: 0
         MouseButton: 0
         KeyboardButton: 120
-    RedoButton:
-      ButtonType: 0
-      MouseButton: 0
-      KeyboardButton: 0
-    UndoButton:
-      ButtonType: 0
-      MouseButton: 0
-      KeyboardButton: 0
+    HistoryAxis:
+      ReverseAxisDirection: 0
+      PositiveButton:
+        ButtonType: 0
+        MouseButton: 0
+        KeyboardButton: 113
+      NegativeButton:
+        ButtonType: 0
+        MouseButton: 0
+        KeyboardButton: 101
     InfoSpaceToggle:
       ButtonType: 0
       MouseButton: 0
@@ -458,27 +460,29 @@ MonoBehaviour:
     ExitNodeTraverseMode:
       Instance: 0
       Button: 1
-    UndoButton:
-      Instance: 0
-      Button: 3
-    RedoButton:
-      Instance: 0
-      Button: 2
-    InfoSpaceToggle:
-      Instance: 0
-      Button: 4
-    ConnectionsScrollAxis:
+    HistoryAxis:
       ReverseAxisDirection: 0
       PositiveButton:
         Instance: 0
-        Button: 4
+        Button: 3
       NegativeButton:
         Instance: 0
-        Button: 3
+        Button: 2
+    InfoSpaceToggle:
+      Instance: 0
+      Button: 4
     OperatorConsoleToggle:
       ButtonType: 0
       MouseButton: 0
       KeyboardButton: 99
+    ConnectionsScrollAxis:
+      ReverseAxisDirection: 0
+      PositiveButton:
+        Instance: 0
+        Button: 3
+      NegativeButton:
+        Instance: 0
+        Button: 2
   PCConfig:
     RotationSpeed: 10
     MaxRotationSpeed: {x: 10, y: 10}
@@ -1270,7 +1274,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1507118958}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3667,7 +3671,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 428358285}
   m_HandleRect: {fileID: 428358284}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

@@ -162,6 +162,7 @@ namespace Controllers {
 					Quaternion.LookRotation(HeaderObject.transform.position - (targetPosition + new Vector3(0, Config.HeaderDeviation, 0)));
 			} else {
 				HeaderObject.transform.localPosition = Config.HeaderDistance * 2 * Vector3.forward;
+				HeaderObject.transform.rotation = Quaternion.LookRotation(HeaderObject.transform.position - Entity.transform.position);
 			}
 		}
 

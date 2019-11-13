@@ -1,4 +1,5 @@
 ﻿using System;
+using Inspector;
 using UnityEngine;
 using UnityEngine.UI;
 using Model;
@@ -47,7 +48,7 @@ namespace Controllers {
 				return;
 			canvas.enabled = !canvas.enabled;
 			Header.SetActive(!canvas.enabled);
-			inputController.SetBlockInput(canvas.enabled);
+			inputController.SetBlockInput(canvas.enabled, InputBlockType.CONSOLE);
 		}
 
 		[Serializable]

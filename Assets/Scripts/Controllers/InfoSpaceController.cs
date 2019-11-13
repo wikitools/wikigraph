@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Inspector;
 using UnityEngine;
 using UnityEngine.UI;
 using Model;
@@ -46,10 +47,12 @@ namespace Controllers {
 			if (State && SpaceOpacity == 1.0f) {
 				StopAllCoroutines();
 				StartCoroutine(ChangeOpacity(SpaceOpacity, 0f, 1f));
+				inputController.SetBlockInput(false, InputBlockType.INFO_SPACE);
 			}
 			if (!State && SpaceOpacity == 0.0f) {
 				StopAllCoroutines();
 				StartCoroutine(ChangeOpacity(SpaceOpacity, 1f, 1f));
+				inputController.SetBlockInput(true, InputBlockType.INFO_SPACE);
 			}
 		}
 

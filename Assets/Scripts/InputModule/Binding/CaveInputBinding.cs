@@ -14,18 +14,20 @@ namespace InputModule.Binding {
 	public class CaveInputBinding : InputBinding {
 		private static readonly Logger<CaveInputBinding> LOGGER = new Logger<CaveInputBinding>();
 
+		[NotBlocked(InputBlockType.INFO_SPACE)]
 		public FlystickCursor MovementJoystick;
 		public FlystickPointer NodePointer;
 		public FlystickPointer NodeChooser;
 		public FlystickButton ExitNodeTraverseMode;
-		public FlystickButton UndoButton;
-		public FlystickButton RedoButton;
-		public FlystickButton InfoSpaceToggle;
-
-		public FlystickButtonPairAxis ConnectionsScrollAxis;
+		public FlystickButtonPairAxis HistoryAxis;
 		
-		[UnblockableEvent]
+		[NotBlocked(InputBlockType.INFO_SPACE)]
+		public FlystickButton InfoSpaceToggle;
+		[NotBlocked(InputBlockType.CONSOLE)]
 		public PCButton OperatorConsoleToggle; // PC type on purpose
+
+		public FlystickButtonAxis ConnectionsScrollAxis;
+		
 
 		private static Dictionary<FlystickInstance, int> FlystickBinding = new Dictionary<FlystickInstance, int>();
 		public static LzwpInput.Flystick Flystick(FlystickInstance instance) => Lzwp.input.flysticks[FlystickBinding[instance]];
