@@ -8,6 +8,7 @@ using Inspector;
 namespace InputModule.Binding {
 	[Serializable]
 	public class PcInputBinding : InputBinding {
+		[NotBlocked(InputBlockType.INFO_SPACE)]
 		public PCCursor RotationInput;
 
 		public PCButtonAxis MainMovementAxis;
@@ -16,16 +17,15 @@ namespace InputModule.Binding {
 		public PCPointer NodePointer;
 		public PCPointer NodeChooser;
 		public PCButton ExitNodeTraverseMode;
-
-		public PCButton InfographicToggle;
+		
 		public PCButton ConnectionModeToggle;
-
 		public PCButtonAxis ConnectionScroll;
 
-		public PCButton RedoButton;
-		public PCButton UndoButton;
+		public PCButtonAxis HistoryAxis;
 		
-		[UnblockableEvent]
+		[NotBlocked(InputBlockType.INFO_SPACE)]
+		public PCButton InfoSpaceToggle;
+		[NotBlocked(InputBlockType.CONSOLE)]
 		public PCButton OperatorConsoleToggle;
 	}
 }
