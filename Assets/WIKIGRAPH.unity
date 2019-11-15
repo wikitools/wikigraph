@@ -488,9 +488,9 @@ MonoBehaviour:
     MaxRotationSpeed: {x: 10, y: 10}
     MovementSpeed: 0.15
   CaveConfig:
-    RotationSpeed: 0.5
+    RotationSpeed: 0.2
     MaxRotationSpeed: {x: 1, y: 1}
-    MovementSpeed: 0.2
+    MovementSpeed: 0.1
   Flysticks:
   - {fileID: 327208667}
   - {fileID: 2060724263}
@@ -608,9 +608,9 @@ MonoBehaviour:
     CategoryColor: {r: 0.28235295, g: 0.23921569, b: 0.5294118, a: 1}
     DisabledColor: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 0.19607843}
   ConnectionDistribution:
-    MaxVisibleNumber: 8
-    ChangeBy: 2
-    RingAngleSpan: {x: 50, y: 80}
+    MaxVisibleNumber: 16
+    ChangeBy: 8
+    RingAngleSpan: {x: 65, y: 90}
     RingRadius: 5
   ScrollInterval: 0.5
   ConnectionLoadSpeed: 5
@@ -906,7 +906,7 @@ MonoBehaviour:
   Graph: {fileID: 68664594}
   HeaderObject: {fileID: 148093541}
   Config:
-    HeaderHeight: -6
+    HeaderHeight: -8
     HeaderDeviation: -10
     HeaderDistance: 16
     HeaderRangeSize: {x: 12, y: 0.25}
@@ -1376,7 +1376,7 @@ LineRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 327208667}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
