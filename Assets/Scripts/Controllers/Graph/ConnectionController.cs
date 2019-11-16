@@ -68,7 +68,6 @@ namespace Controllers {
 		private void ResetTimer() {
 			var acceleration = Mathf.Max(0, Mathf.Min(SeriesScrolls, ScrollAcceleration.y) - ScrollAcceleration.x);
 			scrollTimer = (ScrollInterval.x - (ScrollInterval.x - ScrollInterval.y) * acceleration / (ScrollAcceleration.y - ScrollAcceleration.x)) * 1000;
-			Debug.Log(SeriesScrolls + " " + scrollTimer);
 		}
 		
 		#endregion
