@@ -20,6 +20,9 @@ namespace Controllers {
 		private NodeController nodeController;
 		private ConnectionController connectionController;
 
+		private bool active;
+		public Action<bool> OnConsoleToggled;
+
 		// Use this for initialization
 		void Awake() {
 			networkController = Graph.GetComponent<NetworkController>();
@@ -44,10 +47,12 @@ namespace Controllers {
 		}
 
 		public void ToggleVisibility() {
+			active = !active;
+			OnConsoleToggled?.Invoke(active);
 			if(!networkController.IsServer())
 				return;
-			canvas.enabled = !canvas.enabled;
-			Header.SetActive(!canvas.enabled);
+			canvas.enabled = active;
+			Header.SetActive(!active);
 			inputController.SetBlockInput(canvas.enabled, InputBlockType.CONSOLE);
 		}
 
