@@ -25,7 +25,7 @@ namespace InputModule.Processor {
 		}
 		
 		protected void ToggleInfoSpace() => Controller.NetworkController.ToggleInfoSpace();
-		protected void ToggleOperatorConsole() => Controller.ConsoleController.ToggleVisibility();
+		protected void ToggleOperatorConsole() => Controller.NetworkController.ToggleConsole();
 
 		protected void OnNodeChosen(Ray ray) {
 			RaycastHit raycastHit;
