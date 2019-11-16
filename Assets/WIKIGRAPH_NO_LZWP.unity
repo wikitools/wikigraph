@@ -3826,7 +3826,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Entity: {fileID: 1122214240}
   Graph: {fileID: 68664594}
-  HeaderObject: {fileID: 1321965051}
   Config:
     HeaderHeight: -6
     HeaderDeviation: -10
