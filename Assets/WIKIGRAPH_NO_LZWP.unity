@@ -498,7 +498,8 @@ MonoBehaviour:
     ChangeBy: 2
     RingAngleSpan: {x: 50, y: 80}
     RingRadius: 5
-  ScrollInterval: 0.5
+  ScrollInterval: {x: 1, y: 0.4}
+  ScrollAcceleration: {x: 3, y: 12}
   ConnectionLoadSpeed: 4
 --- !u!114 &68664601
 MonoBehaviour:

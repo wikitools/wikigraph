@@ -14,7 +14,9 @@ namespace Controllers {
 		public ConnectionColors Colors;
 		
 		public ConnectionDistribution ConnectionDistribution;
-		public float ScrollInterval;
+		public Vector2 ScrollInterval;
+		public Vector2 ScrollAcceleration;
+		private int SeriesScrolls;
 		[Range(1, 6)]
 		public int ConnectionLoadSpeed = 4;
 
@@ -37,14 +39,15 @@ namespace Controllers {
 
 		public void OnScrollInputChanged(int direction) {
 			scrollDirection = direction;
+			SeriesScrolls = 0;
 		}
 
-		public void OnAdvanceScrollInput(int direction) {
-			OnScrollInputChanged(direction);
+		public void OnAdvanceScrollInput() {
 			if (scrollDirection == 0) return;
 			scrollTimer -= Time.deltaTime * 1000;
 			if (scrollTimer <= 0) {
 				NetworkController.SyncConnectionScrolled(scrollDirection);
+				SeriesScrolls++;
 				ResetTimer();
 			}
 		}
@@ -53,6 +56,7 @@ namespace Controllers {
 			currentVisibleIndex = 0;
 			graph.ConnectionObjectMap.Keys.ToList().ForEach(ConnectionLoadManager.UnloadConnection);
 
+			SeriesScrolls = 0;
 			ResetTimer();
 
 			if (centerNode == null) return;
@@ -62,7 +66,9 @@ namespace Controllers {
 		}
 
 		private void ResetTimer() {
-			scrollTimer = ScrollInterval * 1000;
+			var acceleration = Mathf.Max(0, Mathf.Min(SeriesScrolls, ScrollAcceleration.y) - ScrollAcceleration.x);
+			scrollTimer = (ScrollInterval.x - (ScrollInterval.x - ScrollInterval.y) * acceleration / (ScrollAcceleration.y - ScrollAcceleration.x)) * 1000;
+			Debug.Log(SeriesScrolls + " " + scrollTimer);
 		}
 		
 		#endregion
@@ -155,7 +161,7 @@ namespace Controllers {
 
 		private void Update() {
 			if (NetworkController.IsServer())
-				OnAdvanceScrollInput(scrollDirection);
+				OnAdvanceScrollInput();
 		}
 
 		#endregion
