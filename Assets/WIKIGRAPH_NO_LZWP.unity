@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.15158325, g: 0.21595481, b: 0.3097374, a: 1}
+  m_IndirectSpecularColor: {r: 0.096282564, g: 0.18263027, b: 0.23722896, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -498,7 +498,8 @@ MonoBehaviour:
     ChangeBy: 2
     RingAngleSpan: {x: 50, y: 80}
     RingRadius: 5
-  ScrollInterval: 0.5
+  ScrollInterval: {x: 0.8, y: 0.3}
+  ScrollAcceleration: {x: 3, y: 12}
   ConnectionLoadSpeed: 4
 --- !u!114 &68664601
 MonoBehaviour:
