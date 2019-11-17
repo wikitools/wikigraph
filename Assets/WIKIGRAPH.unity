@@ -612,7 +612,8 @@ MonoBehaviour:
     ChangeBy: 8
     RingAngleSpan: {x: 65, y: 90}
     RingRadius: 5
-  ScrollInterval: 0.5
+  ScrollInterval: {x: 0.8, y: 0.3}
+  ScrollAcceleration: {x: 3, y: 12}
   ConnectionLoadSpeed: 5
 --- !u!114 &68664601
 MonoBehaviour:
@@ -6171,7 +6172,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000012323099}
+  m_AnchoredPosition: {x: 0, y: -0.00001353261}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1737072746
