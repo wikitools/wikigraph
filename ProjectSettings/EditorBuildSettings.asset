@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/WIKIGRAPH.unity
     guid: a4bcd881acb6b4e5eb5d5c7ec7ebb6cd
-  - enabled: 1
+  - enabled: 0
     path: Assets/WIKIGRAPH_NO_LZWP.unity
     guid: b0a77008653bc41e1a9fec13ab3edf1c
   m_configObjects: {}

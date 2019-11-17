@@ -55,6 +55,7 @@ namespace Controllers {
 			}
 			SetRendererSortingOrder(transform.GetChild(5), 51);
 			SetRendererSortingOrder(transform.GetChild(6).GetChild(1), 51);
+			transform.GetChild(6).GetChild(1).GetComponent<TextMesh>().text = Config.ConsoleActiveText;
 		}
 
 		void Awake() {
@@ -202,6 +203,7 @@ namespace Controllers {
 			public string CurrentConnectionRangeText = "Connections:";
 			public string AllConnectionRangeText = "All";
 			public string AutoText = "Auto";
+			public string ConsoleActiveText = "Console Active";
 			public Sprite ArticleConnectionsIn;
 			public Sprite ArticleConnectionsOut;
 			public Sprite CategoryConnectionsIn;
