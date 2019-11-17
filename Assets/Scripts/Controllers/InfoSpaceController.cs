@@ -42,8 +42,6 @@ namespace Controllers {
 		}
 
 		public void ToggleVisibility() {
-			if (!networkController.IsServer())
-				return;
 			if (State && SpaceOpacity == 1.0f) {
 				StopAllCoroutines();
 				StartCoroutine(ChangeOpacity(SpaceOpacity, 0f, 1f));

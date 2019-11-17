@@ -24,8 +24,8 @@ namespace InputModule.Processor {
 				Controller.HistoryController.HistoryService.RedoAction();
 		}
 		
-		protected void ToggleInfoSpace() => Controller.InfoSpaceController.ToggleVisibility();
-		protected void ToggleOperatorConsole() => Controller.ConsoleController.ToggleVisibility();
+		protected void ToggleInfoSpace() => Controller.NetworkController.ToggleInfoSpace();
+		protected void ToggleOperatorConsole() => Controller.NetworkController.ToggleConsole();
 
 		protected void OnNodeChosen(Ray ray) {
 			RaycastHit raycastHit;

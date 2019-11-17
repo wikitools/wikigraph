@@ -39,8 +39,6 @@ namespace Controllers {
 		public NodeController NodeController { get; private set; }
 		public ConnectionController ConnectionController { get; private set; }
 		public HistoryController HistoryController { get; private set; }
-		public ConsoleWindowController ConsoleController { get; private set; }
-		public InfoSpaceController InfoSpaceController { get; private set; }
 
 		void Awake() {
 			NetworkController = GetComponent<NetworkController>();
@@ -49,8 +47,6 @@ namespace Controllers {
 			NodeController = GetComponent<NodeController>();
 			ConnectionController = GetComponent<ConnectionController>();
 			HistoryController = GetComponent<HistoryController>();
-			ConsoleController = (ConsoleWindowController) Resources.FindObjectsOfTypeAll(typeof(ConsoleWindowController))[0];
-			InfoSpaceController = (InfoSpaceController) Resources.FindObjectsOfTypeAll(typeof(InfoSpaceController))[0];
 		}
 
 		void Start() {
@@ -80,6 +76,8 @@ namespace Controllers {
 		}
 
 		public void SetBlockInput(bool block, InputBlockType blockType) {
+			if(NetworkController.IsClient())
+				return;
 			BlockType = block ? blockType : (InputBlockType?) null;
 			binding.CallFieldsOfType<InputBlocker>(field => field.SetBlocked(block), field => IsEventBlocked(field, blockType));
 		}

@@ -41,6 +41,20 @@ namespace Controllers {
 			graphController.GraphMode.Value = (GraphMode) value;
 		}
 
+		public void ToggleInfoSpace() => Synchronize("toggleInfoSpace");
+
+		[RPC]
+		private void toggleInfoSpace() {
+			infoSpaceController.ToggleVisibility();
+		}
+
+		public void ToggleConsole() => Synchronize("toggleConsole");
+
+		[RPC]
+		private void toggleConsole() {
+			consoleController.ToggleVisibility();
+		}
+
 		public void SetHighlightedNode(Node node) => SetHighlightedNode(NodeToID(node));
 
 		public void SetHighlightedNode(string id) => Synchronize("setHighlightedNode", id);
@@ -93,12 +107,16 @@ namespace Controllers {
 		private GraphController graphController;
 		private NodeController nodeController;
 		private ConnectionController connectionController;
+		private InfoSpaceController infoSpaceController;
+		private ConsoleWindowController consoleController;
 
 		private void Awake() {
 			inputController = GetComponent<InputController>();
 			nodeController = GetComponent<NodeController>();
 			graphController = GetComponent<GraphController>();
 			connectionController = GetComponent<ConnectionController>();
+			infoSpaceController = (InfoSpaceController) Resources.FindObjectsOfTypeAll(typeof(InfoSpaceController))[0];
+			consoleController = (ConsoleWindowController) Resources.FindObjectsOfTypeAll(typeof(ConsoleWindowController))[0];
 
 			NetworkView = GetComponent<NetworkView>();
 
