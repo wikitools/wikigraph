@@ -11,6 +11,7 @@ namespace Controllers {
 
 		public GameObject Entity;
 		public GameObject Graph;
+		public GameObject ConsoleWindow;
 		public HeaderConfig Config;
 
 		private Vector3 targetPosition;
@@ -27,6 +28,7 @@ namespace Controllers {
 		private NetworkController networkController;
 		private ConnectionController connectionController;
 		private GraphController graphController;
+		private ConsoleWindowController consoleWindowController;
 
 		void Start() {
 			if (inputController.Environment == Environment.PC) {
@@ -35,6 +37,7 @@ namespace Controllers {
 			nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			nodeController.OnHighlightedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			graphController.ConnectionMode.OnValueChanged += UpdateConnectionMode;
+			consoleWindowController.OnConsoleToggled += UpdateConsoleState;
 			connectionController.OnConnectionRangeChanged += UpdateNodeHeaderAfterConnectionRangeChange;
 			connectionController.OnConnectionRangeChanged?.Invoke(0, 0, 0);
 
@@ -51,6 +54,7 @@ namespace Controllers {
 				SetRendererSortingOrder(transform.GetChild(i), 50);
 			}
 			SetRendererSortingOrder(transform.GetChild(5), 51);
+			SetRendererSortingOrder(transform.GetChild(6).GetChild(1), 51);
 		}
 
 		void Awake() {
@@ -59,6 +63,7 @@ namespace Controllers {
 			nodeController = Graph.GetComponent<NodeController>();
 			connectionController = Graph.GetComponent<ConnectionController>();
 			graphController = Graph.GetComponent<GraphController>();
+			consoleWindowController = ConsoleWindow.GetComponent<ConsoleWindowController>();
 		}
 
 		private void SetRendererSortingOrder(Transform obj, int order) {
@@ -71,6 +76,10 @@ namespace Controllers {
 			} else {
 				stateIcon.sprite = (mode == ConnectionMode.PARENTS) ? Config.CategoryConnectionsIn : Config.CategoryConnectionsOut;
 			}
+		}
+
+		private void UpdateConsoleState(bool active) {
+			transform.GetChild(6).gameObject.SetActive(active);
 		}
 
 		private void UpdateNodeHeaderAfterSelectOrHighlight(Node previousNode, Node selectedNode) {
