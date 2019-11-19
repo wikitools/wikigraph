@@ -63,7 +63,7 @@ namespace Services.RoutesFiles {
 		}
 
 		private void loadDataFile(string name, string dataFilePostfix) {
-			var filePath = Path.Combine(DATA_FILE_PATH, $"{name.ToString().ToLower() + dataFilePostfix}");
+			var filePath = Path.Combine(DATA_FILE_PATH, $"{name + dataFilePostfix}");
 			streams.Add(new StreamReader(filePath));
 		}
 
