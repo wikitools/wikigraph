@@ -1,6 +1,7 @@
 using System;
 using Controllers;
 using InputModule.Binding;
+using Inspector;
 using UnityEngine;
 
 namespace InputModule.Processor {
@@ -15,9 +16,9 @@ namespace InputModule.Processor {
 			binding.NodePointer.OnPointed += OnNodePointed;
 			binding.NodeChooser.OnPointed += OnNodeChosen;
 			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
-			binding.RedoButton.OnPress += RedoUserAction;
-			binding.UndoButton.OnPress += UndoUserAction;
-			
+			binding.HistoryAxis.OnInputChange += BindHistoryEvents;
+			binding.InfoSpaceToggle.OnPress += ToggleInfoSpace;
+
 			binding.ConnectionsScrollAxis.OnInputChange += direction => Controller.ConnectionController.OnScrollInputChanged(direction);
 			binding.OperatorConsoleToggle.OnRelease += ToggleOperatorConsole;
 		}
@@ -27,7 +28,7 @@ namespace InputModule.Processor {
 		}
 
 		private void OnMovementJoystickYAxisMove(float amount) {
-			if (Controller.GraphController.GraphMode.Value != GraphMode.FREE_FLIGHT) 
+			if (Controller.GraphController.GraphMode.Value != GraphMode.FREE_FLIGHT || Controller.BlockType == InputBlockType.INFO_SPACE) 
 				return;
 			var translation = CaveInputBinding.Flystick(binding.MovementJoystick.Instance).pose.rotation * Vector3.forward;
 			EntityTransform.Translate(Config.MovementSpeed * amount * translation, Space.World);

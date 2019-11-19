@@ -18,10 +18,15 @@ namespace InputModule.Processor {
 			else Controller.NetworkController.SetGraphMode(GraphMode.FREE_FLIGHT);
 		}
 
-
-		protected void RedoUserAction() => Controller.HistoryController.HistoryService.RedoAction();
-		protected void UndoUserAction() => Controller.HistoryController.HistoryService.UndoAction();
-		protected void ToggleOperatorConsole() => Controller.ConsoleController.ToggleVisibility();
+		protected void BindHistoryEvents(int direction) {
+			if(direction == 1)
+				Controller.HistoryController.HistoryService.UndoAction();
+			else if (direction == -1)
+				Controller.HistoryController.HistoryService.RedoAction();
+		}
+		
+		protected void ToggleInfoSpace() => Controller.NetworkController.ToggleInfoSpace();
+		protected void ToggleOperatorConsole() => Controller.NetworkController.ToggleConsole();
 
 
 		protected void OnNodeChosen(Ray ray) {

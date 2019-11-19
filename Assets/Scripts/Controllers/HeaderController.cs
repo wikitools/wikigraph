@@ -8,9 +8,10 @@ using System.Linq;
 
 namespace Controllers {
 	public class HeaderController : MonoBehaviour {
+
 		public GameObject Entity;
-		public GameObject HeaderObject;
-		public GameObject Grid;
+		public GameObject Graph;
+		public GameObject ConsoleWindow;
 		public HeaderConfig Config;
 
 		private Vector3 targetPosition;
@@ -19,50 +20,72 @@ namespace Controllers {
 		private SpriteRenderer headerIndicatorPrimaryRangeSprite, headerIndicatorSecondaryRangeSprite;
 		private float indicatorWidth, indicatorHeight;
 		private int currentStart, currentEnd, currentCount;
+		private SpriteRenderer stateIcon;
+		private TextMesh autoState;
 
 		private InputController inputController;
 		private NodeController nodeController;
 		private NetworkController networkController;
 		private ConnectionController connectionController;
+		private GraphController graphController;
+		private ConsoleWindowController consoleWindowController;
 
 		void Start() {
 			if (inputController.Environment == Environment.PC) {
-				HeaderObject.transform.parent = Camera.main.transform;
+				transform.parent = Camera.main.transform;
 			}
 			nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			nodeController.OnHighlightedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
+			graphController.ConnectionMode.OnValueChanged += UpdateConnectionMode;
+			consoleWindowController.OnConsoleToggled += UpdateConsoleState;
 			connectionController.OnConnectionRangeChanged += UpdateNodeHeaderAfterConnectionRangeChange;
 			connectionController.OnConnectionRangeChanged?.Invoke(0, 0, 0);
 
-			Transform indicatorBase = HeaderObject.transform.GetChild(3);
+			Transform indicatorBase = transform.GetChild(3);
 			indicatorBase.GetComponent<SpriteRenderer>().size = Config.HeaderRangeSize;
 			indicatorWidth = indicatorBase.GetComponent<SpriteRenderer>().size.x;
 			indicatorHeight = indicatorBase.GetComponent<SpriteRenderer>().size.y;
 			headerIndicatorPrimaryRangeSprite = indicatorBase.GetChild(0).GetComponent<SpriteRenderer>();
 			headerIndicatorSecondaryRangeSprite = indicatorBase.GetChild(1).GetComponent<SpriteRenderer>();
+			stateIcon = transform.GetChild(4).GetComponent<SpriteRenderer>();
 
 			// Render always on top of nodes and connections
 			for (int i = 0; i < 3; i++) {
-				SetRendererSortingOrder(HeaderObject.transform.GetChild(i), 50);
+				SetRendererSortingOrder(transform.GetChild(i), 50);
 			}
-			SetRendererSortingOrder(Grid.transform, -10);
+			SetRendererSortingOrder(transform.GetChild(5), 51);
+			SetRendererSortingOrder(transform.GetChild(6).GetChild(1), 51);
+			transform.GetChild(6).GetChild(1).GetComponent<TextMesh>().text = Config.ConsoleActiveText;
 		}
 
 		void Awake() {
-			networkController = GetComponent<NetworkController>();
-			inputController = GetComponent<InputController>();
-			nodeController = GetComponent<NodeController>();
-			nodeController = GetComponent<NodeController>();
-			connectionController = GetComponent<ConnectionController>();
+			networkController = Graph.GetComponent<NetworkController>();
+			inputController = Graph.GetComponent<InputController>();
+			nodeController = Graph.GetComponent<NodeController>();
+			connectionController = Graph.GetComponent<ConnectionController>();
+			graphController = Graph.GetComponent<GraphController>();
+			consoleWindowController = ConsoleWindow.GetComponent<ConsoleWindowController>();
 		}
 
 		private void SetRendererSortingOrder(Transform obj, int order) {
 			obj.GetComponent<MeshRenderer>().sortingOrder = order;
 		}
 
+		private void UpdateConnectionMode(ConnectionMode mode) {
+			if(nodeController.SelectedNode.Type == NodeType.ARTICLE) {
+				stateIcon.sprite = (mode == ConnectionMode.PARENTS) ? Config.ArticleConnectionsIn : Config.ArticleConnectionsOut; 
+			} else {
+				stateIcon.sprite = (mode == ConnectionMode.PARENTS) ? Config.CategoryConnectionsIn : Config.CategoryConnectionsOut;
+			}
+		}
+
+		private void UpdateConsoleState(bool active) {
+			transform.GetChild(6).gameObject.SetActive(active);
+		}
+
 		private void UpdateNodeHeaderAfterSelectOrHighlight(Node previousNode, Node selectedNode) {
-			TextMesh headerTitle = HeaderObject.transform.GetChild(0).GetComponent<TextMesh>();
-			TextMesh headerValue = HeaderObject.transform.GetChild(1).GetComponent<TextMesh>();
+			TextMesh headerTitle = transform.GetChild(0).GetComponent<TextMesh>();
+			TextMesh headerValue = transform.GetChild(1).GetComponent<TextMesh>();
 
 			if (nodeController.HighlightedNode != null) {
 				headerTitle.text = Config.CurrentlyLookingAtText;
@@ -75,10 +98,12 @@ namespace Controllers {
 				if (nodeController.HighlightedNode != null && nodeController.HighlightedNode != nodeController.SelectedNode) {
 					headerTitle.text = Config.CurrentlyLookingAtText;
 					headerValue.text = nodeController.HighlightedNode.Title;
+					stateIcon.sprite = null;
 					ShowConnectionRangeCount(connectionController.GetNodeNeighbours(nodeController.HighlightedNode).ToArray().Length);
 				} else {
 					headerTitle.text = Config.CurrentlySelectedText;
 					headerValue.text = nodeController.SelectedNode.Title;
+					UpdateConnectionMode(graphController.ConnectionMode.Value);
 					ShowConnectionRangeCount(null);
 				}
 			} else {
@@ -86,17 +111,18 @@ namespace Controllers {
 				if (nodeController.HighlightedNode != null) {
 					ShowConnectionRangeCount(connectionController.GetNodeNeighbours(nodeController.HighlightedNode).ToArray().Length);
 				}
+				stateIcon.sprite = null;
 			}
 		}
 
 		private void ShowConnectionRangeCount(int? count) {
 			ConnectionRangeTextUpdate(count);
-			HeaderObject.transform.GetChild(2).localPosition = new Vector3(0, (count != null) ? 15.6f : 15f, 4.5f);
-			HeaderObject.transform.GetChild(3).gameObject.SetActive(count == null);
+			transform.GetChild(2).localPosition = new Vector3(0, (count != null) ? 15.6f : 15f, 4.5f);
+			transform.GetChild(3).gameObject.SetActive(count == null);
 		}
 
 		private void ConnectionRangeTextUpdate(int? count) {
-			TextMesh headerConnectionsRangeText = HeaderObject.transform.GetChild(2).GetComponent<TextMesh>();
+			TextMesh headerConnectionsRangeText = transform.GetChild(2).GetComponent<TextMesh>();
 			string textPrepend = $"{Config.CurrentConnectionRangeText} <color=white>";
 			string textAppend = $"</color>";
 
@@ -112,10 +138,10 @@ namespace Controllers {
 		}
 
 		private void UpdateNodeHeaderAfterConnectionRangeChange(int start, int end, int count) {
-			TextMesh headerConnectionsRangeText = HeaderObject.transform.GetChild(2).GetComponent<TextMesh>();
+			TextMesh headerConnectionsRangeText = transform.GetChild(2).GetComponent<TextMesh>();
 
 			if (nodeController.SelectedNode != null && count > 0) {
-				HeaderObject.transform.GetChild(3).gameObject.SetActive(true);
+				transform.GetChild(3).gameObject.SetActive(true);
 
 				// Primary range size & position
 				float primaryRangeWidth = (float)(end > start ? end - start + 1 : count - start + 1) / count * indicatorWidth;
@@ -137,7 +163,7 @@ namespace Controllers {
 				currentCount = count;
 				ShowConnectionRangeCount(null);
 			} else {
-				HeaderObject.transform.GetChild(3).gameObject.SetActive(false);
+				transform.GetChild(3).gameObject.SetActive(false);
 				headerConnectionsRangeText.text = string.Empty;
 			}
 		}
@@ -145,30 +171,29 @@ namespace Controllers {
 		void Update() {
 			// Connection indicator update
 			headerIndicatorPrimaryRangeSprite.size = targetPrimaryRangeSize;
-			HeaderObject.transform.GetChild(3).GetChild(0).localPosition = targetPrimaryRangePosition;
+			transform.GetChild(3).GetChild(0).localPosition = targetPrimaryRangePosition;
 			headerIndicatorSecondaryRangeSprite.size = targetSecondaryRangeSize;
-			HeaderObject.transform.GetChild(3).GetChild(1).localPosition = targetSecondaryRangePosition;
+			transform.GetChild(3).GetChild(1).localPosition = targetSecondaryRangePosition;
 
 			if (networkController.IsClient()) {
 				return;
 			}
 			
-			Grid.transform.position = new Vector3(Entity.transform.position.x, Entity.transform.position.y + Config.GridHeight, Entity.transform.position.z);
 			targetPosition = Entity.transform.position;
 			if (inputController.Environment == Environment.Cave) {
 				var anglesY = Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI;
-				HeaderObject.transform.position = targetPosition + new Vector3(Mathf.Sin(anglesY) * Config.HeaderDistance,
+				transform.position = targetPosition + new Vector3(Mathf.Sin(anglesY) * Config.HeaderDistance,
 													  Config.HeaderHeight, Mathf.Cos(anglesY) * Config.HeaderDistance);
-				HeaderObject.transform.rotation =
-					Quaternion.LookRotation(HeaderObject.transform.position - (targetPosition + new Vector3(0, Config.HeaderDeviation, 0)));
+				transform.rotation =
+					Quaternion.LookRotation(transform.position - (targetPosition + new Vector3(0, Config.HeaderDeviation, 0)));
 			} else {
-				HeaderObject.transform.localPosition = Config.HeaderDistance * 2 * Vector3.forward;
+				transform.localPosition = Config.HeaderDistance * 2 * Vector3.forward;
+				transform.rotation = Quaternion.LookRotation(transform.position - Entity.transform.position);
 			}
 		}
 
 		[Serializable]
 		public class HeaderConfig {
-			public float GridHeight = -6f;
 			public float HeaderHeight = -6f;
 			public float HeaderDeviation = -10f;
 			public float HeaderDistance = 16f;
@@ -177,6 +202,12 @@ namespace Controllers {
 			public string CurrentlyLookingAtText = "Looking at:";
 			public string CurrentConnectionRangeText = "Connections:";
 			public string AllConnectionRangeText = "All";
+			public string AutoText = "Auto";
+			public string ConsoleActiveText = "Console Active";
+			public Sprite ArticleConnectionsIn;
+			public Sprite ArticleConnectionsOut;
+			public Sprite CategoryConnectionsIn;
+			public Sprite CategoryConnectionsOut;
 		}
 	}
 }

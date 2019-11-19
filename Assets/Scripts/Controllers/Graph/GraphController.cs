@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections;
 using Services;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Controllers {
 	public class GraphController : MonoBehaviour {
-		public GameObject Infographic; //TODO: move
-		
-
 		public float WorldRadius;
-		public Material SkyboxMaterial;
-
 		public static Graph Graph { get; } = new Graph();
 
 		public ObservableProperty<GraphMode> GraphMode = new ObservableProperty<GraphMode>(Controllers.GraphMode.FREE_FLIGHT);
@@ -38,30 +31,10 @@ namespace Controllers {
 		}
 
 		private void Start() {
-			SkyboxMaterial.SetFloat("_Blend", 0f);
 			GraphMode.OnValueChanged += mode => {
 				if (GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT)
 					ConnectionMode.Value = Controllers.ConnectionMode.CHILDREN;
 			};
-			GraphMode.OnValueChanged += mode => {
-				if (GraphMode.Value == Controllers.GraphMode.FREE_FLIGHT) {
-					StopAllCoroutines();
-					StartCoroutine(ChangeBlend(SkyboxMaterial.GetFloat("_Blend"), 0f, 1f));
-				} else {
-					StopAllCoroutines();
-					StartCoroutine(ChangeBlend(SkyboxMaterial.GetFloat("_Blend"), 1f, 1f));
-				}
-			};
-		}
-
-		IEnumerator ChangeBlend(float start, float end, float duration) {
-			float elapsed = 0.0f;
-			while (elapsed < duration) {
-				SkyboxMaterial.SetFloat("_Blend", Mathf.Lerp(start, end, elapsed / duration));
-				elapsed += Time.deltaTime;
-				yield return null;
-			}
-			SkyboxMaterial.SetFloat("_Blend", end);
 		}
 		
 	}

@@ -14,7 +14,9 @@ namespace Controllers {
 		public ConnectionColors Colors;
 		
 		public ConnectionDistribution ConnectionDistribution;
-		public float ScrollInterval;
+		public Vector2 ScrollInterval;
+		public Vector2 ScrollAcceleration;
+		private int SeriesScrolls;
 		[Range(1, 6)]
 		public int ConnectionLoadSpeed = 4;
 
@@ -37,21 +39,24 @@ namespace Controllers {
 
 		public void OnScrollInputChanged(int direction) {
 			scrollDirection = direction;
+			SeriesScrolls = 0;
 		}
 
-		public void OnAdvanceScrollInput(int direction) {
-			OnScrollInputChanged(direction);
+		public void OnAdvanceScrollInput() {
 			if (scrollDirection == 0) return;
 			scrollTimer -= Time.deltaTime * 1000;
 			if (scrollTimer <= 0) {
 				NetworkController.SyncConnectionScrolled(scrollDirection);
+				SeriesScrolls++;
 				ResetTimer();
 			}
 		}
 
 		private void ReloadSelectedNodeConnections(Node centerNode) {
+			currentVisibleIndex = 0;
 			graph.ConnectionObjectMap.Keys.ToList().ForEach(ConnectionLoadManager.UnloadConnection);
 
+			SeriesScrolls = 0;
 			ResetTimer();
 
 			if (centerNode == null) return;
@@ -61,7 +66,8 @@ namespace Controllers {
 		}
 
 		private void ResetTimer() {
-			scrollTimer = ScrollInterval * 1000;
+			var acceleration = Mathf.Max(0, Mathf.Min(SeriesScrolls, ScrollAcceleration.y) - ScrollAcceleration.x);
+			scrollTimer = (ScrollInterval.x - (ScrollInterval.x - ScrollInterval.y) * acceleration / (ScrollAcceleration.y - ScrollAcceleration.x)) * 1000;
 		}
 		
 		#endregion
@@ -82,37 +88,40 @@ namespace Controllers {
 		#region Connection Updating
 
 		public void UpdateVisibleConnections(int direction) {
-			var connections = CreateConnectionsAround(NodeController.SelectedNode);
-			if (connections.Count <= ConnectionDistribution.MaxVisibleNumber) {
-				connections.ForEach(con => ConnectionLoadManager.LoadConnection(con, selectedNodeDistribution));
-				OnConnectionRangeChanged?.Invoke(Mathf.Min(1, connections.Count), connections.Count, connections.Count);
+			var centerNode = NodeController.SelectedNode;
+			var connectedIDs = GetNodeNeighbours(centerNode).ToList();
+			if (connectedIDs.Count <= ConnectionDistribution.MaxVisibleNumber) {
+				connectedIDs.ForEach(id => ConnectionLoadManager.LoadConnection(CreateConnection(centerNode, id), selectedNodeDistribution));
+				OnConnectionRangeChanged?.Invoke(Mathf.Min(1, connectedIDs.Count), connectedIDs.Count, connectedIDs.Count);
 				return;
 			}
-			var oldSubList = GetConnectionsAround(NodeController.SelectedNode);
+			var oldSubList = GetConnectionsAround(centerNode);
+			var oldIDList = oldSubList.Select(con => con.OtherEnd(centerNode).ID).ToList();
 
-			var newSubList = Utils.ScrollList(connections, ref currentVisibleIndex, 
+			var newSubList = Utils.ScrollList(connectedIDs, ref currentVisibleIndex, 
 				direction * ConnectionDistribution.ChangeBy, ConnectionDistribution.MaxVisibleNumber);
-			newSubList.Where(connection => !oldSubList.Contains(connection)).ToList().ForEach(con => ConnectionLoadManager.LoadConnection(con, selectedNodeDistribution));
-			oldSubList.Where(connection => !newSubList.Contains(connection)).ToList().ForEach(connection => {
+			newSubList.Where(id => !oldIDList.Contains(id)).ToList().ForEach(id => 
+				ConnectionLoadManager.LoadConnection(CreateConnection(centerNode, id), selectedNodeDistribution));
+			oldSubList.Where(connection => !newSubList.Contains(connection.OtherEnd(centerNode).ID)).ToList().ForEach(connection => {
 				selectedNodeDistribution.OnConnectionUnloaded(connection);
 				ConnectionLoadManager.UnloadConnection(connection);
 			});
-			int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleNumber - 1, connections.Count);
-			OnConnectionRangeChanged?.Invoke(currentVisibleIndex + 1, endIndex + 1, connections.Count);
+			int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleNumber - 1, connectedIDs.Count);
+			OnConnectionRangeChanged?.Invoke(currentVisibleIndex + 1, endIndex + 1, connectedIDs.Count);
 		}
 
 		private void SwitchConnectionTypes() {
 			GetConnectionsAround(NodeController.SelectedNode).ForEach(ConnectionLoadManager.SetConnectionLineColor);
 		}
 
-		private List<Connection> CreateConnectionsAround(Node centerNode, int limit = -1) {
-			if (centerNode == null) return null;
-			var enumerable = GetNodeNeighbours(centerNode);
-			if (limit >= 0)
-				enumerable = enumerable.Take(limit);
-			var connections = enumerable.Select(id => new Connection(centerNode, NodeController.NodeLoadManager.LoadNode(id))).ToList();
+		private List<Connection> CreateConnectionsAround(Node centerNode, int limit) {
+			var connections = GetNodeNeighbours(centerNode).Take(limit).Select(id => new Connection(centerNode, NodeController.NodeLoadManager.LoadNode(id))).ToList();
 			NodeController.OnNodeLoadSessionEnded?.Invoke(); //can trigger loading of unloaded connected nodes TODO move once we have a node loader
 			return connections;
+		}
+
+		private Connection CreateConnection(Node centerNode, uint otherID) {
+			return new Connection(centerNode, NodeController.NodeLoadManager.LoadNode(otherID));
 		}
 
 		public IEnumerable<uint> GetNodeNeighbours(Node centerNode) {
@@ -142,10 +151,7 @@ namespace Controllers {
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
 			
-			NodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
-				currentVisibleIndex = 0;
-				ReloadSelectedNodeConnections(newNode);
-			};
+			NodeController.OnSelectedNodeChanged += (oldNode, newNode) => ReloadSelectedNodeConnections(newNode);
 			GraphController.ConnectionMode.OnValueChanged += mode => ReloadSelectedNodeConnections(NodeController.SelectedNode);
 			NodeController.OnHighlightedNodeChanged += OnHighlightedNodeChanged;
 
@@ -154,7 +160,7 @@ namespace Controllers {
 
 		private void Update() {
 			if (NetworkController.IsServer())
-				OnAdvanceScrollInput(scrollDirection);
+				OnAdvanceScrollInput();
 		}
 
 		#endregion

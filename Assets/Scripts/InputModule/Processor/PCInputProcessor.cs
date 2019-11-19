@@ -12,17 +12,13 @@ namespace InputModule.Processor {
 			binding.NodePointer.OnPointed += OnNodePointed;
 			binding.NodeChooser.OnPointed += OnNodeChosen;
 			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
-
-			binding.InfographicToggle.OnPress += () => Controller.GraphController.Infographic.SetActive(!Controller.GraphController.Infographic.activeSelf);
+			
 			binding.ConnectionModeToggle.OnPress += () => Controller.GraphController.SwitchConnectionMode();
-
 			binding.ConnectionScroll.OnInputChange += direction => Controller.ConnectionController.OnScrollInputChanged(direction);
 
-			binding.UndoButton.OnPress += UndoUserAction;
-			binding.RedoButton.OnPress += RedoUserAction;
-
+			binding.HistoryAxis.OnInputChange += BindHistoryEvents;
+			binding.InfoSpaceToggle.OnRelease += ToggleInfoSpace;
 			binding.OperatorConsoleToggle.OnRelease += ToggleOperatorConsole;
-
 		}
 
 		private void OnMove(Vector2 direction) {

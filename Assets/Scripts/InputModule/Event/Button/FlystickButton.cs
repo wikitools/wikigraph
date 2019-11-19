@@ -19,10 +19,13 @@ namespace InputModule.Event.Button {
 			LzwpInput.Flystick.ButtonID.Fire
 		});
 		public virtual void Init() {
+			var otherButtons = BUTTONS.Where(button => button != Button).ToList();
+			otherButtons.ForEach(button => GetButton(button).OnPress += () => { Pressed = false; });
+
 			GetButton(Button).OnPress += () => {
 				if(Blocked)
 					return;
-				if(BUTTONS.Where(button => button != Button).Any(id => GetButton(id).isActive))
+				if(otherButtons.Any(id => GetButton(id).isActive))
 					return;
 				Pressed = true;
 				OnPress?.Invoke();
@@ -30,7 +33,7 @@ namespace InputModule.Event.Button {
 			GetButton(Button).OnRelease += () => {
 				if(Blocked || !Pressed)
 					return;
-				if(BUTTONS.Where(button => button != Button).Any(id => GetButton(id).isActive))
+				if(otherButtons.Any(id => GetButton(id).isActive))
 					return;
 				Pressed = false;
 				OnRelease?.Invoke();

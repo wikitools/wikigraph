@@ -30,13 +30,15 @@ namespace Controllers {
 		[EnvironmentField(Environment.Cave)]
 		public bool ShowFlystickRays;
 
+		public Transform Eyes;
+		public InputBlockType? BlockType { get; private set; } = InputBlockType.INFO_SPACE;
+
 		public NetworkController NetworkController { get; private set; }
 		public CameraController CameraController { get; private set; }
 		public GraphController GraphController { get; private set; }
 		public NodeController NodeController { get; private set; }
 		public ConnectionController ConnectionController { get; private set; }
 		public HistoryController HistoryController { get; private set; }
-		public ConsoleWindowController ConsoleController { get; private set; }
 
 		void Awake() {
 			NetworkController = GetComponent<NetworkController>();
@@ -45,13 +47,11 @@ namespace Controllers {
 			NodeController = GetComponent<NodeController>();
 			ConnectionController = GetComponent<ConnectionController>();
 			HistoryController = GetComponent<HistoryController>();
-			ConsoleController = (ConsoleWindowController) Resources.FindObjectsOfTypeAll(typeof(ConsoleWindowController))[0];
 		}
 
 		void Start() {
 			if(Environment == Environment.Cave)
-				foreach (var flystick in Flysticks)
-					flystick.GetComponent<LineRenderer>().enabled = ShowFlystickRays;
+				Flysticks[0].GetComponent<LineRenderer>().enabled = ShowFlystickRays;
 			
 			if (!NetworkController.IsServer())
 				return;
@@ -61,6 +61,7 @@ namespace Controllers {
 
 			CaveInputBinding.SetPrimaryFlystick(0);
 			binding.Init();
+			SetBlockInput(true, InputBlockType.INFO_SPACE);
 		}
 
 		void Update() {
@@ -74,8 +75,16 @@ namespace Controllers {
 			binding.CheckForInput();
 		}
 
-		public void SetBlockInput(bool block) {
-			binding.CallFieldsOfType<InputBlocker>(field => field.SetBlocked(block), field => field.GetCustomAttribute<UnblockableEvent>() == null);
+		public void SetBlockInput(bool block, InputBlockType blockType) {
+			if(NetworkController.IsClient())
+				return;
+			BlockType = block ? blockType : (InputBlockType?) null;
+			binding.CallFieldsOfType<InputBlocker>(field => field.SetBlocked(block), field => IsEventBlocked(field, blockType));
+		}
+
+		private bool IsEventBlocked(FieldInfo field, InputBlockType blockType) {
+			NotBlocked blockedAttribute = field.GetCustomAttribute<NotBlocked>();
+			return blockedAttribute == null || blockedAttribute.NotBlockedTypes.Count > 0 && !blockedAttribute.NotBlockedTypes.Contains(blockType);
 		}
 
 		private T GetEnvDependent<T>(T pc, T cave) => Environment == Environment.Cave ? cave : pc;

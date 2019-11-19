@@ -1,16 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Model;
-using Model.Connection;
 using Services;
-using Services.DataFiles;
 using Services.Nodes;
 using Services.ObjectPool;
 using UnityEngine;
-using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 namespace Controllers {
 	public class NodeController : MonoBehaviour {
@@ -18,9 +11,13 @@ namespace Controllers {
 		public NodeSprite[] NodeSprites;
 
 		public GraphPooledObject Nodes;
+		public Material NodeMaterial;
 
 		public int NodeLoadedLimit;
-		public bool LoadTestNodeSet;
+		[HideInInspector]
+		public string DataPack;
+		[HideInInspector]
+		public string DataPackDate;
 
 		[Range(.05f, 2f)]
 		public float NodeScaleTime = .8f;
@@ -82,9 +79,9 @@ namespace Controllers {
 				GraphController.GraphMode.Value = selectedNode != null ? GraphMode.NODE_TRAVERSE : GraphMode.FREE_FLIGHT;
 				NodeStateManager.UpdateNodeStates();
 				if(previousNode != null)
-					NodeLoadManager.ScaleNodeImage(previousNode, -1, 1);
+					NodeLoadManager.AnimScaleNodeSize(previousNode, -1, NodeLoadManager.GetNodeTypeScale(previousNode.Type));
 				if(selectedNode != null)
-					NodeLoadManager.ScaleNodeImage(selectedNode, -1, 3f);
+					NodeLoadManager.AnimScaleNodeSize(selectedNode, -1, 3f * NodeLoadManager.GetNodeTypeScale(selectedNode.Type));
 				OnSelectedNodeChanged?.Invoke(previousNode, selectedNode);
 			}
 		}
@@ -120,9 +117,14 @@ namespace Controllers {
 				OnNodeLoadSessionEnded?.Invoke();
 				GraphController.GraphMode.OnValueChanged += mode => {
 					if (mode == GraphMode.FREE_FLIGHT)
-						networkController.SetSelectedNode("");
+						networkController.SetSelectedNode((Node) null);
 				};
 			}
+		}
+
+		private void Update() {
+			var eyes = inputController.Eyes.position;
+			NodeMaterial.SetVector("_FaceObject", new Vector4(eyes.x, eyes.y, eyes.z));
 		}
 
 		private void OnDestroy() {
@@ -138,5 +140,4 @@ namespace Controllers {
 		public NodeState State;
 		public Sprite Sprite;
 	}
-	
 }
