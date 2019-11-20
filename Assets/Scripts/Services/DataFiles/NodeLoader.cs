@@ -4,6 +4,7 @@ using Model;
 namespace Services.DataFiles {
 	public class NodeLoader: IDisposable {
 		public DataFileReader fileReader { get; private set; }
+		private readonly uint nodeTypeBorder;
 
 		private static class MAP {
 			public const ushort GRAPH_OFFSET_SIZE = 4;
@@ -20,6 +21,7 @@ namespace Services.DataFiles {
 
 		public NodeLoader(string dataPack, string dataPackDate) {
 			fileReader = new DataFileReader(dataPack, dataPackDate);
+			nodeTypeBorder = fileReader.ReadInt(DataFileType.INFO, 0);
 		}
 
 		public Node LoadNode(uint id) {
@@ -36,11 +38,9 @@ namespace Services.DataFiles {
 			return node;
 		}
 		
-		public NodeType GetNodeType(uint id) => id < fileReader.ReadInt(DataFileType.INFO, 0) ? NodeType.ARTICLE : NodeType.CATEGORY;
+		public NodeType GetNodeType(uint id) => id < nodeTypeBorder ? NodeType.ARTICLE : NodeType.CATEGORY;
 
-		public uint GetNodeNumber() {
-			return (uint) (fileReader.GetFileLength(DataFileType.MAP) / MAP.LINE_SIZE);
-		}
+		public uint GetNodeNumber() => (uint) (fileReader.GetFileLength(DataFileType.MAP) / MAP.LINE_SIZE);
 
 		private void loadNodeConnections(ref Node node, long nodeMapFilePos) {
 			uint nodeGraphFilePos = fileReader.ReadInt(DataFileType.MAP, nodeMapFilePos);
