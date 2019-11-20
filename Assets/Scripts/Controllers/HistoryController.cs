@@ -65,7 +65,14 @@ namespace Controllers {
 				HistoryService = new HistoryService(secondsToChangeRoute, numberOfDisplayedSearchEntries, routesPath, searchFilePath);
 				nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
 					if (nodeChangedSource != NodeChangedSource.History) {
-						HistoryService.RegisterAction(new NodeSelectedAction(oldNode, newNode, false));
+						if(oldNode == null) {
+							HistoryService.RegisterAction(new NodeSelectedAction(null, newNode.ID, false));
+						} else if(newNode == null) {
+							HistoryService.RegisterAction(new NodeSelectedAction(oldNode.ID, null, false));
+						} else {
+							HistoryService.RegisterAction(new NodeSelectedAction(oldNode.ID, newNode.ID, false));
+						}
+						
 					}
 					if (nodeChangedSource != NodeChangedSource.Route && isPlayingRoute()) onRouteExit();
 					nodeChangedSource = NodeChangedSource.User;
@@ -73,7 +80,8 @@ namespace Controllers {
 				NodeSelectedAction.selectNodeAction = (node, isRoute) => {
 					if (isRoute) nodeChangedSource = NodeChangedSource.Route;
 					else nodeChangedSource = NodeChangedSource.History;
-					networkController.SetSelectedNode(node);
+					if(node == null) networkController.SetSelectedNode("");
+					else networkController.SetSelectedNode(node.ToString());
 				};
 				graphController.ConnectionMode.OnValueChanged += mode => {
 					if (nodeChangedSource != NodeChangedSource.History) {

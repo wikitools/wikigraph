@@ -3,18 +3,18 @@ using System;
 
 namespace Services.History.Actions {
 	public class NodeSelectedAction : UserAction {
-		private Node oldSelectedNode;
-		private Node newSelectedNode;
+		private uint? oldSelectedNode;
+		private uint? newSelectedNode;
 		bool isRouteAction;
-		public static Action<Node, bool> selectNodeAction;
+		public static Action<uint?, bool> selectNodeAction;
 
-		public NodeSelectedAction(Node oldNode, Node newNode, bool isRoute) {
+		public NodeSelectedAction(uint? oldNode, uint? newNode, bool isRoute) {
 			oldSelectedNode = oldNode;
 			newSelectedNode = newNode;
 			isRouteAction = isRoute;
 		}
 
-		private void passSelectAction(Node node) {
+		private void passSelectAction(uint? node) {
 			selectNodeAction(node, isRouteAction);
 		}
 

@@ -39,7 +39,7 @@ namespace Services.RoutesFiles {
 
 		public Stack<UserAction> loadRoute(int index) {
 			Stack<UserAction> userActions = new Stack<UserAction>();
-			Node old = null;
+			uint? old = null;
 			while (routesReader.isNotEOF(index)) {
 				string[] line = routesReader.readLine(index).Split(separator);
 				UserAction action = null;
@@ -52,7 +52,7 @@ namespace Services.RoutesFiles {
 					}
 				}
 				else if (line[0] == USERACTION_TYPE.NODE_SELECTED.ToString("d")) {
-					Node newNode = getRouteNode(Convert.ToUInt32(line[1]));
+					uint? newNode = Convert.ToUInt32(line[1]);
 					action = new NodeSelectedAction(old, newNode, true);
 					old = newNode;
 				}
