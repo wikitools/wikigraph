@@ -8,6 +8,8 @@ using UnityEngine;
 
 namespace Services.DataFiles {
 	public class DataFileReader : IDisposable {
+		private readonly string dataPack;
+		private readonly string dataPackDate;
 		private readonly Logger<DataFileReader> logger = new Logger<DataFileReader>();
 
 		private Dictionary<DataFileType, DataFile> streams = new Dictionary<DataFileType, DataFile>();
@@ -16,13 +18,15 @@ namespace Services.DataFiles {
 		private const string DATA_FILE_EXTENSION = "wg";
 
 		public DataFileReader(string dataPack, string dataPackDate) {
+			this.dataPack = dataPack;
+			this.dataPackDate = dataPackDate;
 			Dispose();
-			LoadDataPack(dataPack, dataPackDate);
+			LoadDataPack();
 		}
 
-		private void LoadDataPack(string dataPack, string dataPackDate) {
+		private void LoadDataPack() {
 			foreach (DataFileType type in Enum.GetValues(typeof(DataFileType)))
-				loadDataFile(type, dataPack, dataPackDate);
+				loadDataFile(type);
 		}
 
 		public ulong ReadLong(DataFileType file, long offset) {
@@ -59,17 +63,18 @@ namespace Services.DataFiles {
 			return streams[file].Length;
 		}
 
-		private void loadDataFile(DataFileType type, string dataPack, string dataPackDate) {
-			var file = $"{dataPack}.{DATA_FILE_EXTENSION + type.ToString().ToLower()[0]}";
-			var filePath = Path.Combine(DATA_FILE_PATH, dataPack, dataPackDate, file);
+		private void loadDataFile(DataFileType type) {
+			var filePath = GetDataPackDirectory() + type.ToString().ToLower()[0];
 			FileStream stream = null;
 			try {
 				stream = new FileStream(filePath, FileMode.Open, FileSystemRights.Read, FileShare.Read, 4096, FileOptions.RandomAccess);
 			} catch (Exception e) {
-				logger.Exception($"Could not load data file {file}", e);
+				logger.Exception($"Could not load data file {filePath}", e);
 			}
 			streams[type] = new DataFile {Stream = stream, Length = new FileInfo(filePath).Length};
 		}
+		
+		public string GetDataPackDirectory() => Path.Combine(DATA_FILE_PATH, dataPack, dataPackDate, $"{dataPack}.{DATA_FILE_EXTENSION}");
 
 		private byte[] readBytes(DataFileType file, long offset, int count) {
 			byte[] bytes = new byte[count];
