@@ -80,8 +80,7 @@ namespace Controllers {
 				NodeSelectedAction.selectNodeAction = (node, isRoute) => {
 					if (isRoute) nodeChangedSource = NodeChangedSource.Route;
 					else nodeChangedSource = NodeChangedSource.History;
-					if(node == null) networkController.SetSelectedNode("");
-					else networkController.SetSelectedNode(node.ToString());
+					networkController.SetSelectedNode(node.ToString());
 				};
 				graphController.ConnectionMode.OnValueChanged += mode => {
 					if (nodeChangedSource != NodeChangedSource.History) {

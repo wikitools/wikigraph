@@ -24,7 +24,7 @@ namespace Services.DataFiles {
 
 		public Node LoadNode(uint id) {
 			var node = new Node(id);
-			node.Type = id < fileReader.ReadInt(DataFileType.INFO, 0) ? NodeType.ARTICLE : NodeType.CATEGORY;
+			node.Type = GetNodeType(id);
 			long nodeMapFilePos = id * MAP.LINE_SIZE;
 			loadNodeConnections(ref node, nodeMapFilePos);
 			
@@ -35,6 +35,8 @@ namespace Services.DataFiles {
 			node.Title = node.Title.Replace('_', ' ');
 			return node;
 		}
+		
+		public NodeType GetNodeType(uint id) => id < fileReader.ReadInt(DataFileType.INFO, 0) ? NodeType.ARTICLE : NodeType.CATEGORY;
 
 		public uint GetNodeNumber() {
 			return (uint) (fileReader.GetFileLength(DataFileType.MAP) / MAP.LINE_SIZE);
