@@ -46,14 +46,10 @@ namespace Services.History {
 		public static Action startRouteAutoAction;
 		public static Action endRouteAutoAction;
 		int secondsToNextRoute;
-		int numberOfDisplayedRoutes;
-		string pathWikiVersion;
 
 		public HistoryService(int seconds, int number, string routesPath,string searchPath, string prefix = "") {
 			routesLoader = new RoutesLoader(routesPath, prefix);
 			secondsToNextRoute = seconds;
-			numberOfDisplayedRoutes = number;
-			pathWikiVersion = searchPath;
 			searchLoader = new SearchLoader(number, searchPath);
 		}
 

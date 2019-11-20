@@ -8,16 +8,12 @@ using System.Text;
 namespace Services.SearchFiles {
 
 	public class SearchReader {
-		string searchPath;
-		int linesNumber;
 		long length;
 		public static Action<long> onIndexRead;
 		FileStream stream;
 
 
 		public SearchReader(string path) {
-			searchPath = path;
-			linesNumber = File.ReadLines(searchPath).Count();
 			stream = File.OpenRead(path);
 			length = new FileInfo(path).Length;
 		}

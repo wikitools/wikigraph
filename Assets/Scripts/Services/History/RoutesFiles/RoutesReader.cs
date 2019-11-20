@@ -9,9 +9,6 @@ using UnityEngine;
 
 namespace Services.RoutesFiles {
 	public class RoutesReader : IDisposable {
-		
-		private readonly Logger<RoutesReader> LOGGER = new Logger<RoutesReader>();
-
 		private List<StreamReader> streams = new List<StreamReader>();
 
 		private const string DATA_FILE_EXTENSION = ".wgroute";
