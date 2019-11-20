@@ -129,7 +129,9 @@ namespace Controllers {
 			if (count != null) {
 				headerConnectionsRangeText.text = textPrepend + $"{count}" + textAppend;
 			} else {
-				if (currentCount <= connectionController.ConnectionDistribution.MaxVisibleNumber) {
+				if (currentCount == 0) {
+					headerConnectionsRangeText.text = textPrepend + Config.ZeroConnectionsText + textAppend;
+				} else if (currentCount <= connectionController.ConnectionDistribution.MaxVisibleNumber) {
 					headerConnectionsRangeText.text = textPrepend + $"{Config.AllConnectionRangeText} {currentCount}" + textAppend;
 				} else {
 					headerConnectionsRangeText.text = textPrepend + $"[{currentStart}-{currentEnd}/{currentCount}]" + textAppend;
@@ -140,7 +142,7 @@ namespace Controllers {
 		private void UpdateNodeHeaderAfterConnectionRangeChange(int start, int end, int count) {
 			TextMesh headerConnectionsRangeText = transform.GetChild(2).GetComponent<TextMesh>();
 
-			if (nodeController.SelectedNode != null && count > 0) {
+			if (nodeController.SelectedNode != null && count >= 0) {
 				transform.GetChild(3).gameObject.SetActive(true);
 
 				// Primary range size & position
@@ -202,6 +204,7 @@ namespace Controllers {
 			public string CurrentlyLookingAtText = "Looking at:";
 			public string CurrentConnectionRangeText = "Connections:";
 			public string AllConnectionRangeText = "All";
+			public string ZeroConnectionsText = "None";
 			public string AutoText = "Auto";
 			public string ConsoleActiveText = "Console Active";
 			public Sprite ArticleConnectionsIn;
