@@ -144,7 +144,7 @@ namespace Controllers {
 				}
 				var t = searchTiles[i].transform.GetChild(1).GetComponent<Text>().text = result.Value.Replace("_", " ");
 				searchTiles[i].GetComponent<Button>().onClick.AddListener(() => OnSearchEntryClicked());
-				searchTiles[i].name = result.Value.ToString();
+				searchTiles[i].name = result.Key.ToString();
 				i++;
 
 			}
