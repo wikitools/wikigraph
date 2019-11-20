@@ -1,5 +1,6 @@
 ﻿using Services.History.Actions;
 using Services.RoutesFiles;
+using Services.SearchFiles;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,11 +42,19 @@ namespace Services.History {
 		private Stack<UserAction> undoSavedRoute = new Stack<UserAction>();
 		bool playsRoute = false;
 		public RoutesLoader routesLoader;
+		public SearchLoader searchLoader;
 		public static Action startRouteAutoAction;
 		public static Action endRouteAutoAction;
+		int secondsToNextRoute;
+		int numberOfDisplayedRoutes;
+		string pathWikiVersion;
 
-		public HistoryService(string prefix = "") {
+		public HistoryService(int seconds, int number, string path, string prefix = "") {
 			routesLoader = new RoutesLoader();
+			secondsToNextRoute = seconds;
+			numberOfDisplayedRoutes = number;
+			pathWikiVersion = path;
+			searchLoader = new SearchLoader(number, path);
 		}
 
 
@@ -88,7 +97,7 @@ namespace Services.History {
 			playsRoute = true;
 			while (redoSavedRoute.Count != 0 && playsRoute) {
 				RedoRoute();
-				if (redoSavedRoute.Count > 0) yield return new UnityEngine.WaitForSeconds(7f);
+				if (redoSavedRoute.Count > 0) yield return new UnityEngine.WaitForSeconds(secondsToNextRoute);
 			}
 			playsRoute = false;
 			endRouteAutoAction();
@@ -104,6 +113,8 @@ namespace Services.History {
 
 
 		#endregion
-
+		#region Search
+		
+		#endregion
 	}
 }

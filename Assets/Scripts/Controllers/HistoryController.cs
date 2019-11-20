@@ -1,8 +1,11 @@
-﻿using Services.History;
+﻿using Model;
+using Services.History;
 using Services.History.Actions;
 using Services.RoutesFiles;
+using Services.SearchFiles;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,14 +19,24 @@ namespace Controllers {
 		public static Action startLoading;
 		public GameObject RouteTemplate;
 		public GameObject RouteParent;
-
+		public GameObject SearchTemplateArticle;
+		public GameObject SearchTemplateCategory;
+		public GameObject SearchParent;
+		public int secondsToChangeRoute = 8;
+		public int numberOfDisplayedSearchEntries = 10;
+		public GameObject searchBox;
 
 		bool nodeChangedByHistory;
 		bool connectionModeChangedByHistory;
 		bool graphModeChangedByHistory;
 		GameObject[] routesTiles;
+		List<GameObject> searchTiles = new List<GameObject>();
+		int searchIndex;
 		int routeIndex;
 		IEnumerator autoRouteCoroutine;
+		IEnumerator searchCoroutine;
+		bool isSearching = false;
+		string searched = "";
 
 		void Awake() {
 			networkController = GetComponent<NetworkController>();
@@ -33,7 +46,7 @@ namespace Controllers {
 
 		private void Start() {
 			if (networkController.IsServer()) {
-				HistoryService = new HistoryService();
+				HistoryService = new HistoryService(secondsToChangeRoute, numberOfDisplayedSearchEntries, "C:\\Users\\matit\\Wikigraph\\wikigraph\\Assets\\StreamingAssets\\DataFiles\\plwiki\\20191118\\pl-wiki.wgp");//////
 				nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
 					if (!nodeChangedByHistory) HistoryService.RegisterAction(new NodeSelectedAction(oldNode, newNode));
 					nodeChangedByHistory = false;
@@ -60,11 +73,15 @@ namespace Controllers {
 				HistoryService.endRouteAutoAction = () => {
 					makeDefaultColorOnRouteTile();
 				};
+				SearchReader.onIndexRead = index => {
+					createSearchObjects(index);
+					isSearching = false;
+				};
 
 				createRoutesObjects();
 			};
 		}
-
+		#region RouteHandling
 		public bool isPlayingRoute() {
 			return HistoryService.isPlayingRoute();
 		}
@@ -102,5 +119,63 @@ namespace Controllers {
 			StopCoroutine(autoRouteCoroutine);
 			HistoryService.stopPlayingRoute();
 		}
+		#endregion
+
+		#region SearchHandling
+		public void createSearchObjects(long index) {
+			
+			deleteAllSearchEntries();
+			Dictionary<string, uint> searchResults = HistoryService.searchLoader.getEntries(index);
+			int i = 0;
+			foreach (var result in searchResults) {
+				Node node = nodeController.NodeLoadManager.LoadNode(result.Value);
+				if(node.Type == NodeType.ARTICLE) {
+					searchTiles.Add(Instantiate(SearchTemplateArticle, SearchParent.transform));
+				} else {
+					searchTiles.Add(Instantiate(SearchTemplateCategory, SearchParent.transform));
+				}
+				var t = searchTiles[i].transform.GetChild(1).GetComponent<Text>().text = result.Key.Replace("_", " ");
+				searchTiles[i].GetComponent<Button>().onClick.AddListener(() => OnSearchEntryClicked());
+				searchTiles[i].name = result.Value.ToString();
+				i++;
+
+			}
+			
+		}
+
+		private void deleteAllSearchEntries() {
+			foreach(var entry in searchTiles) {
+				Destroy(entry);
+			}
+			searchTiles.Clear();
+		}
+
+		public void OnSearchEntryClicked() {
+			uint index;
+			if (uint.TryParse(EventSystem.current.currentSelectedGameObject.name, out index)) {
+				nodeChangedByHistory = true;
+				Node node = nodeController.NodeLoadManager.LoadNode(index);
+				networkController.SetSelectedNode(node);
+			}
+		}
+
+		public void OnSearchTextChanged() {
+			string text = searchBox.GetComponent<InputField>().text;
+			text = text.Replace(" ", "_");
+			if(searched != text) {
+				searched = text;
+				if (isSearching) StopCoroutine(searchCoroutine);
+				if (text != string.Empty) {
+					searchCoroutine = HistoryService.searchLoader.reader.BinSearch(text);
+					isSearching = true;
+					StartCoroutine(searchCoroutine);
+				}
+			}
+			
+				 
+
+		}
+
+		#endregion
 	}
 }
