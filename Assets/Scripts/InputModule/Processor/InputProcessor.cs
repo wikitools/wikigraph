@@ -38,8 +38,8 @@ namespace InputModule.Processor {
 
 		protected void OnNodePointed(Ray ray) {
 			RaycastHit raycastHit;
-			var id = RaycastNode(ray, out raycastHit) ? raycastHit.collider.gameObject.name : "";
-			if (Controller.NodeController.IsNodeInteractable(id != "" ? raycastHit.collider.gameObject.layer : -1, id))
+			var id = RaycastNode(ray, out raycastHit) ? raycastHit.collider.gameObject.name : null;
+			if (Controller.NodeController.IsNodeInteractable(id != null ? raycastHit.collider.gameObject.layer : -1, id))
 				Controller.NetworkController.SetHighlightedNode(id);
 		}
 

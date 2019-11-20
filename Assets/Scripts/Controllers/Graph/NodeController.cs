@@ -87,9 +87,9 @@ namespace Controllers {
 		}
 
 		public bool IsNodeInteractable(int layer, string id) {
-			bool modeCondition = id == "" || (GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT ? layer == LayerMask.NameToLayer("Node")
+			bool modeCondition = id == null || (GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT ? layer == LayerMask.NameToLayer("Node")
 				                     : SelectedNode.ID.ToString() == id || layer == LayerMask.NameToLayer("Connection Node"));
-			return (highlightedNode != null ? highlightedNode.ID.ToString() : "") != id && modeCondition;
+			return (highlightedNode != null ? highlightedNode.ID.ToString() : null) != id && modeCondition;
 		}
 
 		#endregion

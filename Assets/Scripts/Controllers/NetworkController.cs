@@ -57,7 +57,7 @@ namespace Controllers {
 
 		public void SetHighlightedNode(Node node) => SetHighlightedNode(NodeToID(node));
 
-		public void SetHighlightedNode(string id) => Synchronize("setHighlightedNode", id);
+		public void SetHighlightedNode(string id) => Synchronize("setHighlightedNode", PrepID(id));
 
 		[RPC]
 		private void setHighlightedNode(string id) {
@@ -73,7 +73,7 @@ namespace Controllers {
 
 		public void SetSelectedNode(Node node) => SetSelectedNode(NodeToID(node));
 
-		public void SetSelectedNode(string id) => Synchronize("setSelectedNode", id);
+		public void SetSelectedNode(string id) => Synchronize("setSelectedNode", PrepID(id));
 
 		[RPC]
 		private void setSelectedNode(string id) {
@@ -86,7 +86,8 @@ namespace Controllers {
 
 		#endregion
 
-		private string NodeToID(Node node) => node != null ? node.ID.ToString() : "";
+		private string NodeToID(Node node) => node != null ? node.ID.ToString() : null;
+		private string PrepID(string id) => id ?? "";
 		private Node IDToNode(string id) => id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
 
 		public bool IsServer() {
