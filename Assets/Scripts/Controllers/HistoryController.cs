@@ -17,7 +17,6 @@ namespace Controllers {
 		private NetworkController networkController;
 		private GraphController graphController;
 		public HistoryService HistoryService { get; private set; }
-		public static Action startLoading;
 		public GameObject RouteTemplate;
 		public GameObject RouteParent;
 		public GameObject SearchTemplateArticle;
@@ -80,7 +79,7 @@ namespace Controllers {
 				NodeSelectedAction.selectNodeAction = (node, isRoute) => {
 					if (isRoute) nodeChangedSource = NodeChangedSource.Route;
 					else nodeChangedSource = NodeChangedSource.History;
-					networkController.SetSelectedNode(node.ToString());
+					SelectNode(node);
 				};
 				graphController.ConnectionMode.OnValueChanged += mode => {
 					if (nodeChangedSource != NodeChangedSource.History) {
@@ -126,7 +125,7 @@ namespace Controllers {
 				routesTiles[i] = Instantiate(RouteTemplate, RouteParent.transform);
 				string getFileName = Path.GetFileNameWithoutExtension(name);
 				routesTiles[i].transform.GetChild(0).GetComponent<Text>().text = getFileName;
-				routesTiles[i].transform.GetChild(1).GetComponent<Text>().text = "Route Length: <color=black>" + lengths[i].ToString() + "</color>";
+				routesTiles[i].transform.GetChild(1).GetComponent<Text>().text = "Route Length: <color=black>" + lengths[i] + "</color>";
 				routesTiles[i].transform.GetChild(2).name = i.ToString();
 				routesTiles[i].transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => onRouteButtonClicked());
 				routesTiles[i].transform.position = routesTiles[i].transform.position + new Vector3(0, -64 * i, 0);
@@ -165,13 +164,11 @@ namespace Controllers {
 
 		#region SearchHandling
 		public void createSearchObjects(long index) {
-
 			deleteAllSearchEntries();
 			Dictionary<uint, string> searchResults = HistoryService.searchLoader.getEntries(index);
 			int i = 0;
 			foreach (var result in searchResults) {
-				Node node = nodeController.NodeLoadManager.LoadNode(result.Key);
-				if (node.Type == NodeType.ARTICLE) {
+				if (nodeController.NodeLoadManager.NodeLoader.GetNodeType(result.Key) == NodeType.ARTICLE) {
 					searchTiles.Add(Instantiate(SearchTemplateArticle, SearchParent.transform));
 				}
 				else {
@@ -193,13 +190,19 @@ namespace Controllers {
 			searchTiles.Clear();
 		}
 
+		private void SelectNode(uint? index) {
+			if (index != null) {
+				nodeController.NodeLoadManager.LoadNode(index.Value);
+				nodeController.OnNodeLoadSessionEnded?.Invoke();
+			}
+			networkController.SetSelectedNode(index.ToString());
+		}
+
 		public void OnSearchEntryClicked() {
 			uint index;
 			if (uint.TryParse(EventSystem.current.currentSelectedGameObject.name, out index)) {
 				nodeChangedSource = NodeChangedSource.Search;
-				Node node = nodeController.NodeLoadManager.LoadNode(index);
-				nodeController.OnNodeLoadSessionEnded?.Invoke();
-				networkController.SetSelectedNode(node);
+				SelectNode(index);
 			}
 		}
 
