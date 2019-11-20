@@ -113,8 +113,5 @@ namespace Services.History {
 
 
 		#endregion
-		#region Search
-		
-		#endregion
 	}
 }

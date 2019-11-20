@@ -133,16 +133,16 @@ namespace Controllers {
 		public void createSearchObjects(long index) {
 			
 			deleteAllSearchEntries();
-			Dictionary<string, uint> searchResults = HistoryService.searchLoader.getEntries(index);
+			Dictionary<uint, string> searchResults = HistoryService.searchLoader.getEntries(index);
 			int i = 0;
 			foreach (var result in searchResults) {
-				Node node = nodeController.NodeLoadManager.LoadNode(result.Value);
+				Node node = nodeController.NodeLoadManager.LoadNode(result.Key);
 				if(node.Type == NodeType.ARTICLE) {
 					searchTiles.Add(Instantiate(SearchTemplateArticle, SearchParent.transform));
 				} else {
 					searchTiles.Add(Instantiate(SearchTemplateCategory, SearchParent.transform));
 				}
-				var t = searchTiles[i].transform.GetChild(1).GetComponent<Text>().text = result.Key.Replace("_", " ");
+				var t = searchTiles[i].transform.GetChild(1).GetComponent<Text>().text = result.Value.Replace("_", " ");
 				searchTiles[i].GetComponent<Button>().onClick.AddListener(() => OnSearchEntryClicked());
 				searchTiles[i].name = result.Value.ToString();
 				i++;

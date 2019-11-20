@@ -15,15 +15,15 @@ namespace Services.SearchFiles {
 		}
 
 
-		public Dictionary<string, uint> getEntries(long index) {
+		public Dictionary<uint, string> getEntries(long index) {
 			IEnumerable<string> lines = reader.ReadXLinesFromN(numberOfEntries, index);
-			Dictionary<string, uint> entries = new Dictionary<string, uint>();
+			Dictionary<uint, string> entries = new Dictionary<uint, string>();
 			foreach(var line in lines) {
 				string[] keyValue = line.Split(';');
 				if (keyValue.Length == 2) {
 					uint n;
 					if(uint.TryParse(keyValue[1], out n)) {
-						entries.Add(keyValue[0], n);
+						entries.Add(n, keyValue[0]);
 					}
 				}
 			}
