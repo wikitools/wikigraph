@@ -33,7 +33,7 @@ namespace Controllers {
 		GameObject[] routesTiles;
 		List<GameObject> searchTiles = new List<GameObject>();
 		int searchIndex;
-		int routeIndex;
+		int routeIndex = -1;
 		IEnumerator autoRouteCoroutine;
 		IEnumerator searchCoroutine;
 		bool isSearching = false;
@@ -54,10 +54,14 @@ namespace Controllers {
 				routesPath = Path.Combine(nodeController.NodeLoadManager.NodeLoader.fileReader.GetDataPackDirectory(), ROUTES_DIR);
 				searchFilePath = nodeController.NodeLoadManager.NodeLoader.fileReader.GetDataPackFile() + "s";
 
-				HistoryService = new HistoryService(secondsToChangeRoute, numberOfDisplayedSearchEntries, routesPath, searchFilePath);//////
+				HistoryService = new HistoryService(secondsToChangeRoute, numberOfDisplayedSearchEntries, routesPath, searchFilePath);
 				nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
-					if (!nodeChangedByHistory) HistoryService.RegisterAction(new NodeSelectedAction(oldNode, newNode));
+					if (!nodeChangedByHistory) {
+						HistoryService.RegisterAction(new NodeSelectedAction(oldNode, newNode));
+						if (isPlayingRoute()) onRouteExit();
+					}
 					nodeChangedByHistory = false;
+					
 				};
 				NodeSelectedAction.selectNodeAction = node => {
 					nodeChangedByHistory = true;
@@ -100,7 +104,7 @@ namespace Controllers {
 			routesTiles = new GameObject[lengths.Length];
 			foreach (string name in HistoryService.getNames()) {
 				routesTiles[i] = Instantiate(RouteTemplate, RouteParent.transform);
-				string[] getFileName = name.Split('/');
+				string[] getFileName = name.Split('\\');
 				routesTiles[i].transform.GetChild(0).GetComponent<Text>().text = getFileName[getFileName.Length - 1].Split('.')[0];
 				routesTiles[i].transform.GetChild(1).GetComponent<Text>().text = "Route Length: <color=black>" + lengths[i].ToString() + "</color>";
 				routesTiles[i].transform.GetChild(2).name = i.ToString();
@@ -112,14 +116,21 @@ namespace Controllers {
 
 		public void onRouteButtonClicked() {
 			if (HistoryService.isPlayingRoute()) onRouteExit();
-			if (Int32.TryParse(EventSystem.current.currentSelectedGameObject.name, out routeIndex)) {
-				HistoryService.startRoute(routeIndex);
-				routesTiles[routeIndex].transform.GetComponent<Image>().color = new Color(0.341f, 0.58f, 0.808f, 1.0f);
+			int newIndex;
+			if (Int32.TryParse(EventSystem.current.currentSelectedGameObject.name, out newIndex)) {
+				if(newIndex != routeIndex) {
+					routeIndex = newIndex;
+					HistoryService.startRoute(routeIndex);
+					routesTiles[routeIndex].transform.GetComponent<Image>().color = new Color(0.341f, 0.58f, 0.808f, 1.0f);
+					routesTiles[routeIndex].transform.GetChild(2).GetComponent<Button>().transform.GetChild(0).GetComponent<Text>().text = "Stop";
+				}
+				
 			}
 		}
 
 		public void makeDefaultColorOnRouteTile() {
 			routesTiles[routeIndex].transform.GetComponent<Image>().color = new Color(0.91f, 0.91f, 0.91f, 0.404f);
+			routesTiles[routeIndex].transform.GetChild(2).GetComponent<Button>().transform.GetChild(0).GetComponent<Text>().text = "Start";
 		}
 
 		public void onRouteExit() {
