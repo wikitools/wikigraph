@@ -45,15 +45,15 @@ namespace Services.RoutesFiles {
 				UserAction action = null;
 				if (line[0] == USERACTION_TYPE.MODE_CHANGE.ToString("d")) {
 					if (line[1] == ConnectionMode.CHILDREN.ToString("d")) {
-						action = new ModeChangeAction<ConnectionMode>(ConnectionMode.CHILDREN);
+						action = new ModeChangeAction<ConnectionMode>(ConnectionMode.CHILDREN, true);
 					}
 					else if (line[1] == ConnectionMode.PARENTS.ToString("d")) {
-						action = new ModeChangeAction<ConnectionMode>(ConnectionMode.PARENTS);
+						action = new ModeChangeAction<ConnectionMode>(ConnectionMode.PARENTS, true);
 					}
 				}
 				else if (line[0] == USERACTION_TYPE.NODE_SELECTED.ToString("d")) {
 					Node newNode = getRouteNode(Convert.ToUInt32(line[1]));
-					action = new NodeSelectedAction(old, newNode);
+					action = new NodeSelectedAction(old, newNode, true);
 					old = newNode;
 				}
 				

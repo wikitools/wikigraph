@@ -26,9 +26,8 @@ namespace Controllers {
 		public int secondsToChangeRoute = 8;
 		public int numberOfDisplayedSearchEntries = 10;
 		public GameObject searchBox;
+		public GameObject SearchScrollView;
 
-		bool nodeChangedByHistory;
-		bool connectionModeChangedByHistory;
 		bool graphModeChangedByHistory;
 		GameObject[] routesTiles;
 		List<GameObject> searchTiles = new List<GameObject>();
@@ -40,8 +39,17 @@ namespace Controllers {
 		string searched = "";
 		string routesPath;
 		string searchFilePath;
-
+		NodeChangedSource nodeChangedSource = NodeChangedSource.User;
 		string ROUTES_DIR = "Routes";
+
+
+		enum NodeChangedSource {
+			User,
+			History,
+			Route,
+			Search
+		}
+
 
 		void Awake() {
 			networkController = GetComponent<NetworkController>();
@@ -56,32 +64,34 @@ namespace Controllers {
 
 				HistoryService = new HistoryService(secondsToChangeRoute, numberOfDisplayedSearchEntries, routesPath, searchFilePath);
 				nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
-					if (!nodeChangedByHistory) {
-						HistoryService.RegisterAction(new NodeSelectedAction(oldNode, newNode));
-						if (isPlayingRoute()) onRouteExit();
+					if (nodeChangedSource != NodeChangedSource.History) {
+						HistoryService.RegisterAction(new NodeSelectedAction(oldNode, newNode, false));
 					}
-					nodeChangedByHistory = false;
-					
+					if (nodeChangedSource != NodeChangedSource.Route && isPlayingRoute()) onRouteExit();
+					nodeChangedSource = NodeChangedSource.User;
 				};
-				NodeSelectedAction.selectNodeAction = node => {
-					nodeChangedByHistory = true;
+				NodeSelectedAction.selectNodeAction = (node, isRoute) => {
+					if (isRoute) nodeChangedSource = NodeChangedSource.Route;
+					else nodeChangedSource = NodeChangedSource.History;
 					networkController.SetSelectedNode(node);
 				};
 				graphController.ConnectionMode.OnValueChanged += mode => {
-					if (!connectionModeChangedByHistory) {
-						HistoryService.RegisterAction(new ModeChangeAction<ConnectionMode>(mode));
-						if (isPlayingRoute()) onRouteExit();
+					if (nodeChangedSource != NodeChangedSource.History) {
+						HistoryService.RegisterAction(new ModeChangeAction<ConnectionMode>(mode, false));
 					}
-					connectionModeChangedByHistory = false;
+					if (nodeChangedSource != NodeChangedSource.Route && isPlayingRoute()) onRouteExit();
+					nodeChangedSource = NodeChangedSource.User;
 				};
-				ModeChangeAction<ConnectionMode>.changeMode = mode => {
-					connectionModeChangedByHistory = true;
+				ModeChangeAction<ConnectionMode>.changeMode = (mode, isRoute) => {
+					if (isRoute) nodeChangedSource = NodeChangedSource.Route;
+					else nodeChangedSource = NodeChangedSource.History;
 					networkController.SetConnectionMode(mode);
 				};
 				RoutesLoader.getRouteNode = id => {
 					return nodeController.NodeLoadManager.LoadNode(id);
 				};
 				HistoryService.startRouteAutoAction += () => {
+					nodeChangedSource = NodeChangedSource.Route;
 					autoRouteCoroutine = HistoryService.autoRoutes();
 					StartCoroutine(autoRouteCoroutine);
 				};
@@ -92,7 +102,7 @@ namespace Controllers {
 					createSearchObjects(index);
 					isSearching = false;
 				};
-				
+
 				createRoutesObjects();
 			};
 		}
@@ -121,13 +131,16 @@ namespace Controllers {
 			if (HistoryService.isPlayingRoute()) onRouteExit();
 			int newIndex;
 			if (Int32.TryParse(EventSystem.current.currentSelectedGameObject.name, out newIndex)) {
-				if(newIndex != routeIndex) {
+				if (newIndex != routeIndex) {
 					routeIndex = newIndex;
 					HistoryService.startRoute(routeIndex);
 					routesTiles[routeIndex].transform.GetComponent<Image>().color = new Color(0.341f, 0.58f, 0.808f, 1.0f);
 					routesTiles[routeIndex].transform.GetChild(2).GetComponent<Button>().transform.GetChild(0).GetComponent<Text>().text = "Stop";
 				}
-				
+				else {
+					routeIndex = -1;
+				}
+
 			}
 		}
 
@@ -145,15 +158,16 @@ namespace Controllers {
 
 		#region SearchHandling
 		public void createSearchObjects(long index) {
-			
+
 			deleteAllSearchEntries();
 			Dictionary<uint, string> searchResults = HistoryService.searchLoader.getEntries(index);
 			int i = 0;
 			foreach (var result in searchResults) {
 				Node node = nodeController.NodeLoadManager.LoadNode(result.Key);
-				if(node.Type == NodeType.ARTICLE) {
+				if (node.Type == NodeType.ARTICLE) {
 					searchTiles.Add(Instantiate(SearchTemplateArticle, SearchParent.transform));
-				} else {
+				}
+				else {
 					searchTiles.Add(Instantiate(SearchTemplateCategory, SearchParent.transform));
 				}
 				var t = searchTiles[i].transform.GetChild(1).GetComponent<Text>().text = result.Value.Replace("_", " ");
@@ -162,11 +176,11 @@ namespace Controllers {
 				i++;
 
 			}
-			
+
 		}
 
 		private void deleteAllSearchEntries() {
-			foreach(var entry in searchTiles) {
+			foreach (var entry in searchTiles) {
 				Destroy(entry);
 			}
 			searchTiles.Clear();
@@ -175,7 +189,7 @@ namespace Controllers {
 		public void OnSearchEntryClicked() {
 			uint index;
 			if (uint.TryParse(EventSystem.current.currentSelectedGameObject.name, out index)) {
-				nodeChangedByHistory = true;
+				nodeChangedSource = NodeChangedSource.Search;
 				Node node = nodeController.NodeLoadManager.LoadNode(index);
 				networkController.SetSelectedNode(node);
 			}
@@ -184,18 +198,22 @@ namespace Controllers {
 		public void OnSearchTextChanged() {
 			string text = searchBox.GetComponent<InputField>().text;
 			text = text.Replace(" ", "_");
-			if(searched != text) {
+			if (searched != text) {
 				searched = text;
 				if (isSearching) StopCoroutine(searchCoroutine);
 				if (text != string.Empty) {
 					searchCoroutine = HistoryService.searchLoader.reader.BinSearch(text);
 					isSearching = true;
 					StartCoroutine(searchCoroutine);
+					ScrollToTop(SearchScrollView.GetComponent<ScrollRect>());
 				}
 			}
-			
-				 
 
+
+
+		}
+		private void ScrollToTop(ScrollRect scrollRect) {
+			scrollRect.normalizedPosition = new Vector2(0, 1);
 		}
 
 		#endregion

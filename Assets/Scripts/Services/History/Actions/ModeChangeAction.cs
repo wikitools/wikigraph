@@ -5,14 +5,16 @@ using System;
 namespace Services.History.Actions {
 	public class ModeChangeAction<M> : UserAction {
 		private M newMode;
-		public static Action<M> changeMode;
+		public static Action<M, bool> changeMode;
+		bool isRouteAction;
 
-		public ModeChangeAction(M mode) {
+		public ModeChangeAction(M mode, bool isRoute) {
 			newMode = mode;
+			isRouteAction = isRoute;
 		}
 
-		private static void passChangingMode(M mode) {
-			changeMode(mode);
+		private void passChangingMode(M mode) {
+			changeMode(mode, isRouteAction);
 		}
 
 		public void Execute() {

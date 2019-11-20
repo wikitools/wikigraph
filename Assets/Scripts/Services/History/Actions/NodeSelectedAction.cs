@@ -5,15 +5,17 @@ namespace Services.History.Actions {
 	public class NodeSelectedAction : UserAction {
 		private Node oldSelectedNode;
 		private Node newSelectedNode;
-		public static Action<Node> selectNodeAction;
+		bool isRouteAction;
+		public static Action<Node, bool> selectNodeAction;
 
-		public NodeSelectedAction(Node oldNode, Node newNode) {
+		public NodeSelectedAction(Node oldNode, Node newNode, bool isRoute) {
 			oldSelectedNode = oldNode;
 			newSelectedNode = newNode;
+			isRouteAction = isRoute;
 		}
 
 		private void passSelectAction(Node node) {
-			selectNodeAction(node);
+			selectNodeAction(node, isRouteAction);
 		}
 
 
