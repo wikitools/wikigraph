@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using UnityEngine;
 
 
 namespace Services.SearchFiles {
@@ -38,7 +36,7 @@ namespace Services.SearchFiles {
 			var sr = new StreamReader(stream, Encoding.UTF8);
 			string[] tab = new string[x];
 			sr.ReadLine();
-			for (int i=0;i<x;i++) {
+			for (int i = 0; i < x; i++) {
 				tab[i] = sr.ReadLine();
 			}
 			return tab;
@@ -49,24 +47,25 @@ namespace Services.SearchFiles {
 			long min = 0;
 			long max = length - 1;
 			long diff = 20;
+			StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase;
 			long mid = 0;
 			while (min <= max) {
 				if (mid == (min + max) / 2) break;
 				mid = (min + max) / 2;
 				string line = ReadOneLine(mid);
-				if (line.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase)) {
-					if (max - min < diff || mid ==0 || !ReadOneLine(mid - 1).StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase)) {
-						while (mid > 0 && ReadOneLine(mid - 1).StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase)) {
+				if (line.StartsWith(prefix, stringComparison)) {
+					if (max - min < diff || mid == 0 || !ReadOneLine(mid - 1).StartsWith(prefix, stringComparison)) {
+						while (mid > 0 && ReadOneLine(mid - 1).StartsWith(prefix, stringComparison)) {
 							mid--;
 						}
 						onIndexRead(mid);
 						yield break;
 
 					}
-				
-					
+
+
 				}
-				if (string.Compare(line, prefix, StringComparison.InvariantCultureIgnoreCase) > 0) {
+				if (string.Compare(line, prefix, stringComparison) > 0) {
 					max = mid;
 				}
 				else {
