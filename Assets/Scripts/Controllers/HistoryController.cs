@@ -198,6 +198,7 @@ namespace Controllers {
 			if (uint.TryParse(EventSystem.current.currentSelectedGameObject.name, out index)) {
 				nodeChangedSource = NodeChangedSource.Search;
 				Node node = nodeController.NodeLoadManager.LoadNode(index);
+				nodeController.OnNodeLoadSessionEnded?.Invoke();
 				networkController.SetSelectedNode(node);
 			}
 		}
