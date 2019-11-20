@@ -68,7 +68,10 @@ namespace Controllers {
 					networkController.SetSelectedNode(node);
 				};
 				graphController.ConnectionMode.OnValueChanged += mode => {
-					if (!connectionModeChangedByHistory) HistoryService.RegisterAction(new ModeChangeAction<ConnectionMode>(mode));
+					if (!connectionModeChangedByHistory) {
+						HistoryService.RegisterAction(new ModeChangeAction<ConnectionMode>(mode));
+						if (isPlayingRoute()) onRouteExit();
+					}
 					connectionModeChangedByHistory = false;
 				};
 				ModeChangeAction<ConnectionMode>.changeMode = mode => {
