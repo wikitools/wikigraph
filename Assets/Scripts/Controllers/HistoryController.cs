@@ -6,6 +6,7 @@ using Services.SearchFiles;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -37,6 +38,10 @@ namespace Controllers {
 		IEnumerator searchCoroutine;
 		bool isSearching = false;
 		string searched = "";
+		string routesPath;
+		string searchFilePath;
+
+		string ROUTES_DIR = "Routes";
 
 		void Awake() {
 			networkController = GetComponent<NetworkController>();
@@ -46,7 +51,10 @@ namespace Controllers {
 
 		private void Start() {
 			if (networkController.IsServer()) {
-				HistoryService = new HistoryService(secondsToChangeRoute, numberOfDisplayedSearchEntries, "C:\\Users\\matit\\Wikigraph\\wikigraph\\Assets\\StreamingAssets\\DataFiles\\plwiki\\20191118\\pl-wiki.wgp");//////
+				routesPath = Path.Combine(nodeController.NodeLoadManager.NodeLoader.fileReader.GetDataPackDirectory(), ROUTES_DIR);
+				searchFilePath = nodeController.NodeLoadManager.NodeLoader.fileReader.GetDataPackFile() + "s";
+
+				HistoryService = new HistoryService(secondsToChangeRoute, numberOfDisplayedSearchEntries, routesPath, searchFilePath);//////
 				nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
 					if (!nodeChangedByHistory) HistoryService.RegisterAction(new NodeSelectedAction(oldNode, newNode));
 					nodeChangedByHistory = false;
@@ -66,18 +74,18 @@ namespace Controllers {
 				RoutesLoader.getRouteNode = id => {
 					return nodeController.NodeLoadManager.LoadNode(id);
 				};
-				HistoryService.startRouteAutoAction = () => {
+				HistoryService.startRouteAutoAction += () => {
 					autoRouteCoroutine = HistoryService.autoRoutes();
 					StartCoroutine(autoRouteCoroutine);
 				};
-				HistoryService.endRouteAutoAction = () => {
+				HistoryService.endRouteAutoAction += () => {
 					makeDefaultColorOnRouteTile();
 				};
 				SearchReader.onIndexRead = index => {
 					createSearchObjects(index);
 					isSearching = false;
 				};
-
+				
 				createRoutesObjects();
 			};
 		}

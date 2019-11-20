@@ -14,14 +14,17 @@ namespace Services.RoutesFiles {
 
 		private List<StreamReader> streams = new List<StreamReader>();
 
-		private readonly string DATA_FILE_PATH = Application.streamingAssetsPath + "/Routes/";
-		private const string DATA_FILE_EXTENSION = "wgroute";
+		private const string DATA_FILE_EXTENSION = ".wgroute";
+		private string routesPath;
 		private string[] fileNames;
 		private int[] routeLength;
 
-		public RoutesReader(string dataFilePostfix = "") {
-			
-			fileNames = Directory.GetFiles(DATA_FILE_PATH).Where(name => !name.EndsWith(".meta")).ToArray();
+		public RoutesReader(string path, string dataFilePostfix = "") {
+			routesPath = path;
+			if(!Directory.Exists(path)) {
+				Directory.CreateDirectory(path);
+			}
+			fileNames = Directory.GetFiles(routesPath).Where(name => name.EndsWith(DATA_FILE_EXTENSION)).ToArray();
 
 			foreach (string name in fileNames) {
 				loadDataFile(name, dataFilePostfix);
@@ -63,7 +66,7 @@ namespace Services.RoutesFiles {
 		}
 
 		private void loadDataFile(string name, string dataFilePostfix) {
-			var filePath = Path.Combine(DATA_FILE_PATH, $"{name + dataFilePostfix}");
+			var filePath = Path.Combine(routesPath, $"{name + dataFilePostfix}");
 			streams.Add(new StreamReader(filePath));
 		}
 

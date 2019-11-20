@@ -21,8 +21,8 @@ namespace Services.RoutesFiles {
 
 
 
-		public RoutesLoader(string dataFilePostfix = "") {
-			routesReader = new RoutesReader(dataFilePostfix);
+		public RoutesLoader(string path, string dataFilePostfix = "") {
+			routesReader = new RoutesReader(path, dataFilePostfix);
 		}
 
 		public int routesNumber() {

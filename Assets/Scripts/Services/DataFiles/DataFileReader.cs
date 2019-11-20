@@ -64,7 +64,7 @@ namespace Services.DataFiles {
 		}
 
 		private void loadDataFile(DataFileType type) {
-			var filePath = GetDataPackDirectory() + type.ToString().ToLower()[0];
+			var filePath = GetDataPackFile() + type.ToString().ToLower()[0];
 			FileStream stream = null;
 			try {
 				stream = new FileStream(filePath, FileMode.Open, FileSystemRights.Read, FileShare.Read, 4096, FileOptions.RandomAccess);
@@ -74,7 +74,9 @@ namespace Services.DataFiles {
 			streams[type] = new DataFile {Stream = stream, Length = new FileInfo(filePath).Length};
 		}
 		
-		public string GetDataPackDirectory() => Path.Combine(DATA_FILE_PATH, dataPack, dataPackDate, $"{dataPack}.{DATA_FILE_EXTENSION}");
+		public string GetDataPackFile() => Path.Combine(DATA_FILE_PATH, dataPack, dataPackDate, $"{dataPack}.{DATA_FILE_EXTENSION}");
+
+		public string GetDataPackDirectory() => Path.Combine(DATA_FILE_PATH, dataPack, dataPackDate);
 
 		private byte[] readBytes(DataFileType file, long offset, int count) {
 			byte[] bytes = new byte[count];

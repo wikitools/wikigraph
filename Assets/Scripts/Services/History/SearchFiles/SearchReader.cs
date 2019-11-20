@@ -60,9 +60,7 @@ namespace Services.SearchFiles {
 						}
 						onIndexRead(mid);
 						yield break;
-
 					}
-
 
 				}
 				if (string.Compare(line, prefix, stringComparison) > 0) {

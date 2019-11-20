@@ -3,7 +3,7 @@ using Model;
 
 namespace Services.DataFiles {
 	public class NodeLoader: IDisposable {
-		private DataFileReader fileReader;
+		public DataFileReader fileReader { get; private set; }
 
 		private static class MAP {
 			public const ushort GRAPH_OFFSET_SIZE = 4;

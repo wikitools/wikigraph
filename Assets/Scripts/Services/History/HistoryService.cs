@@ -49,12 +49,12 @@ namespace Services.History {
 		int numberOfDisplayedRoutes;
 		string pathWikiVersion;
 
-		public HistoryService(int seconds, int number, string path, string prefix = "") {
-			routesLoader = new RoutesLoader();
+		public HistoryService(int seconds, int number, string routesPath,string searchPath, string prefix = "") {
+			routesLoader = new RoutesLoader(routesPath, prefix);
 			secondsToNextRoute = seconds;
 			numberOfDisplayedRoutes = number;
-			pathWikiVersion = path;
-			searchLoader = new SearchLoader(number, path);
+			pathWikiVersion = searchPath;
+			searchLoader = new SearchLoader(number, searchPath);
 		}
 
 
