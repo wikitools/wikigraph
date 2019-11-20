@@ -117,8 +117,8 @@ namespace Controllers {
 			routesTiles = new GameObject[lengths.Length];
 			foreach (string name in HistoryService.getNames()) {
 				routesTiles[i] = Instantiate(RouteTemplate, RouteParent.transform);
-				string[] getFileName = name.Split('\\');
-				routesTiles[i].transform.GetChild(0).GetComponent<Text>().text = getFileName[getFileName.Length - 1].Split('.')[0];
+				string getFileName = Path.GetFileNameWithoutExtension(name);
+				routesTiles[i].transform.GetChild(0).GetComponent<Text>().text = getFileName;
 				routesTiles[i].transform.GetChild(1).GetComponent<Text>().text = "Route Length: <color=black>" + lengths[i].ToString() + "</color>";
 				routesTiles[i].transform.GetChild(2).name = i.ToString();
 				routesTiles[i].transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => onRouteButtonClicked());
