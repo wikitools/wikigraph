@@ -1,5 +1,5 @@
 ﻿using System;
-using Services;
+using Model;
 using UnityEngine;
 
 namespace Controllers {

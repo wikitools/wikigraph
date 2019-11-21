@@ -65,12 +65,12 @@ namespace Services.Connection {
 			Vector3 chosenPlace = freePlaces[nearestPlace];
 			freePlaces.RemoveAt(nearestPlace);
 			takenPlaces.Add(chosenPlace);
-			connection.Route = RouteService.GenerateRoute(NodePosition(CentralNode), NodePosition(to), chosenPlace);
+			connection.ConnectionRoute = ConnectionRouteService.GenerateConnectionRoute(NodePosition(CentralNode), NodePosition(to), chosenPlace);
 		}
 
 		public void OnConnectionUnloaded(Model.Connection.Connection connection) {
-			takenPlaces.Remove(connection.Route.SpherePoint);
-			freePlaces.Add(connection.Route.SpherePoint);
+			takenPlaces.Remove(connection.ConnectionRoute.SpherePoint);
+			freePlaces.Add(connection.ConnectionRoute.SpherePoint);
 		}
 
 		private Vector3 NodePosition(Node node) => GraphController.Graph.NodeObjectMap[node].transform.position;
