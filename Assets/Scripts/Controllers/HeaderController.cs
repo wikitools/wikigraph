@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Model;
 using System.Linq;
+using Services.History;
+using Services.History.Actions;
 
 namespace Controllers {
 	public class HeaderController : MonoBehaviour {
@@ -13,6 +15,7 @@ namespace Controllers {
 		public GameObject Graph;
 		public GameObject ConsoleWindow;
 		public HeaderConfig Config;
+		public HistoryService HistoryService { get; private set; }
 
 		private Vector3 targetPosition;
 		private Vector3 targetPrimaryRangePosition, targetSecondaryRangePosition;
@@ -37,6 +40,8 @@ namespace Controllers {
 			nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			nodeController.OnHighlightedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			graphController.ConnectionMode.OnValueChanged += UpdateConnectionMode;
+			HistoryService.startRouteAutoAction += UpdateAutoStateAfterRouteChange(true);
+			HistoryService.endRouteAutoAction += UpdateAutoStateAfterRouteChange(false);
 			consoleWindowController.OnConsoleToggled += UpdateConsoleState;
 			connectionController.OnConnectionRangeChanged += UpdateNodeHeaderAfterConnectionRangeChange;
 			connectionController.OnConnectionRangeChanged?.Invoke(0, 0, 0);
@@ -81,6 +86,10 @@ namespace Controllers {
 
 		private void UpdateConsoleState(bool active) {
 			transform.GetChild(6).gameObject.SetActive(active);
+		}
+
+		private Action UpdateAutoStateAfterRouteChange(bool started) {
+			return () => transform.GetChild(5).GetComponent<TextMesh>().text = started ? Config.AutoText : "";
 		}
 
 		private void UpdateNodeHeaderAfterSelectOrHighlight(Node previousNode, Node selectedNode) {
