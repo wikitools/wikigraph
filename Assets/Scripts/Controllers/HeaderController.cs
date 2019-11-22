@@ -45,7 +45,7 @@ namespace Controllers {
 			routeController.OnRoutePlayStateChanged += (isStarted) => UpdateAutoStateAfterRouteChange(isStarted);
 			consoleWindowController.OnConsoleToggled += UpdateConsoleState;
 			connectionController.OnConnectionRangeChanged += UpdateNodeHeaderAfterConnectionRangeChange;
-			connectionController.OnConnectionRangeChanged?.Invoke(0, 0, 0);
+			connectionController.OnConnectionRangeChanged?.Invoke(0, 0, -1);
 
 			Transform indicatorBase = transform.GetChild(3);
 			indicatorBase.GetComponent<SpriteRenderer>().size = Config.HeaderRangeSize;
@@ -90,8 +90,8 @@ namespace Controllers {
 		}
 
 		private void UpdateConnectionMode(ConnectionMode mode) {
-			if(nodeController.SelectedNode.Type == NodeType.ARTICLE) {
-				stateIcon.sprite = (mode == ConnectionMode.PARENTS) ? Config.ArticleConnectionsIn : Config.ArticleConnectionsOut; 
+			if (nodeController.SelectedNode.Type == NodeType.ARTICLE) {
+				stateIcon.sprite = (mode == ConnectionMode.PARENTS) ? Config.ArticleConnectionsIn : Config.ArticleConnectionsOut;
 			} else {
 				stateIcon.sprite = (mode == ConnectionMode.PARENTS) ? Config.CategoryConnectionsIn : Config.CategoryConnectionsOut;
 			}
@@ -138,7 +138,7 @@ namespace Controllers {
 					ShowConnectionRangeCount(null);
 				}
 			} else {
-				connectionController.OnConnectionRangeChanged?.Invoke(0, 0, 0);
+				connectionController.OnConnectionRangeChanged?.Invoke(0, 0, -1);
 				if (nodeController.HighlightedNode != null) {
 					ShowConnectionRangeCount(connectionController.GetNodeNeighbours(nodeController.HighlightedNode).ToArray().Length);
 				}
@@ -173,7 +173,7 @@ namespace Controllers {
 		private void UpdateNodeHeaderAfterConnectionRangeChange(int start, int end, int count) {
 			TextMesh headerConnectionsRangeText = transform.GetChild(2).GetComponent<TextMesh>();
 
-			if (nodeController.SelectedNode != null && count >= 0) {
+			if (nodeController.SelectedNode != null && count > 0) {
 				transform.GetChild(3).gameObject.SetActive(true);
 
 				// Primary range size & position
@@ -195,12 +195,18 @@ namespace Controllers {
 				currentEnd = end;
 				currentCount = count;
 				ShowConnectionRangeCount(null);
+			} else if (count == 0) {
+				transform.GetChild(3).gameObject.SetActive(true);
+				targetPrimaryRangeSize = new Vector2(0.0f, indicatorHeight);
+				targetSecondaryRangeSize = new Vector2(0.0f, indicatorHeight);
+				currentCount = 0;
+				ConnectionRangeTextUpdate(null);
 			} else {
 				transform.GetChild(3).gameObject.SetActive(false);
 				headerConnectionsRangeText.text = string.Empty;
 			}
 		}
-		
+
 		void Update() {
 			// Connection indicator update
 			headerIndicatorPrimaryRangeSprite.size = targetPrimaryRangeSize;
@@ -211,7 +217,7 @@ namespace Controllers {
 			if (networkController.IsClient()) {
 				return;
 			}
-			
+
 			targetPosition = Entity.transform.position;
 			if (inputController.Environment == Environment.Cave) {
 				var anglesY = Entity.transform.rotation.eulerAngles.y / 180f * Mathf.PI;
