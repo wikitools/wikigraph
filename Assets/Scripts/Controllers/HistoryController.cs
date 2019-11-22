@@ -26,8 +26,8 @@ namespace Controllers {
 		public int numberOfDisplayedSearchEntries = 10;
 		public GameObject searchBox;
 		public GameObject SearchScrollView;
-		public static Action startRouteAutoAction;
-		public static Action endRouteAutoAction;
+		public Action startRouteAutoAction;
+		public Action endRouteAutoAction;
 		bool graphModeChangedByHistory;
 		GameObject[] routesTiles;
 		List<GameObject> searchTiles = new List<GameObject>();
@@ -65,7 +65,7 @@ namespace Controllers {
 					if (nodeChangedSource != NodeChangedSource.History) {
 						HistoryService.RegisterAction(new NodeSelectedAction(oldNode?.ID, newNode?.ID, false));						
 					}
-					if (nodeChangedSource != NodeChangedSource.Route && isPlayingRoute()) onRouteExit();
+					if (nodeChangedSource != NodeChangedSource.Route && isPlayingRoute()) endRouteAutoAction();
 					nodeChangedSource = NodeChangedSource.User;
 				};
 				NodeSelectedAction.selectNodeAction = (node, isRoute) => {
@@ -77,7 +77,7 @@ namespace Controllers {
 					if (nodeChangedSource != NodeChangedSource.History) {
 						HistoryService.RegisterAction(new ModeChangeAction<ConnectionMode>(mode, false));
 					}
-					if (nodeChangedSource != NodeChangedSource.Route && isPlayingRoute()) onRouteExit();
+					if (nodeChangedSource != NodeChangedSource.Route && isPlayingRoute()) endRouteAutoAction();
 					nodeChangedSource = NodeChangedSource.User;
 				};
 				ModeChangeAction<ConnectionMode>.changeMode = (mode, isRoute) => {
@@ -92,6 +92,8 @@ namespace Controllers {
 				};
 				endRouteAutoAction += () => {
 					makeDefaultColorOnRouteTile();
+					StopCoroutine(autoRouteCoroutine);
+					HistoryService.stopPlayingRoute();
 				};
 				SearchReader.onIndexRead = index => {
 					createSearchObjects(index);
@@ -124,7 +126,7 @@ namespace Controllers {
 		}
 
 		public void onRouteButtonClicked() {
-			if (HistoryService.isPlayingRoute()) onRouteExit();
+			if (HistoryService.isPlayingRoute()) endRouteAutoAction();
 			int newIndex;
 			if (Int32.TryParse(EventSystem.current.currentSelectedGameObject.name, out newIndex)) {
 				if (newIndex != routeIndex) {
@@ -145,11 +147,7 @@ namespace Controllers {
 			routesTiles[routeIndex].transform.GetChild(2).GetComponent<Button>().transform.GetChild(0).GetComponent<Text>().text = "Start";
 		}
 
-		public void onRouteExit() {
-			makeDefaultColorOnRouteTile();
-			StopCoroutine(autoRouteCoroutine);
-			HistoryService.stopPlayingRoute();
-		}
+	
 		#endregion
 
 		#region SearchHandling

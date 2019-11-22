@@ -41,8 +41,8 @@ namespace Controllers {
 			nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			nodeController.OnHighlightedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			graphController.ConnectionMode.OnValueChanged += UpdateConnectionMode;
-			HistoryController.startRouteAutoAction += UpdateAutoStateAfterRouteChange(true);
-			HistoryController.endRouteAutoAction += UpdateAutoStateAfterRouteChange(false);
+			inputController.HistoryController.startRouteAutoAction += UpdateAutoStateAfterRouteChange(true);
+			inputController.HistoryController.endRouteAutoAction += UpdateAutoStateAfterRouteChange(false);
 			consoleWindowController.OnConsoleToggled += UpdateConsoleState;
 			connectionController.OnConnectionRangeChanged += UpdateNodeHeaderAfterConnectionRangeChange;
 			connectionController.OnConnectionRangeChanged?.Invoke(0, 0, 0);
