@@ -9,13 +9,16 @@ using UnityEngine;
 namespace Services.History {
 
 	public class RouteService : ActionService {
-		bool playsRoute = false;
 		public RouteLoader routesLoader;
 		
 		int secondsToNextRoute;
 		private ActionController controller;
-
+		public bool IsRoutePlaying {
+			get;
+			set;
+		}
 		public RouteService(ActionController controller, int seconds, string routesPath) {
+			IsRoutePlaying = false;
 			routesLoader = new RouteLoader(routesPath);
 			secondsToNextRoute = seconds;
 			
@@ -34,24 +37,17 @@ namespace Services.History {
 		}
 
 		public IEnumerator autoRoutes() {
-			playsRoute = true;
-			while (redoActionStack.Count != 0 && playsRoute) {
+			IsRoutePlaying = true;
+			while (redoActionStack.Count != 0 && IsRoutePlaying) {
 				RedoAction();
 				if (redoActionStack.Count > 0) {
 					yield return new UnityEngine.WaitForSeconds(secondsToNextRoute);
 				}
 			}
-			playsRoute = false;
+			IsRoutePlaying = false;
 			controller.networkController.SyncRoutePlaying(false);
 		}
 
-		public void stopPlayingRoute() {
-			playsRoute = false;
-		}
-
-		public bool isPlayingRoute() {
-			return playsRoute;
-		}
 
 	}
 }

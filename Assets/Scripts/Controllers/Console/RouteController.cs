@@ -45,20 +45,23 @@ namespace Controllers {
 				routeService = new RouteService(historyController, secondsToChangeRoute, routesPath);
 				OnRoutePlayStateChanged += isStarted => {
 					if(isStarted) {
+						routeService.IsRoutePlaying = true;
 						historyController.nodeChangedSource = ActionController.NodeChangedSource.Route;
 						autoRouteCoroutine = routeService.autoRoutes();
 						StartCoroutine(autoRouteCoroutine);
 					} else {
 						makeDefaultColorOnRouteTile();
 						StopCoroutine(autoRouteCoroutine);
-						routeService.stopPlayingRoute();
+						routeService.IsRoutePlaying = false;
 					}
 				};
 				createRoutesObjects();
 			}
 		}
 
-
+		private void OnDestroy() {
+			routeService.routesLoader.Dispose();
+		}
 
 
 
@@ -80,7 +83,7 @@ namespace Controllers {
 		}
 
 		public void onRouteButtonClicked() {
-			if (routeService.isPlayingRoute()) OnRoutePlayStateChanged(false);
+			if (routeService.IsRoutePlaying) OnRoutePlayStateChanged(false);
 			int newIndex;
 			if (Int32.TryParse(EventSystem.current.currentSelectedGameObject.name, out newIndex)) {
 				if (newIndex != routeIndex) {
@@ -90,7 +93,7 @@ namespace Controllers {
 					routesTiles[routeIndex].transform.GetChild(2).GetComponent<Button>().transform.GetChild(0).GetComponent<Text>().text = "Stop";
 				}
 				else {
-					routeIndex = -1;
+					
 				}
 
 			}
