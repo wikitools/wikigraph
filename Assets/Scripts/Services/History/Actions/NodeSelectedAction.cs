@@ -18,15 +18,11 @@ namespace Services.History.Actions {
 			selectNodeAction(node, isRouteAction);
 		}
 
-
 		#region UserAction functions
-
-		//do action forward
 		public void Execute() {
 			passSelectAction(newSelectedNode);
 		}
 
-		//do action backward
 		public void UnExecute() {
 			passSelectAction(oldSelectedNode);
 		}

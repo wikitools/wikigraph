@@ -1,10 +1,9 @@
-﻿using Services.History.Actions;
-using Services.RoutesFiles;
-using Services.SearchFiles;
-using System;
+﻿using Controllers;
+using Services.History.Actions;
+using Services.Routes;
+using Services.Search;
 using System.Collections;
 using System.Collections.Generic;
-using Controllers;
 
 namespace Services.History {
 	public class HistoryService {
@@ -12,9 +11,6 @@ namespace Services.History {
 		#region History
 		private readonly Stack<UserAction> undoActionStack = new Stack<UserAction>();
 		private readonly Stack<UserAction> redoActionStack = new Stack<UserAction>();
-
-
-
 
 		public void RedoAction() {
 			if (redoActionStack.Count != 0) {
@@ -42,19 +38,17 @@ namespace Services.History {
 		private Stack<UserAction> redoSavedRoute = new Stack<UserAction>();
 		private Stack<UserAction> undoSavedRoute = new Stack<UserAction>();
 		bool playsRoute = false;
-		public RoutesLoader routesLoader;
+		public RouteLoader routesLoader;
 		public SearchLoader searchLoader;
 		int secondsToNextRoute;
 		private HistoryController controller;
 
-		public HistoryService(HistoryController controller, int seconds, int number, string routesPath,string searchPath, string prefix = "") {
-			routesLoader = new RoutesLoader(routesPath, prefix);
+		public HistoryService(HistoryController controller, int seconds, int number, string routesPath, string searchPath) {
+			routesLoader = new RouteLoader(routesPath);
 			secondsToNextRoute = seconds;
 			searchLoader = new SearchLoader(number, searchPath);
 			this.controller = controller;
 		}
-
-
 
 		public void RedoRoute() {
 			if (redoSavedRoute.Count != 0) {
@@ -77,14 +71,6 @@ namespace Services.History {
 			undoSavedRoute.Clear();
 		}
 
-		public string[] getNames() {
-			return routesLoader.routesNames();
-		}
-
-		public int[] getLengths() {
-			return routesLoader.routeLengths();
-		}
-
 		public void startRoute(int index) {
 			loadChosenRoute(index);
 			controller.NetworkController.SyncRoutePlaying(true);
@@ -94,7 +80,9 @@ namespace Services.History {
 			playsRoute = true;
 			while (redoSavedRoute.Count != 0 && playsRoute) {
 				RedoRoute();
-				if (redoSavedRoute.Count > 0) yield return new UnityEngine.WaitForSeconds(secondsToNextRoute);
+				if (redoSavedRoute.Count > 0) {
+					yield return new UnityEngine.WaitForSeconds(secondsToNextRoute);
+				}
 			}
 			playsRoute = false;
 			controller.NetworkController.SyncRoutePlaying(false);
@@ -107,8 +95,6 @@ namespace Services.History {
 		public bool isPlayingRoute() {
 			return playsRoute;
 		}
-
-
 		#endregion
 	}
 }

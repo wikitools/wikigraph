@@ -1,8 +1,8 @@
 ﻿using Model;
 using Services.History;
 using Services.History.Actions;
-using Services.RoutesFiles;
-using Services.SearchFiles;
+using Services.Routes;
+using Services.Search;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,10 +26,8 @@ namespace Controllers {
 		public int numberOfDisplayedSearchEntries = 10;
 		public GameObject searchBox;
 		public GameObject SearchScrollView;
-		
 		public static Action startRouteAutoAction;
 		public static Action endRouteAutoAction;
-
 		bool graphModeChangedByHistory;
 		GameObject[] routesTiles;
 		List<GameObject> searchTiles = new List<GameObject>();
@@ -44,14 +42,12 @@ namespace Controllers {
 		NodeChangedSource nodeChangedSource = NodeChangedSource.User;
 		string ROUTES_DIR = "Routes";
 
-
 		enum NodeChangedSource {
 			User,
 			History,
 			Route,
 			Search
 		}
-
 
 		void Awake() {
 			NetworkController = GetComponent<NetworkController>();
@@ -67,14 +63,7 @@ namespace Controllers {
 				HistoryService = new HistoryService(this, secondsToChangeRoute, numberOfDisplayedSearchEntries, routesPath, searchFilePath);
 				nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
 					if (nodeChangedSource != NodeChangedSource.History) {
-						if(oldNode == null) {
-							HistoryService.RegisterAction(new NodeSelectedAction(null, newNode.ID, false));
-						} else if(newNode == null) {
-							HistoryService.RegisterAction(new NodeSelectedAction(oldNode.ID, null, false));
-						} else {
-							HistoryService.RegisterAction(new NodeSelectedAction(oldNode.ID, newNode.ID, false));
-						}
-						
+						HistoryService.RegisterAction(new NodeSelectedAction(oldNode?.ID, newNode?.ID, false));						
 					}
 					if (nodeChangedSource != NodeChangedSource.Route && isPlayingRoute()) onRouteExit();
 					nodeChangedSource = NodeChangedSource.User;
@@ -96,9 +85,6 @@ namespace Controllers {
 					else nodeChangedSource = NodeChangedSource.History;
 					NetworkController.SetConnectionMode(mode);
 				};
-				RoutesLoader.getRouteNode = id => {
-					return nodeController.NodeLoadManager.LoadNode(id);
-				};
 				startRouteAutoAction += () => {
 					nodeChangedSource = NodeChangedSource.Route;
 					autoRouteCoroutine = HistoryService.autoRoutes();
@@ -116,15 +102,16 @@ namespace Controllers {
 			};
 		}
 		#region RouteHandling
+
 		public bool isPlayingRoute() {
 			return HistoryService.isPlayingRoute();
 		}
 
 		public void createRoutesObjects() {
 			int i = 0;
-			int[] lengths = HistoryService.getLengths();
+			int[] lengths = HistoryService.routesLoader.routeReader.lengthOfRoutes();
 			routesTiles = new GameObject[lengths.Length];
-			foreach (string name in HistoryService.getNames()) {
+			foreach (string name in HistoryService.routesLoader.routeReader.namesOfRoutes()) {
 				routesTiles[i] = Instantiate(RouteTemplate, RouteParent.transform);
 				string getFileName = Path.GetFileNameWithoutExtension(name);
 				routesTiles[i].transform.GetChild(0).GetComponent<Text>().text = getFileName;
@@ -221,15 +208,13 @@ namespace Controllers {
 					StartCoroutine(searchCoroutine);
 					ScrollToTop(SearchScrollView.GetComponent<ScrollRect>());
 				}
+				else deleteAllSearchEntries();
 			}
-
-
-
 		}
+
 		private void ScrollToTop(ScrollRect scrollRect) {
 			scrollRect.normalizedPosition = new Vector2(0, 1);
 		}
-
 		#endregion
 	}
 }

@@ -11,9 +11,7 @@ namespace Services.DataFiles {
 		private readonly string dataPack;
 		private readonly string dataPackDate;
 		private readonly Logger<DataFileReader> logger = new Logger<DataFileReader>();
-
 		private Dictionary<DataFileType, DataFile> streams = new Dictionary<DataFileType, DataFile>();
-
 		public static readonly string DATA_FILE_PATH = Path.Combine(Application.streamingAssetsPath, "DataFiles");
 		private const string DATA_FILE_EXTENSION = "wg";
 
@@ -74,7 +72,7 @@ namespace Services.DataFiles {
 			streams[type] = new DataFile {Stream = stream, Length = new FileInfo(filePath).Length};
 		}
 		
-		public string GetDataPackFile() => Path.Combine(DATA_FILE_PATH, dataPack, dataPackDate, $"{dataPack}.{DATA_FILE_EXTENSION}");
+		public string GetDataPackFile() => Path.Combine(GetDataPackDirectory(), $"{dataPack}.{DATA_FILE_EXTENSION}");
 
 		public string GetDataPackDirectory() => Path.Combine(DATA_FILE_PATH, dataPack, dataPackDate);
 

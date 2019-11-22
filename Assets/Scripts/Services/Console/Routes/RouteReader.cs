@@ -7,16 +7,17 @@ using System.Security.AccessControl;
 using System.Text;
 using UnityEngine;
 
-namespace Services.RoutesFiles {
-	public class RoutesReader : IDisposable {
+namespace Services.Routes {
+	public class RouteReader : IDisposable {
 		private List<StreamReader> streams = new List<StreamReader>();
 
-		private const string DATA_FILE_EXTENSION = ".wgroute";
+		private const string DATA_FILE_EXTENSION = ".wgr";
+		private const string POSTFIX = "";
 		private string routesPath;
 		private string[] fileNames;
 		private int[] routeLength;
 
-		public RoutesReader(string path, string dataFilePostfix = "") {
+		public RouteReader(string path) {
 			routesPath = path;
 			if(!Directory.Exists(path)) {
 				Directory.CreateDirectory(path);
@@ -24,7 +25,7 @@ namespace Services.RoutesFiles {
 			fileNames = Directory.GetFiles(routesPath).Where(name => name.EndsWith(DATA_FILE_EXTENSION)).ToArray();
 
 			foreach (string name in fileNames) {
-				loadDataFile(name, dataFilePostfix);
+				loadDataFile(name, POSTFIX);
 			}
 			routeLength = new int[numberOfRoutes()];
 			for (int i=0; i<numberOfRoutes();i++) {
