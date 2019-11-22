@@ -42,7 +42,7 @@ namespace Controllers {
 					if (nodeChangedSource != NodeChangedSource.History) {
 						ActionService.RegisterAction(new NodeSelectedAction(oldNode?.ID, newNode?.ID, false));						
 					}
-					if (nodeChangedSource != NodeChangedSource.Route && routeController.routeService.IsRoutePlaying) routeController.OnRoutePlayStateChanged(false);
+					if (nodeChangedSource != NodeChangedSource.Route && routeController.routeService.IsRoutePlaying) networkController.SyncRoutePlaying(false);
 					nodeChangedSource = NodeChangedSource.User;
 				};
 				NodeSelectedAction.selectNodeAction = (node, isRoute) => {
@@ -54,7 +54,7 @@ namespace Controllers {
 					if (nodeChangedSource != NodeChangedSource.History) {
 						ActionService.RegisterAction(new ModeChangeAction<ConnectionMode>(mode, false));
 					}
-					if (nodeChangedSource != NodeChangedSource.Route && routeController.routeService.IsRoutePlaying) routeController.OnRoutePlayStateChanged(false);
+					if (nodeChangedSource != NodeChangedSource.Route && routeController.routeService.IsRoutePlaying) networkController.SyncRoutePlaying(false);
 					nodeChangedSource = NodeChangedSource.User;
 				};
 				ModeChangeAction<ConnectionMode>.changeMode = (mode, isRoute) => {

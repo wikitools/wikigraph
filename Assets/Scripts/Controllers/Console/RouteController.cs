@@ -88,18 +88,18 @@ namespace Controllers {
 			int newIndex;
 			if (Int32.TryParse(EventSystem.current.currentSelectedGameObject.name, out newIndex)) {
 				if (newIndex != routeIndex) {
-					if (routeService.IsRoutePlaying) OnRoutePlayStateChanged(false);
+					if (routeService.IsRoutePlaying) networkController.SyncRoutePlaying(false);
 					routeIndex = newIndex;
 					routeService.startRoute(routeIndex);
 					routesTiles[routeIndex].transform.GetComponent<Image>().color = new Color(0.341f, 0.58f, 0.808f, 1.0f);
 					routesTiles[routeIndex].transform.GetChild(2).GetComponent<Button>().transform.GetChild(0).GetComponent<Text>().text = "Stop";
 				}
 				else {
-					if (routeService.IsRoutePlaying) OnRoutePlayStateChanged(false);
+					if (routeService.IsRoutePlaying) networkController.SyncRoutePlaying(false);
 				}
 
 			} else {
-				if (routeService.IsRoutePlaying) OnRoutePlayStateChanged(false);
+				if (routeService.IsRoutePlaying) networkController.SyncRoutePlaying(false);
 			}
 		}
 
