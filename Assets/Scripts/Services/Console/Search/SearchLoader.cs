@@ -4,16 +4,13 @@ using System.Collections.Generic;
 
 namespace Services.Search {
 	public class SearchLoader {
-
 		int numberOfEntries;
 		public SearchReader reader;
 		
-
 		public SearchLoader(int number, string path) {
 			numberOfEntries = number;
 			reader = new SearchReader(path);
 		}
-
 
 		public Dictionary<uint, string> getEntries(long index) {
 			IEnumerable<string> lines = reader.ReadXLinesFromN(numberOfEntries, index);
@@ -29,7 +26,5 @@ namespace Services.Search {
 			}
 			return entries;
 		}
-
-
 	}
 }

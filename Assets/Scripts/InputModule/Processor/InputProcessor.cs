@@ -14,15 +14,15 @@ namespace InputModule.Processor {
 		protected Transform EntityTransform => Controller.CameraController.Entity.transform;
 
 		protected void ExitNodeTraverseMode() {
-			if (Controller.HistoryController.HistoryService.isPlayingRoute()) Controller.HistoryController.endRouteAutoAction();
+			if (Controller.ActionController.routeController.routeService.isPlayingRoute()) Controller.ActionController.routeController.OnRoutePlayStateChanged(false);
 			else Controller.NetworkController.SetGraphMode(GraphMode.FREE_FLIGHT);
 		}
 
 		protected void BindHistoryEvents(int direction) {
 			if(direction == 1)
-				Controller.HistoryController.HistoryService.UndoAction();
+				Controller.ActionController.ActionService.UndoAction();
 			else if (direction == -1)
-				Controller.HistoryController.HistoryService.RedoAction();
+				Controller.ActionController.ActionService.RedoAction();
 		}
 		
 		protected void ToggleInfoSpace() => Controller.NetworkController.ToggleInfoSpace();

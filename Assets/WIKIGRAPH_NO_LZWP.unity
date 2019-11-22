@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.09623099, g: 0.18261987, b: 0.23761988, a: 1}
+  m_IndirectSpecularColor: {r: 0.15133008, g: 0.21595052, b: 0.30976254, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -226,6 +226,8 @@ GameObject:
   - component: {fileID: 68664601}
   - component: {fileID: 68664602}
   - component: {fileID: 68664603}
+  - component: {fileID: 68664604}
+  - component: {fileID: 68664605}
   m_Layer: 0
   m_Name: GRAPH
   m_TagString: Untagged
@@ -535,18 +537,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 754cf6ea303545c45b5cbf6f44a2daaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RouteTemplate: {fileID: 1441966523998658, guid: 5bff325638a09834d83521935d13efd9,
-    type: 2}
-  RouteParent: {fileID: 1124324005}
+--- !u!114 &68664604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 68664594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 251ef57b0dbdf0e40963768e13a9f24c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   SearchTemplateArticle: {fileID: 1037576512241928, guid: 317baa3aef2e46b478fd3dd34b568340,
     type: 2}
   SearchTemplateCategory: {fileID: 1946115141153438, guid: e86fc12c4de062d42905ac04c134418a,
     type: 2}
   SearchParent: {fileID: 1661001404}
-  secondsToChangeRoute: 8
-  numberOfDisplayedSearchEntries: 10
   searchBox: {fileID: 1316195643}
   SearchScrollView: {fileID: 1992759471}
+  numberOfDisplayedSearchEntries: 10
+--- !u!114 &68664605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 68664594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0932e146aa7a25841bcc97d5a34d35d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RouteTemplate: {fileID: 1441966523998658, guid: 5bff325638a09834d83521935d13efd9,
+    type: 2}
+  RouteParent: {fileID: 1124324005}
+  secondsToChangeRoute: 8
 --- !u!1 &120196706
 GameObject:
   m_ObjectHideFlags: 0
@@ -2535,8 +2559,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1601911829}
   m_HandleRect: {fileID: 1601911828}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 0.9999998
+  m_Value: 1
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3345,7 +3369,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 68664603}
+      - m_Target: {fileID: 68664604}
         m_MethodName: OnSearchTextChanged
         m_Mode: 1
         m_Arguments:
@@ -4631,7 +4655,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000012481657}
+  m_AnchoredPosition: {x: 0, y: -0.000010653858}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1661001406

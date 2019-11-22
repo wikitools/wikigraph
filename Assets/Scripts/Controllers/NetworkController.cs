@@ -52,10 +52,7 @@ namespace Controllers {
 
 		[RPC]
 		private void syncRoutePlaying(bool playing) {
-			if(playing)
-				historyController.startRouteAutoAction?.Invoke();
-			else
-				historyController.endRouteAutoAction?.Invoke();
+			actionController.routeController.OnRoutePlayStateChanged?.Invoke(playing);
 		}
 
 		public void ToggleConsole() => Synchronize("toggleConsole");
@@ -120,7 +117,7 @@ namespace Controllers {
 		private ConnectionController connectionController;
 		private InfoSpaceController infoSpaceController;
 		private ConsoleWindowController consoleController;
-		private HistoryController historyController;
+		private ActionController actionController;
 
 		private void Awake() {
 			inputController = GetComponent<InputController>();
@@ -129,7 +126,7 @@ namespace Controllers {
 			connectionController = GetComponent<ConnectionController>();
 			infoSpaceController = (InfoSpaceController) Resources.FindObjectsOfTypeAll(typeof(InfoSpaceController))[0];
 			consoleController = (ConsoleWindowController) Resources.FindObjectsOfTypeAll(typeof(ConsoleWindowController))[0];
-			historyController = GetComponent<HistoryController>();
+			actionController = GetComponent<ActionController>();
 
 			NetworkView = GetComponent<NetworkView>();
 

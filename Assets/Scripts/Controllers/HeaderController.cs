@@ -15,7 +15,7 @@ namespace Controllers {
 		public GameObject Graph;
 		public GameObject ConsoleWindow;
 		public HeaderConfig Config;
-		public HistoryService HistoryService { get; private set; }
+		public ActionService HistoryService { get; private set; }
 
 		private Vector3 targetPosition;
 		private Vector3 targetPrimaryRangePosition, targetSecondaryRangePosition;
@@ -33,6 +33,7 @@ namespace Controllers {
 		private ConnectionController connectionController;
 		private GraphController graphController;
 		private ConsoleWindowController consoleWindowController;
+		private RouteController routeController;
 
 		void Start() {
 			if (inputController.Environment == Environment.PC) {
@@ -41,8 +42,7 @@ namespace Controllers {
 			nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			nodeController.OnHighlightedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			graphController.ConnectionMode.OnValueChanged += UpdateConnectionMode;
-			inputController.HistoryController.startRouteAutoAction += UpdateAutoStateAfterRouteChange(true);
-			inputController.HistoryController.endRouteAutoAction += UpdateAutoStateAfterRouteChange(false);
+			routeController.OnRoutePlayStateChanged += (isStarted) => UpdateAutoStateAfterRouteChange(isStarted);
 			consoleWindowController.OnConsoleToggled += UpdateConsoleState;
 			connectionController.OnConnectionRangeChanged += UpdateNodeHeaderAfterConnectionRangeChange;
 			connectionController.OnConnectionRangeChanged?.Invoke(0, 0, 0);
@@ -72,6 +72,7 @@ namespace Controllers {
 			connectionController = Graph.GetComponent<ConnectionController>();
 			graphController = Graph.GetComponent<GraphController>();
 			consoleWindowController = ConsoleWindow.GetComponent<ConsoleWindowController>();
+			routeController = Graph.GetComponent<RouteController>();
 		}
 
 		private void SetRendererSortingOrder(Transform obj, int order) {
