@@ -48,6 +48,13 @@ namespace Controllers {
 			infoSpaceController.ToggleVisibility();
 		}
 
+		public void SyncRoutePlaying(bool playing) => Synchronize("syncRoutePlaying", playing);
+
+		[RPC]
+		private void syncRoutePlaying(bool playing) {
+			actionController.routeController.OnRoutePlayStateChanged?.Invoke(playing);
+		}
+
 		public void ToggleConsole() => Synchronize("toggleConsole");
 
 		[RPC]
@@ -110,6 +117,7 @@ namespace Controllers {
 		private ConnectionController connectionController;
 		private InfoSpaceController infoSpaceController;
 		private ConsoleWindowController consoleController;
+		private ActionController actionController;
 
 		private void Awake() {
 			inputController = GetComponent<InputController>();
@@ -118,6 +126,7 @@ namespace Controllers {
 			connectionController = GetComponent<ConnectionController>();
 			infoSpaceController = (InfoSpaceController) Resources.FindObjectsOfTypeAll(typeof(InfoSpaceController))[0];
 			consoleController = (ConsoleWindowController) Resources.FindObjectsOfTypeAll(typeof(ConsoleWindowController))[0];
+			actionController = GetComponent<ActionController>();
 
 			NetworkView = GetComponent<NetworkView>();
 

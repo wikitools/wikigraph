@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Model;
 using System.Linq;
+using Services.History;
+using Services.History.Actions;
 
 namespace Controllers {
 	public class HeaderController : MonoBehaviour {
@@ -13,6 +15,7 @@ namespace Controllers {
 		public GameObject Graph;
 		public GameObject ConsoleWindow;
 		public HeaderConfig Config;
+		public ActionService HistoryService { get; private set; }
 
 		private Vector3 targetPosition;
 		private Vector3 targetPrimaryRangePosition, targetSecondaryRangePosition;
@@ -22,6 +25,7 @@ namespace Controllers {
 		private int currentStart, currentEnd, currentCount;
 		private SpriteRenderer stateIcon;
 		private TextMesh autoState;
+		private bool routeActive;
 
 		private InputController inputController;
 		private NodeController nodeController;
@@ -29,6 +33,7 @@ namespace Controllers {
 		private ConnectionController connectionController;
 		private GraphController graphController;
 		private ConsoleWindowController consoleWindowController;
+		private RouteController routeController;
 
 		void Start() {
 			if (inputController.Environment == Environment.PC) {
@@ -37,6 +42,7 @@ namespace Controllers {
 			nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			nodeController.OnHighlightedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			graphController.ConnectionMode.OnValueChanged += UpdateConnectionMode;
+			routeController.OnRoutePlayStateChanged += (isStarted) => UpdateAutoStateAfterRouteChange(isStarted);
 			consoleWindowController.OnConsoleToggled += UpdateConsoleState;
 			connectionController.OnConnectionRangeChanged += UpdateNodeHeaderAfterConnectionRangeChange;
 			connectionController.OnConnectionRangeChanged?.Invoke(0, 0, 0);
@@ -56,6 +62,7 @@ namespace Controllers {
 			SetRendererSortingOrder(transform.GetChild(5), 51);
 			SetRendererSortingOrder(transform.GetChild(6).GetChild(1), 51);
 			transform.GetChild(6).GetChild(1).GetComponent<TextMesh>().text = Config.ConsoleActiveText;
+			routeActive = false;
 		}
 
 		void Awake() {
@@ -65,10 +72,21 @@ namespace Controllers {
 			connectionController = Graph.GetComponent<ConnectionController>();
 			graphController = Graph.GetComponent<GraphController>();
 			consoleWindowController = ConsoleWindow.GetComponent<ConsoleWindowController>();
+			routeController = Graph.GetComponent<RouteController>();
 		}
 
 		private void SetRendererSortingOrder(Transform obj, int order) {
 			obj.GetComponent<MeshRenderer>().sortingOrder = order;
+		}
+
+		public void SetEnabled(bool value) {
+			foreach (Transform child in transform) {
+				child.gameObject.SetActive(value);
+			}
+			UpdateConsoleState(consoleWindowController.GetActive());
+			if (nodeController.SelectedNode == null) {
+				transform.GetChild(3).gameObject.SetActive(false);
+			}
 		}
 
 		private void UpdateConnectionMode(ConnectionMode mode) {
@@ -81,6 +99,17 @@ namespace Controllers {
 
 		private void UpdateConsoleState(bool active) {
 			transform.GetChild(6).gameObject.SetActive(active);
+		}
+
+		private Action UpdateAutoStateAfterRouteChange(bool started) {
+			return () => {
+				routeActive = started;
+				UpdateAutoState(started);
+			};
+		}
+
+		private void UpdateAutoState(bool value) {
+			transform.GetChild(5).GetComponent<TextMesh>().text = value && (nodeController.HighlightedNode == null) ? Config.AutoText : "";
 		}
 
 		private void UpdateNodeHeaderAfterSelectOrHighlight(Node previousNode, Node selectedNode) {
@@ -99,11 +128,13 @@ namespace Controllers {
 					headerTitle.text = Config.CurrentlyLookingAtText;
 					headerValue.text = nodeController.HighlightedNode.Title;
 					stateIcon.sprite = null;
+					UpdateAutoState(false);
 					ShowConnectionRangeCount(connectionController.GetNodeNeighbours(nodeController.HighlightedNode).ToArray().Length);
 				} else {
 					headerTitle.text = Config.CurrentlySelectedText;
 					headerValue.text = nodeController.SelectedNode.Title;
 					UpdateConnectionMode(graphController.ConnectionMode.Value);
+					UpdateAutoState(routeActive);
 					ShowConnectionRangeCount(null);
 				}
 			} else {
@@ -118,7 +149,7 @@ namespace Controllers {
 		private void ShowConnectionRangeCount(int? count) {
 			ConnectionRangeTextUpdate(count);
 			transform.GetChild(2).localPosition = new Vector3(0, (count != null) ? 15.6f : 15f, 4.5f);
-			transform.GetChild(3).gameObject.SetActive(count == null);
+			transform.GetChild(3).gameObject.SetActive(count == null && !consoleWindowController.GetActive());
 		}
 
 		private void ConnectionRangeTextUpdate(int? count) {

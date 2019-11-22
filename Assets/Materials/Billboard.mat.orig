@@ -90,4 +90,8 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+<<<<<<< HEAD
+    - _FaceObject: {r: -9.9558735, g: 0.57805586, b: 33.453766, a: 0}
+=======
     - _FaceObject: {r: -21.561686, g: -27.193712, b: 86.610825, a: 0}
+>>>>>>> feature/WG-109

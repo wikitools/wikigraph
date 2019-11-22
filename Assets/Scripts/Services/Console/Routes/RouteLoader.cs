@@ -6,44 +6,27 @@ using System.Collections.Generic;
 
 
 
-namespace Services.RoutesFiles {
-	public class RoutesLoader : IDisposable {
-		private enum USERACTION_TYPE {
-			MODE_CHANGE,
+namespace Services.Routes {
+	public class RouteLoader : IDisposable {
+		private enum USER_ACTION_TYPE {
+			MODE_CHANGED,
 			NODE_SELECTED
 		};
 
-		
+		public RouteReader routeReader;
+		private static char SEPARATOR = ';';
 
-		private RoutesReader routesReader;
-		private static char separator = ';';
-		public static Func<uint, Node> getRouteNode;
-
-
-
-		public RoutesLoader(string path, string dataFilePostfix = "") {
-			routesReader = new RoutesReader(path, dataFilePostfix);
-		}
-
-		public int routesNumber() {
-			return routesReader.numberOfRoutes();
-		}
-
-		public string[] routesNames() {
-			return routesReader.namesOfRoutes();
-		}
-
-		public int[] routeLengths() {
-			return routesReader.lengthOfRoutes();
+		public RouteLoader(string path) {
+			routeReader = new RouteReader(path);
 		}
 
 		public Stack<UserAction> loadRoute(int index) {
 			Stack<UserAction> userActions = new Stack<UserAction>();
 			uint? old = null;
-			while (routesReader.isNotEOF(index)) {
-				string[] line = routesReader.readLine(index).Split(separator);
+			while (routeReader.isNotEOF(index)) {
+				string[] line = routeReader.readLine(index).Split(SEPARATOR);
 				UserAction action = null;
-				if (line[0] == USERACTION_TYPE.MODE_CHANGE.ToString("d")) {
+				if (line[0] == USER_ACTION_TYPE.MODE_CHANGED.ToString("d")) {
 					if (line[1] == ConnectionMode.CHILDREN.ToString("d")) {
 						action = new ModeChangeAction<ConnectionMode>(ConnectionMode.CHILDREN, true);
 					}
@@ -51,25 +34,22 @@ namespace Services.RoutesFiles {
 						action = new ModeChangeAction<ConnectionMode>(ConnectionMode.PARENTS, true);
 					}
 				}
-				else if (line[0] == USERACTION_TYPE.NODE_SELECTED.ToString("d")) {
+				else if (line[0] == USER_ACTION_TYPE.NODE_SELECTED.ToString("d")) {
 					uint? newNode = Convert.ToUInt32(line[1]);
 					action = new NodeSelectedAction(old, newNode, true);
 					old = newNode;
 				}
-				
 				userActions.Push(action);
 			}
-
 			Stack<UserAction> rev = new Stack<UserAction>();
 			while(userActions.Count!=0) {
 				rev.Push(userActions.Pop());
 			}
-
 			return rev;
 		}
 
 		public void Dispose() {
-			routesReader.Dispose();
+			routeReader.Dispose();
 		}
 	}
 

@@ -104,10 +104,11 @@ namespace Controllers {
 			GraphController = GetComponent<GraphController>();
 			networkController = GetComponent<NetworkController>();
 			inputController = GetComponent<InputController>();
+			NodeLoadManager = new NodeLoadManager(this);
 		}
 
 		private void Start() {
-			NodeLoadManager = new NodeLoadManager(this);
+		
 			NodeStateManager = new NodeStateManager(this);
 			Nodes.Pool = new GameObjectPool(Nodes.Prefab, Nodes.PreloadNumber, Nodes.PoolContainer);
 

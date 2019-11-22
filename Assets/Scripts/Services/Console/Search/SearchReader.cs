@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 
 
-namespace Services.SearchFiles {
+namespace Services.Search {
 
 	public class SearchReader {
 		long length;

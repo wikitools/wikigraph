@@ -38,7 +38,7 @@ namespace Controllers {
 		public GraphController GraphController { get; private set; }
 		public NodeController NodeController { get; private set; }
 		public ConnectionController ConnectionController { get; private set; }
-		public HistoryController HistoryController { get; private set; }
+		public ActionController ActionController { get; private set; }
 
 		void Awake() {
 			NetworkController = GetComponent<NetworkController>();
@@ -46,7 +46,7 @@ namespace Controllers {
 			GraphController = GetComponent<GraphController>();
 			NodeController = GetComponent<NodeController>();
 			ConnectionController = GetComponent<ConnectionController>();
-			HistoryController = GetComponent<HistoryController>();
+			ActionController = GetComponent<ActionController>();
 		}
 
 		void Start() {
