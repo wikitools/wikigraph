@@ -76,6 +76,16 @@ namespace Controllers {
 			obj.GetComponent<MeshRenderer>().sortingOrder = order;
 		}
 
+		public void SetEnabled(bool value) {
+			foreach (Transform child in transform) {
+				child.gameObject.SetActive(value);
+			}
+			UpdateConsoleState(consoleWindowController.GetActive());
+			if (nodeController.SelectedNode == null) {
+				transform.GetChild(3).gameObject.SetActive(false);
+			}
+		}
+
 		private void UpdateConnectionMode(ConnectionMode mode) {
 			if(nodeController.SelectedNode.Type == NodeType.ARTICLE) {
 				stateIcon.sprite = (mode == ConnectionMode.PARENTS) ? Config.ArticleConnectionsIn : Config.ArticleConnectionsOut; 
