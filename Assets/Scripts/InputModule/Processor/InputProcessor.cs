@@ -14,7 +14,7 @@ namespace InputModule.Processor {
 		protected Transform EntityTransform => Controller.CameraController.Entity.transform;
 
 		protected void ExitNodeTraverseMode() {
-			if (Controller.ActionController.routeController.routeService.IsRoutePlaying) Controller.ActionController.routeController.OnRoutePlayStateChanged(false);
+			if (Controller.ActionController.routeController.routeService.IsRoutePlaying) Controller.NetworkController.SyncRoutePlaying(false);
 			else Controller.NetworkController.SetGraphMode(GraphMode.FREE_FLIGHT);
 		}
 
