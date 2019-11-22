@@ -44,7 +44,7 @@ namespace Services.DataFiles {
 			uint nodeGraphFilePos = fileReader.ReadInt(DataFileType.MAP, nodeMapFilePos);
 			uint nextNodeGraphFilePos = getNextNodePropPos(DataFileType.GRAPH, nodeMapFilePos + MAP.LINE_SIZE);
 			
-			node.Parents = new uint[fileReader.ReadByte(DataFileType.GRAPH, nodeGraphFilePos)];
+			node.Parents = new uint[fileReader.ReadShort(DataFileType.GRAPH, nodeGraphFilePos)];
 			nodeGraphFilePos += GRAPH.PARENT_LINKS_SIZE;
 			for (var i = 0; i < node.Parents.Length; i++) {
 				node.Parents[i] = fileReader.ReadInt24(DataFileType.GRAPH, nodeGraphFilePos + i * GRAPH.ID_SIZE);
