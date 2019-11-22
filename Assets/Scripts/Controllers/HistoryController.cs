@@ -14,7 +14,7 @@ using UnityEngine.UI;
 namespace Controllers {
 	public class HistoryController : MonoBehaviour {
 		private NodeController nodeController;
-		private NetworkController networkController;
+		public NetworkController NetworkController { get; private set; }
 		private GraphController graphController;
 		public HistoryService HistoryService { get; private set; }
 		public GameObject RouteTemplate;
@@ -26,6 +26,9 @@ namespace Controllers {
 		public int numberOfDisplayedSearchEntries = 10;
 		public GameObject searchBox;
 		public GameObject SearchScrollView;
+		
+		public static Action startRouteAutoAction;
+		public static Action endRouteAutoAction;
 
 		bool graphModeChangedByHistory;
 		GameObject[] routesTiles;
@@ -51,17 +54,17 @@ namespace Controllers {
 
 
 		void Awake() {
-			networkController = GetComponent<NetworkController>();
+			NetworkController = GetComponent<NetworkController>();
 			nodeController = GetComponent<NodeController>();
 			graphController = GetComponent<GraphController>();
 		}
 
 		private void Start() {
-			if (networkController.IsServer()) {
+			if (NetworkController.IsServer()) {
 				routesPath = Path.Combine(nodeController.NodeLoadManager.NodeLoader.fileReader.GetDataPackDirectory(), ROUTES_DIR);
 				searchFilePath = nodeController.NodeLoadManager.NodeLoader.fileReader.GetDataPackFile() + "s";
 
-				HistoryService = new HistoryService(secondsToChangeRoute, numberOfDisplayedSearchEntries, routesPath, searchFilePath);
+				HistoryService = new HistoryService(this, secondsToChangeRoute, numberOfDisplayedSearchEntries, routesPath, searchFilePath);
 				nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
 					if (nodeChangedSource != NodeChangedSource.History) {
 						if(oldNode == null) {
@@ -91,17 +94,17 @@ namespace Controllers {
 				ModeChangeAction<ConnectionMode>.changeMode = (mode, isRoute) => {
 					if (isRoute) nodeChangedSource = NodeChangedSource.Route;
 					else nodeChangedSource = NodeChangedSource.History;
-					networkController.SetConnectionMode(mode);
+					NetworkController.SetConnectionMode(mode);
 				};
 				RoutesLoader.getRouteNode = id => {
 					return nodeController.NodeLoadManager.LoadNode(id);
 				};
-				HistoryService.startRouteAutoAction += () => {
+				startRouteAutoAction += () => {
 					nodeChangedSource = NodeChangedSource.Route;
 					autoRouteCoroutine = HistoryService.autoRoutes();
 					StartCoroutine(autoRouteCoroutine);
 				};
-				HistoryService.endRouteAutoAction += () => {
+				endRouteAutoAction += () => {
 					makeDefaultColorOnRouteTile();
 				};
 				SearchReader.onIndexRead = index => {
@@ -195,7 +198,7 @@ namespace Controllers {
 				nodeController.NodeLoadManager.LoadNode(index.Value);
 				nodeController.OnNodeLoadSessionEnded?.Invoke();
 			}
-			networkController.SetSelectedNode(index.ToString());
+			NetworkController.SetSelectedNode(index.ToString());
 		}
 
 		public void OnSearchEntryClicked() {

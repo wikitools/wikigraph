@@ -4,6 +4,7 @@ using Services.SearchFiles;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Controllers;
 
 namespace Services.History {
 	public class HistoryService {
@@ -43,14 +44,14 @@ namespace Services.History {
 		bool playsRoute = false;
 		public RoutesLoader routesLoader;
 		public SearchLoader searchLoader;
-		public static Action startRouteAutoAction;
-		public static Action endRouteAutoAction;
 		int secondsToNextRoute;
+		private HistoryController controller;
 
-		public HistoryService(int seconds, int number, string routesPath,string searchPath, string prefix = "") {
+		public HistoryService(HistoryController controller, int seconds, int number, string routesPath,string searchPath, string prefix = "") {
 			routesLoader = new RoutesLoader(routesPath, prefix);
 			secondsToNextRoute = seconds;
 			searchLoader = new SearchLoader(number, searchPath);
+			this.controller = controller;
 		}
 
 
@@ -86,7 +87,7 @@ namespace Services.History {
 
 		public void startRoute(int index) {
 			loadChosenRoute(index);
-			startRouteAutoAction();
+			controller.NetworkController.SyncRoutePlaying(true);
 		}
 
 		public IEnumerator autoRoutes() {
@@ -96,7 +97,7 @@ namespace Services.History {
 				if (redoSavedRoute.Count > 0) yield return new UnityEngine.WaitForSeconds(secondsToNextRoute);
 			}
 			playsRoute = false;
-			endRouteAutoAction();
+			controller.NetworkController.SyncRoutePlaying(false);
 		}
 
 		public void stopPlayingRoute() {

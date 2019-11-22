@@ -48,6 +48,16 @@ namespace Controllers {
 			infoSpaceController.ToggleVisibility();
 		}
 
+		public void SyncRoutePlaying(bool playing) => Synchronize("syncRoutePlaying", playing);
+
+		[RPC]
+		private void syncRoutePlaying(bool playing) {
+			if(playing)
+				HistoryController.startRouteAutoAction?.Invoke();
+			else
+				HistoryController.endRouteAutoAction?.Invoke();
+		}
+
 		public void ToggleConsole() => Synchronize("toggleConsole");
 
 		[RPC]
