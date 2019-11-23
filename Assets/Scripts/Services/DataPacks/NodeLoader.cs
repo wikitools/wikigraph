@@ -55,6 +55,10 @@ namespace Services.DataFiles {
 			for (var i = 0; i < node.Children.Length; i++) {
 				node.Children[i] = fileReader.ReadInt24(DataFileType.GRAPH, nodeGraphFilePos + (node.Parents.Length + i) * GRAPH.ID_SIZE);
 			}
+			// Shuffle Children and parents arrays with constant seed
+			UnityEngine.Random.InitState((int)node.ID);
+			ShuffleArray(node.Parents);
+			ShuffleArray(node.Children);
 		}
 
 		private uint getNextNodePropPos(DataFileType file, long offset) {
@@ -62,7 +66,17 @@ namespace Services.DataFiles {
 				? fileReader.ReadInt(DataFileType.MAP, offset)
 				: (uint) fileReader.GetFileLength(file);
 		}
-		
+
+		private void ShuffleArray(uint[] array) {
+			int n = array.Length;
+			while (n > 1) {
+				int k = UnityEngine.Random.Range(0, n--);
+				uint temp = array[n];
+				array[n] = array[k];
+				array[k] = temp;
+			}
+		}
+
 		public void Dispose() {
 			fileReader.Dispose();
 		}

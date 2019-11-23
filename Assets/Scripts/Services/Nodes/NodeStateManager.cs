@@ -39,6 +39,7 @@ namespace Services.Nodes {
 		}
 
 		private void SetNodeState(Node node, NodeState state) {
+			controller.NodeLoaderController.NodeChangeStateBehaviour(node, state);
 			node.State = state;
 			SetNodeObjectState(GraphController.Graph.NodeObjectMap[node], node.Type, state);
 		}

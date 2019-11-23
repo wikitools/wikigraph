@@ -36,8 +36,10 @@ namespace Controllers {
 
 		[RPC]
 		private void syncNodes(string stream, bool loaded) {
-			if (loaded) //TODO add node unloading sync once we support it
+			if (loaded)
 				NodeSyncBuffer.ParseLoadedNodes(stream).ForEach(node => nodeController.NodeLoadManager.LoadNode(node.ID, node.Position));
+			else
+				NodeSyncBuffer.ParseUnloadedNodes(stream).ForEach(nodeID => nodeController.NodeLoadManager.UnloadNode(nodeID));
 		}
 
 		public void SetGraphMode(GraphMode mode) => Synchronize("setGraphMode", (int) mode);

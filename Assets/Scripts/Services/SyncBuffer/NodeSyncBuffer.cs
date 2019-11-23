@@ -19,6 +19,10 @@ namespace Services.SyncBuffer {
 			return SyncBuffer.SplitObjectStream(nodeStream).Select(entry => (LoadedNodeSync) entry).ToList();
 		}
 
+		public static List<uint> ParseUnloadedNodes(string nodeStream) {
+			return SyncBuffer.SplitObjectStream(nodeStream).Select(entry => uint.Parse(entry)).ToList();
+		}
+
 		public struct LoadedNodeSync {
 			public readonly uint ID;
 			public readonly Vector3 Position;

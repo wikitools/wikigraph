@@ -43,6 +43,17 @@ namespace Services.Nodes {
 			return node;
 		}
 
+		public void UnloadNode(uint id) {
+			if (!GraphController.Graph.IdNodeMap.ContainsKey(id)) return;
+			Node node = GraphController.Graph.IdNodeMap[id];
+			GameObject nodeObject = GraphController.Graph.NodeObjectMap[node];
+
+			controller.Nodes.Pool.Despawn(nodeObject);
+			GraphController.Graph.NodeObjectMap.Remove(node);
+			GraphController.Graph.IdNodeMap.Remove(id);
+			controller.OnNodeUnloaded?.Invoke(node);
+		}
+
 		public GameObject LoadConnectionNode(Node model, Vector3 position) {
 			GameObject nodeObject = controller.Nodes.Pool.Spawn();
 			InitializeNode(model, ref nodeObject, position);
