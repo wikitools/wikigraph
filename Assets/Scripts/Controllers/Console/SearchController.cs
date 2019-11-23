@@ -11,12 +11,14 @@ namespace Controllers {
 		private NodeController nodeController;
 		private ActionController actionController;
 		private NetworkController networkController;
+		private ConsoleWindowController consoleWindow;
 
 		public GameObject SearchTemplateArticle;
 		public GameObject SearchTemplateCategory;
 		public GameObject SearchParent;
 		public GameObject searchBox;
 		public GameObject SearchScrollView;
+		public GameObject console;
 		List<GameObject> searchTiles = new List<GameObject>();
 
 		int searchIndex;
@@ -26,6 +28,7 @@ namespace Controllers {
 		string searched = "";
 		const string FILE_EXTENSION_LETTER = "s";
 		public SearchLoader searchLoader;
+		
 
 		void Start() {
 			if (networkController.IsServer()) {
@@ -35,7 +38,18 @@ namespace Controllers {
 				};
 				string path = nodeController.NodeLoadManager.NodeLoader.fileReader.GetDataPackFile() + FILE_EXTENSION_LETTER;
 				searchLoader = new SearchLoader(numberOfDisplayedSearchEntries, path);
+				consoleWindow = console.GetComponent<ConsoleWindowController>();
+				consoleWindow.OnConsoleToggled += (isOn) => onSearchOpened(isOn);
+
 			}
+		}
+
+		public void onSearchOpened(bool value) {
+			if (value) {
+				searchBox.GetComponent<InputField>().ActivateInputField();
+				searchBox.GetComponent<InputField>().Select();
+			}
+			else searchBox.GetComponent<InputField>().DeactivateInputField();
 		}
 
 		private void Awake() {

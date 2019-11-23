@@ -14,7 +14,11 @@ namespace InputModule.Processor {
 			binding.ExitNodeTraverseMode.OnPress += ExitNodeTraverseMode;
 			
 			binding.ConnectionModeToggle.OnPress += () => Controller.GraphController.SwitchConnectionMode();
-			binding.ConnectionScroll.OnInputChange += direction => Controller.ConnectionController.OnScrollInputChanged(direction);
+
+			binding.ConnectionScroll.OnInputChange += direction => {
+				Controller.ConnectionController.OnScrollInputChanged(direction);
+				if (Controller.ActionController.routeController.routeService.IsRoutePlaying) Controller.NetworkController.SyncRoutePlaying(false);
+			};
 
 			binding.HistoryAxis.OnInputChange += BindHistoryEvents;
 			binding.InfoSpaceToggle.OnRelease += ToggleInfoSpace;

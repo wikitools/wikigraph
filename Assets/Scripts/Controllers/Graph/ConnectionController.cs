@@ -29,6 +29,7 @@ namespace Controllers {
 		private ConnectionDistributionService highlightedNodeDistribution;
 		private Graph graph => GraphController.Graph;
 
+
 		private int currentVisibleIndex;
 		private int scrollDirection;
 		private float scrollTimer;

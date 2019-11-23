@@ -15,6 +15,7 @@ namespace Controllers {
 		private NetworkController networkController;
 		private GraphController graphController;
 		private ActionController historyController;
+		public ConnectionController connectionController;
 
 		public RouteService routeService;
 		public Action<bool> OnRoutePlayStateChanged;
@@ -35,7 +36,7 @@ namespace Controllers {
 			nodeController = GetComponent<NodeController>();
 			graphController = GetComponent<GraphController>();
 			historyController = GetComponent<ActionController>();
-			
+			connectionController = GetComponent<ConnectionController>();
 		}
 
 		void Start() {
