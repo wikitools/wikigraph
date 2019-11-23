@@ -29,16 +29,27 @@ namespace Controllers {
 
 		void Start() {
 			singleRemoveAmount = connectionController.ConnectionDistribution.MaxVisibleNumber + 1;
+			nodeController.OnNodeLoaded += (node, position) => AddHighPriorityNode(node.ID);
 			nodeController.OnNodeLoaded += (node, position) => UnloadHandler();
+			connectionController.OnConnectionRangeChanged += (start, end, count) => BehaviourConnectionChange();
+			graphController.ConnectionMode.OnValueChanged += (mode) => BehaviourConnectionChange();
 		}
 		
 		void Update() {
+			if (Input.GetKeyUp(KeyCode.M)) {
+				Debug.Log("Low Priority Nodes: " + lowPriorityNodes.Count);
+				Debug.Log("High Priority Nodes: " + highPriorityNodes.Count);
+				Debug.Log("All Nodes: " + GraphController.Graph.IdNodeMap.Count);
+			}
 		}
 
 		private void UnloadHandler() {
 			if (GraphController.Graph.IdNodeMap.Count < maxNodeLimit) return;
 			for(var n = 0; n < singleRemoveAmount; ++n) {
-				if (lowPriorityNodes.Count == 0) return;
+				if (lowPriorityNodes.Count == 0) {
+					MoveNodePriorityToLow();
+					if (lowPriorityNodes.Count == 0) return;
+				}
 				var toDelete = lowPriorityNodes.First();
 				if (CheckIfInConnectionMap(toDelete)) {
 					AddHighPriorityNode(toDelete);
@@ -79,14 +90,15 @@ namespace Controllers {
 
 		public void MoveNodePriorityToLow() {
 			// Second overload - we move oldest node from high priority to low priority
-			MoveNodePriorityToLow(highPriorityNodes.First());
+			if(highPriorityNodes.Count > 0)
+				MoveNodePriorityToLow(highPriorityNodes.First());
 		}
 
 		public void NodeChangeStateBehaviour(Node node, NodeState state) {
 			// Possible redundancy, although better structuralized if we desire to change behaviour
 			if (state == NodeState.HIGHLIGHTED) {
 				// Highlited node - save it
-				AddHighPriorityNode(node.ID);
+				BehaviourNodeInteracted(node);
 			}
 			if (node.State == NodeState.HIGHLIGHTED && state == NodeState.ACTIVE) {
 				// quick hover - we keep all freshly loaded nodes
@@ -117,5 +129,15 @@ namespace Controllers {
 			return false;
 		}
 		
+		private void BehaviourConnectionChange() {
+			// Changed connections on selected node -> Iterate through connection map and add new nodes to highPriority ones
+			foreach (var com in GraphController.Graph.ConnectionObjectMap) {
+				var connection = com.Key;
+				var node1 = connection.Item1;
+				var node2 = connection.Item2;
+				AddHighPriorityNode(node1.ID);
+				AddHighPriorityNode(node2.ID);
+			}
+		}
 	}
 }
