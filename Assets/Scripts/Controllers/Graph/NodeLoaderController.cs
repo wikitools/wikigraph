@@ -16,6 +16,8 @@ namespace Controllers {
 		public int maxNodeLimit = 2000;
 		private int singleRemoveAmount;
 
+		public bool isReady = false;
+
 		// lowPriorityNodes are nodes about to be deleted
 		private List<uint> lowPriorityNodes = new List<uint>();
 		// highPriorityNodes are nodes that cannot be deleted
@@ -66,11 +68,13 @@ namespace Controllers {
 		}
 
 		public void AddHighPriorityNode(uint id) {
-			if (lowPriorityNodes.Contains(id)) {
-				lowPriorityNodes.Remove(id);
-			}
-			if (!highPriorityNodes.Contains(id)) {
-				highPriorityNodes.Add(id);
+			if (isReady == true) {
+				if (lowPriorityNodes.Contains(id)) {
+					lowPriorityNodes.Remove(id);
+				}
+				if (!highPriorityNodes.Contains(id)) {
+					highPriorityNodes.Add(id);
+				}
 			}
 		}
 

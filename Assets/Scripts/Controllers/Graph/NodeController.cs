@@ -112,8 +112,8 @@ namespace Controllers {
 		
 			NodeStateManager = new NodeStateManager(this);
 			Nodes.Pool = new GameObjectPool(Nodes.Prefab, Nodes.PreloadNumber, Nodes.PoolContainer);
-
 			if (NetworkController.IsServer()) {
+				NodeLoaderController.isReady = false;
 				for (uint i = 0; i < Math.Min(NodeLoaderController.nodeStartingAmount, NodeLoadManager.NodeLoader.GetNodeNumber()); i++) {
 					NodeLoadManager.LoadNode(i);
 					NodeLoaderController.AddLowPriorityNode(i);
@@ -123,6 +123,7 @@ namespace Controllers {
 					if (mode == GraphMode.FREE_FLIGHT)
 						NetworkController.SetSelectedNode((Node) null);
 				};
+				NodeLoaderController.isReady = true;
 			}
 		}
 
