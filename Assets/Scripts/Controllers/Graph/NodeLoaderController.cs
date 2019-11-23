@@ -12,8 +12,8 @@ namespace Controllers {
 		private GraphController graphController;
 		private ConnectionController connectionController;
 
-		public int nodeStartingAmount = 5;
-		public int maxNodeLimit = 50;
+		public int nodeStartingAmount = 1000;
+		public int maxNodeLimit = 2000;
 		private int singleRemoveAmount;
 
 		// lowPriorityNodes are nodes about to be deleted
@@ -36,7 +36,7 @@ namespace Controllers {
 		}
 		
 		void Update() {
-			if (Input.GetKeyUp(KeyCode.M)) {
+			if (Input.GetKeyUp(KeyCode.L)) {
 				Debug.Log("Low Priority Nodes: " + lowPriorityNodes.Count);
 				Debug.Log("High Priority Nodes: " + highPriorityNodes.Count);
 				Debug.Log("All Nodes: " + GraphController.Graph.IdNodeMap.Count);
@@ -58,7 +58,7 @@ namespace Controllers {
 
 				nodeController.NodeLoadManager.UnloadNode(toDelete);
 				lowPriorityNodes.Remove(toDelete);
-				Debug.Log("Unloaded: " + toDelete.ToString());
+				//Debug.Log("Unloaded: " + toDelete.ToString());
 			}
 
 			nodeController.OnNodeLoadSessionEnded?.Invoke();
@@ -72,7 +72,6 @@ namespace Controllers {
 
 		public void AddHighPriorityNode(uint id) {
 			if (lowPriorityNodes.Contains(id)) {
-				Debug.Log("Moved to HIGH: " + id.ToString());
 				lowPriorityNodes.Remove(id);
 			}
 			if (!highPriorityNodes.Contains(id)) {
@@ -84,7 +83,6 @@ namespace Controllers {
 			// First overload - moving node of given ID to low priority nodes
 			if (highPriorityNodes.Contains(id))
 				highPriorityNodes.Remove(id);
-			Debug.Log("Moved to LOW: " + id.ToString());
 			AddLowPriorityNode(id);
 		}
 
