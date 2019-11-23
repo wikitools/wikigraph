@@ -90,7 +90,7 @@ namespace Controllers {
 		}
 
 		private void UpdateConnectionMode(ConnectionMode mode) {
-			if (nodeController.SelectedNode.Type == NodeType.ARTICLE) {
+			if (nodeController.SelectedNode != null && nodeController.SelectedNode.Type == NodeType.ARTICLE) {
 				stateIcon.sprite = (mode == ConnectionMode.PARENTS) ? Config.ArticleConnectionsIn : Config.ArticleConnectionsOut;
 			} else {
 				stateIcon.sprite = (mode == ConnectionMode.PARENTS) ? Config.CategoryConnectionsIn : Config.CategoryConnectionsOut;
@@ -147,7 +147,10 @@ namespace Controllers {
 		private void ShowConnectionRangeCount(int? count) {
 			ConnectionRangeTextUpdate(count);
 			transform.GetChild(2).localPosition = new Vector3(0, (count != null) ? 15.6f : 15f, 4.5f);
-			transform.GetChild(3).gameObject.SetActive(count == null && !consoleWindowController.GetActive());
+			if (consoleWindowController.GetActive() && networkController.IsServer()) {
+				transform.GetChild(3).gameObject.SetActive(false);
+			} else
+			transform.GetChild(3).gameObject.SetActive(count == null);
 		}
 
 		private void ConnectionRangeTextUpdate(int? count) {
