@@ -36,11 +36,6 @@ namespace Controllers {
 		}
 		
 		void Update() {
-			if (Input.GetKeyUp(KeyCode.L)) {
-				Debug.Log("Low Priority Nodes: " + lowPriorityNodes.Count);
-				Debug.Log("High Priority Nodes: " + highPriorityNodes.Count);
-				Debug.Log("All Nodes: " + GraphController.Graph.IdNodeMap.Count);
-			}
 		}
 
 		private void UnloadHandler() {
