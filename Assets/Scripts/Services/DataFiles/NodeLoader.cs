@@ -14,7 +14,7 @@ namespace Services.DataFiles {
 		}
 
 		private static class GRAPH {
-			public const ushort PARENT_LINKS_SIZE = 2;
+			public const ushort PARENT_LINKS_SIZE = 3;
 			public const ushort ID_SIZE = 3;
 		}
 
@@ -44,7 +44,7 @@ namespace Services.DataFiles {
 			uint nodeGraphFilePos = fileReader.ReadInt(DataFileType.MAP, nodeMapFilePos);
 			uint nextNodeGraphFilePos = getNextNodePropPos(DataFileType.GRAPH, nodeMapFilePos + MAP.LINE_SIZE);
 			
-			node.Parents = new uint[fileReader.ReadByte(DataFileType.GRAPH, nodeGraphFilePos)];
+			node.Parents = new uint[fileReader.ReadInt24(DataFileType.GRAPH, nodeGraphFilePos)];
 			nodeGraphFilePos += GRAPH.PARENT_LINKS_SIZE;
 			for (var i = 0; i < node.Parents.Length; i++) {
 				node.Parents[i] = fileReader.ReadInt24(DataFileType.GRAPH, nodeGraphFilePos + i * GRAPH.ID_SIZE);
@@ -53,12 +53,26 @@ namespace Services.DataFiles {
 			for (var i = 0; i < node.Children.Length; i++) {
 				node.Children[i] = fileReader.ReadInt24(DataFileType.GRAPH, nodeGraphFilePos + (node.Parents.Length + i) * GRAPH.ID_SIZE);
 			}
+			// Shuffle Children and parents arrays with constant seed
+			UnityEngine.Random.InitState((int)node.ID);
+			ShuffleArray(node.Parents);
+			ShuffleArray(node.Children);
 		}
 
 		private uint getNextNodePropPos(DataFileType file, long offset) {
 			return offset <= fileReader.GetFileLength(DataFileType.MAP) - 4
 				? fileReader.ReadInt(DataFileType.MAP, offset)
 				: (uint) fileReader.GetFileLength(file);
+		}
+
+		private void ShuffleArray(uint[] array) {
+			int n = array.Length;
+			while (n > 1) {
+				int k = UnityEngine.Random.Range(0, n--);
+				uint temp = array[n];
+				array[n] = array[k];
+				array[k] = temp;
+			}
 		}
 		
 		public void Dispose() {

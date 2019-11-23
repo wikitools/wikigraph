@@ -15,6 +15,10 @@ namespace Services.SyncBuffer {
 			unloadedBuffer.Sync($"{id}");
 		}
 
+		public static List<uint> ParseUnloadedNodes(string nodeStream) {
+			return SyncBuffer.SplitObjectStream(nodeStream).Select(entry => uint.Parse(entry)).ToList();
+		}
+
 		public static List<LoadedNodeSync> ParseLoadedNodes(string nodeStream) {
 			return SyncBuffer.SplitObjectStream(nodeStream).Select(entry => (LoadedNodeSync) entry).ToList();
 		}
