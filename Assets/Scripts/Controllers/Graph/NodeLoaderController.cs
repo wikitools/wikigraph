@@ -16,8 +16,6 @@ namespace Controllers {
 		public int maxNodeLimit = 2000;
 		private int singleRemoveAmount;
 
-		public bool isReady = false;
-
 		// lowPriorityNodes are nodes about to be deleted
 		private List<uint> lowPriorityNodes = new List<uint>();
 		// highPriorityNodes are nodes that cannot be deleted
@@ -30,6 +28,12 @@ namespace Controllers {
 		}
 
 		void Start() {
+			for (uint i = 0; i < Math.Min(nodeStartingAmount, nodeController.NodeLoadManager.NodeLoader.GetNodeNumber()); i++) {
+				nodeController.NodeLoadManager.LoadNode(i);
+				AddLowPriorityNode(i);
+			}
+			nodeController.OnNodeLoadSessionEnded?.Invoke();
+
 			singleRemoveAmount = connectionController.ConnectionDistribution.MaxVisibleNumber + 1;
 			nodeController.OnNodeLoaded += (node, position) => AddHighPriorityNode(node.ID);
 			nodeController.OnNodeLoaded += (node, position) => UnloadHandler();
@@ -68,13 +72,11 @@ namespace Controllers {
 		}
 
 		public void AddHighPriorityNode(uint id) {
-			if (isReady == true) {
-				if (lowPriorityNodes.Contains(id)) {
-					lowPriorityNodes.Remove(id);
-				}
-				if (!highPriorityNodes.Contains(id)) {
-					highPriorityNodes.Add(id);
-				}
+			if (lowPriorityNodes.Contains(id)) {
+				lowPriorityNodes.Remove(id);
+			}
+			if (!highPriorityNodes.Contains(id)) {
+				highPriorityNodes.Add(id);
 			}
 		}
 
