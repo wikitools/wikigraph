@@ -97,12 +97,12 @@ namespace Controllers {
 		#region Mono Behaviour
 
 		public GraphController GraphController { get; private set; }
-		private NetworkController networkController;
+		public NetworkController NetworkController { get; private set; }
 		private InputController inputController;
 
 		void Awake() {
 			GraphController = GetComponent<GraphController>();
-			networkController = GetComponent<NetworkController>();
+			NetworkController = GetComponent<NetworkController>();
 			inputController = GetComponent<InputController>();
 			NodeLoadManager = new NodeLoadManager(this);
 		}
@@ -112,13 +112,13 @@ namespace Controllers {
 			NodeStateManager = new NodeStateManager(this);
 			Nodes.Pool = new GameObjectPool(Nodes.Prefab, Nodes.PreloadNumber, Nodes.PoolContainer);
 
-			if (networkController.IsServer()) {
+			if (NetworkController.IsServer()) {
 				for (uint i = 0; i < Math.Min(NodeLoadedLimit, NodeLoadManager.NodeLoader.GetNodeNumber()); i++)
 					NodeLoadManager.LoadNode(i);
 				OnNodeLoadSessionEnded?.Invoke();
 				GraphController.GraphMode.OnValueChanged += mode => {
 					if (mode == GraphMode.FREE_FLIGHT)
-						networkController.SetSelectedNode((Node) null);
+						NetworkController.SetSelectedNode((Node) null);
 				};
 			}
 		}

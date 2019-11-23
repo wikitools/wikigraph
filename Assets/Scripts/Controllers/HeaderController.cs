@@ -42,7 +42,7 @@ namespace Controllers {
 			nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			nodeController.OnHighlightedNodeChanged += UpdateNodeHeaderAfterSelectOrHighlight;
 			graphController.ConnectionMode.OnValueChanged += UpdateConnectionMode;
-			routeController.OnRoutePlayStateChanged += (isStarted) => UpdateAutoStateAfterRouteChange(isStarted);
+			routeController.OnRoutePlayStateChanged += UpdateAutoStateAfterRouteChange;
 			consoleWindowController.OnConsoleToggled += UpdateConsoleState;
 			connectionController.OnConnectionRangeChanged += UpdateNodeHeaderAfterConnectionRangeChange;
 			connectionController.OnConnectionRangeChanged?.Invoke(0, 0, -1);
@@ -101,11 +101,9 @@ namespace Controllers {
 			transform.GetChild(6).gameObject.SetActive(active);
 		}
 
-		private Action UpdateAutoStateAfterRouteChange(bool started) {
-			return () => {
-				routeActive = started;
-				UpdateAutoState(started);
-			};
+		private void UpdateAutoStateAfterRouteChange(bool started) {
+			routeActive = started;
+			UpdateAutoState(started);
 		}
 
 		private void UpdateAutoState(bool value) {

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Model;
 using Services.SyncBuffer;
 using UnityEngine;
@@ -10,6 +12,10 @@ namespace Controllers {
 
 		private NetworkView NetworkView;
 		private NodeSyncBuffer nodeSyncBuffer;
+
+		public Action<Node> BeforeSelectedNodeSync;
+		public Action<ConnectionMode> BeforeConnectionModeSync;
+		public Action<Node> BeforeHighlightedNodeSync;
 
 		private static readonly int PORT = 25000;
 
@@ -64,14 +70,20 @@ namespace Controllers {
 
 		public void SetHighlightedNode(Node node) => SetHighlightedNode(NodeToID(node));
 
-		public void SetHighlightedNode(string id) => Synchronize("setHighlightedNode", PrepID(id));
+		public void SetHighlightedNode(string id) {
+			BeforeHighlightedNodeSync?.Invoke(IDToNode(PrepID(id)));
+			Synchronize("setHighlightedNode", PrepID(id));
+		}
 
 		[RPC]
 		private void setHighlightedNode(string id) {
 			nodeController.HighlightedNode = IDToNode(id);
 		}
 
-		public void SetConnectionMode(ConnectionMode mode) => Synchronize("setConnectionMode", (int) mode);
+		public void SetConnectionMode(ConnectionMode mode) {
+			BeforeConnectionModeSync?.Invoke(mode);
+			Synchronize("setConnectionMode", (int) mode);
+		}
 
 		[RPC]
 		private void setConnectionMode(int mode) {
@@ -80,7 +92,10 @@ namespace Controllers {
 
 		public void SetSelectedNode(Node node) => SetSelectedNode(NodeToID(node));
 
-		public void SetSelectedNode(string id) => Synchronize("setSelectedNode", PrepID(id));
+		public void SetSelectedNode(string id) {
+			BeforeSelectedNodeSync?.Invoke(IDToNode(PrepID(id)));
+			Synchronize("setSelectedNode", PrepID(id));
+		}
 
 		[RPC]
 		private void setSelectedNode(string id) {
