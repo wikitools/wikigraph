@@ -19,10 +19,7 @@ namespace InputModule.Processor {
 			binding.HistoryAxis.OnInputChange += BindHistoryEvents;
 			binding.InfoSpaceToggle.OnPress += ToggleInfoSpace;
 
-			binding.ConnectionsScrollAxis.OnInputChange += direction => {
-				Controller.ConnectionController.OnScrollInputChanged(direction);
-				if (Controller.ActionController.routeController.routeService.IsRoutePlaying) Controller.NetworkController.SyncRoutePlaying(false);
-			};
+			binding.ConnectionsScrollAxis.OnInputChange += OnScrollInputChanged;
 			binding.OperatorConsoleToggle.OnRelease += ToggleOperatorConsole;
 		}
 

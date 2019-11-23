@@ -30,7 +30,7 @@ namespace Services.Connection {
 
 		private void DistributeConnections() {
 			int connectionNumber = Mathf.Min(controller.GetNodeNeighbours(CentralNode).ToArray().Length, distribution.MaxVisibleNumber);
-			int totalNumber = connectionNumber + distribution.ChangeBy;
+			int totalNumber = connectionNumber + distribution.ChangeBy + 2;
 			int firstRowNumber = Mathf.Min(totalNumber, Mathf.RoundToInt(distribution.MaxVisibleNumber * .75f));
 			
 			DistributeAtElevation(firstRowNumber, distribution.RingAngleSpan.y);
@@ -53,8 +53,11 @@ namespace Services.Connection {
 		public void GenerateRoute(Model.Connection.Connection connection, Node to) {
 			var basePos = NodePosition(CentralNode);
 			var toPos = NodePosition(to);
+			
 			int nearestPlace = 0;
 			float nearestDist = float.MaxValue;
+			if (freePlaces.Count == 0) 
+				DistributeAtElevation(distribution.ChangeBy, (distribution.RingAngleSpan.x + distribution.RingAngleSpan.y) / 2, 15);
 			for (var i = 0; i < freePlaces.Count; i++) {
 				float dist = Vector3.Distance(basePos + freePlaces[i], toPos);
 				if (nearestDist > dist) {

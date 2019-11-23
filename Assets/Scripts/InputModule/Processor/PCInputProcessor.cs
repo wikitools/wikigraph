@@ -15,10 +15,7 @@ namespace InputModule.Processor {
 			
 			binding.ConnectionModeToggle.OnPress += () => Controller.GraphController.SwitchConnectionMode();
 
-			binding.ConnectionScroll.OnInputChange += direction => {
-				Controller.ConnectionController.OnScrollInputChanged(direction);
-				if (Controller.ActionController.routeController.routeService.IsRoutePlaying) Controller.NetworkController.SyncRoutePlaying(false);
-			};
+			binding.ConnectionScroll.OnInputChange += OnScrollInputChanged;
 
 			binding.HistoryAxis.OnInputChange += BindHistoryEvents;
 			binding.InfoSpaceToggle.OnRelease += ToggleInfoSpace;
