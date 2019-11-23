@@ -21,19 +21,21 @@ namespace Controllers {
 		private NodeController nodeController;
 		private NetworkController networkController;
 		private ConnectionController connectionController;
+		private HeaderController headerController;
 
 		void Awake() {
 			networkController = Graph.GetComponent<NetworkController>();
 			inputController = Graph.GetComponent<InputController>();
 			nodeController = Graph.GetComponent<NodeController>();
 			connectionController = Graph.GetComponent<ConnectionController>();
+			headerController = Header.GetComponent<HeaderController>();
 		}
 
 		void Start() {
 			BackgroundCanvasGroups = transform.GetComponentsInChildren<CanvasGroup>();
 			SetRendererSortingOrder(transform, 20);
 			State = true;
-			Header.SetActive(!State);
+			headerController.SetEnabled(!State);
 			SpaceOpacity = State ? 1.0f : 0.0f;
 		}
 
@@ -45,20 +47,20 @@ namespace Controllers {
 			if (State && SpaceOpacity == 1.0f) {
 				StopAllCoroutines();
 				StartCoroutine(ChangeOpacity(SpaceOpacity, 0f, 1f));
-				inputController.SetBlockInput(false, InputBlockType.INFO_SPACE);
 			}
 			if (!State && SpaceOpacity == 0.0f) {
 				StopAllCoroutines();
+				nodeController.HighlightedNode = null;
 				StartCoroutine(ChangeOpacity(SpaceOpacity, 1f, 1f));
-				inputController.SetBlockInput(true, InputBlockType.INFO_SPACE);
 			}
 		}
 
 		IEnumerator ChangeOpacity(float start, float end, float duration) {
 			float elapsed = 0.0f;
 			if (!State) {
-				Header.SetActive(false);
+				headerController.SetEnabled(false);
 				SetRendererSortingOrder(Grid.transform, 50);
+				inputController.SetBlockInput(true, InputBlockType.INFO_SPACE);
 			}
 			while (elapsed < duration) {
 				SpaceOpacity = Mathf.Lerp(start, end, elapsed / duration);
@@ -72,9 +74,10 @@ namespace Controllers {
 			foreach (CanvasGroup canvas in BackgroundCanvasGroups)
 				canvas.alpha = end;
 			SpaceOpacity = end;
-			if (State) { 
-				Header.SetActive(true);
+			if (State) {
+				headerController.SetEnabled(true);
 				SetRendererSortingOrder(Grid.transform, -10);
+				inputController.SetBlockInput(false, InputBlockType.INFO_SPACE);
 			}
 			State = !State;
 		}

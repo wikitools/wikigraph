@@ -1,6 +1,4 @@
 using Controllers;
-using InputModule.Binding;
-using Services;
 using UnityEngine;
 
 namespace InputModule.Processor {
@@ -15,17 +13,28 @@ namespace InputModule.Processor {
 
 		protected Transform EntityTransform => Controller.CameraController.Entity.transform;
 
-		protected void ExitNodeTraverseMode() => Controller.NetworkController.SetGraphMode(GraphMode.FREE_FLIGHT);
+		protected void ExitNodeTraverseMode() {
+			if (Controller.ActionController.routeController.routeService.IsRoutePlaying) 
+				Controller.NetworkController.SyncRoutePlaying(false);
+			else Controller.NetworkController.SetGraphMode(GraphMode.FREE_FLIGHT);
+		}
+
+		protected void OnScrollInputChanged(int direction) {
+			if (Controller.ActionController.routeController.routeService.IsRoutePlaying) 
+				Controller.NetworkController.SyncRoutePlaying(false);
+			Controller.ConnectionController.OnScrollInputChanged(direction);
+		}
 
 		protected void BindHistoryEvents(int direction) {
 			if(direction == 1)
-				Controller.HistoryController.HistoryService.UndoAction();
+				Controller.ActionController.ActionService.UndoAction();
 			else if (direction == -1)
-				Controller.HistoryController.HistoryService.RedoAction();
+				Controller.ActionController.ActionService.RedoAction();
 		}
 		
 		protected void ToggleInfoSpace() => Controller.NetworkController.ToggleInfoSpace();
 		protected void ToggleOperatorConsole() => Controller.NetworkController.ToggleConsole();
+
 
 		protected void OnNodeChosen(Ray ray) {
 			RaycastHit raycastHit;
@@ -36,8 +45,8 @@ namespace InputModule.Processor {
 
 		protected void OnNodePointed(Ray ray) {
 			RaycastHit raycastHit;
-			var id = RaycastNode(ray, out raycastHit) ? raycastHit.collider.gameObject.name : "";
-			if (Controller.NodeController.IsNodeInteractable(id != "" ? raycastHit.collider.gameObject.layer : -1, id))
+			var id = RaycastNode(ray, out raycastHit) ? raycastHit.collider.gameObject.name : null;
+			if (Controller.NodeController.IsNodeInteractable(id != null ? raycastHit.collider.gameObject.layer : -1, id))
 				Controller.NetworkController.SetHighlightedNode(id);
 		}
 

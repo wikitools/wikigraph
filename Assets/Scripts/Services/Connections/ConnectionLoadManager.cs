@@ -57,7 +57,7 @@ namespace Services.Connection {
 			StartConnectionAnimation(connection, AnimationDirection.OUT);
 
 			if (distributionService.CentralNode == controller.NodeController.SelectedNode) {
-				GameObject conNode = controller.NodeController.NodeLoadManager.LoadConnectionNode(otherNode, centerNode.transform.position + connection.Route.SpherePoint);
+				GameObject conNode = controller.NodeController.NodeLoadManager.LoadConnectionNode(otherNode, centerNode.transform.position + connection.ConnectionRoute.SpherePoint);
 				graph.ConnectionNodes.Add(connection, conNode);
 			}
 		}
@@ -89,7 +89,7 @@ namespace Services.Connection {
 		
 		private IEnumerator AnimateConnection(GameObject connectionObject, Model.Connection.Connection connection, AnimationDirection direction) {
 			var line = connectionObject.GetComponent<LineRenderer>();
-			var segmentPoints = connection.Route.SegmentPoints;
+			var segmentPoints = connection.ConnectionRoute.SegmentPoints;
 			int currentCount = line.positionCount;
 			int dir = (direction == AnimationDirection.OUT ? 1 : -1) * controller.ConnectionLoadSpeed;
 			while (direction == AnimationDirection.OUT ? currentCount < segmentPoints.Length : currentCount > 0) {

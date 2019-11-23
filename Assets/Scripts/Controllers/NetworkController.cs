@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Model;
 using Services.SyncBuffer;
 using UnityEngine;
@@ -10,6 +12,10 @@ namespace Controllers {
 
 		private NetworkView NetworkView;
 		private NodeSyncBuffer nodeSyncBuffer;
+
+		public Action<Node> BeforeSelectedNodeSync;
+		public Action<ConnectionMode> BeforeConnectionModeSync;
+		public Action<Node> BeforeHighlightedNodeSync;
 
 		private static readonly int PORT = 25000;
 
@@ -48,6 +54,13 @@ namespace Controllers {
 			infoSpaceController.ToggleVisibility();
 		}
 
+		public void SyncRoutePlaying(bool playing) => Synchronize("syncRoutePlaying", playing);
+
+		[RPC]
+		private void syncRoutePlaying(bool playing) {
+			actionController.routeController.OnRoutePlayStateChanged?.Invoke(playing);
+		}
+
 		public void ToggleConsole() => Synchronize("toggleConsole");
 
 		[RPC]
@@ -57,14 +70,20 @@ namespace Controllers {
 
 		public void SetHighlightedNode(Node node) => SetHighlightedNode(NodeToID(node));
 
-		public void SetHighlightedNode(string id) => Synchronize("setHighlightedNode", id);
+		public void SetHighlightedNode(string id) {
+			BeforeHighlightedNodeSync?.Invoke(IDToNode(PrepID(id)));
+			Synchronize("setHighlightedNode", PrepID(id));
+		}
 
 		[RPC]
 		private void setHighlightedNode(string id) {
 			nodeController.HighlightedNode = IDToNode(id);
 		}
 
-		public void SetConnectionMode(ConnectionMode mode) => Synchronize("setConnectionMode", (int) mode);
+		public void SetConnectionMode(ConnectionMode mode) {
+			BeforeConnectionModeSync?.Invoke(mode);
+			Synchronize("setConnectionMode", (int) mode);
+		}
 
 		[RPC]
 		private void setConnectionMode(int mode) {
@@ -73,7 +92,10 @@ namespace Controllers {
 
 		public void SetSelectedNode(Node node) => SetSelectedNode(NodeToID(node));
 
-		public void SetSelectedNode(string id) => Synchronize("setSelectedNode", id);
+		public void SetSelectedNode(string id) {
+			BeforeSelectedNodeSync?.Invoke(IDToNode(PrepID(id)));
+			Synchronize("setSelectedNode", PrepID(id));
+		}
 
 		[RPC]
 		private void setSelectedNode(string id) {
@@ -86,7 +108,8 @@ namespace Controllers {
 
 		#endregion
 
-		private string NodeToID(Node node) => node != null ? node.ID.ToString() : "";
+		private string NodeToID(Node node) => node != null ? node.ID.ToString() : null;
+		private string PrepID(string id) => id ?? "";
 		private Node IDToNode(string id) => id == "" ? null : GraphController.Graph.GetNodeFromGameObjectName(id);
 
 		public bool IsServer() {
@@ -109,6 +132,7 @@ namespace Controllers {
 		private ConnectionController connectionController;
 		private InfoSpaceController infoSpaceController;
 		private ConsoleWindowController consoleController;
+		private ActionController actionController;
 
 		private void Awake() {
 			inputController = GetComponent<InputController>();
@@ -117,6 +141,7 @@ namespace Controllers {
 			connectionController = GetComponent<ConnectionController>();
 			infoSpaceController = (InfoSpaceController) Resources.FindObjectsOfTypeAll(typeof(InfoSpaceController))[0];
 			consoleController = (ConsoleWindowController) Resources.FindObjectsOfTypeAll(typeof(ConsoleWindowController))[0];
+			actionController = GetComponent<ActionController>();
 
 			NetworkView = GetComponent<NetworkView>();
 

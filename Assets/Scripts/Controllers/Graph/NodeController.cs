@@ -87,9 +87,9 @@ namespace Controllers {
 		}
 
 		public bool IsNodeInteractable(int layer, string id) {
-			bool modeCondition = id == "" || (GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT ? layer == LayerMask.NameToLayer("Node")
+			bool modeCondition = id == null || (GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT ? layer == LayerMask.NameToLayer("Node")
 				                     : SelectedNode.ID.ToString() == id || layer == LayerMask.NameToLayer("Connection Node"));
-			return (highlightedNode != null ? highlightedNode.ID.ToString() : "") != id && modeCondition;
+			return (HighlightedNode != null ? HighlightedNode.ID.ToString() : null) != id && modeCondition;
 		}
 
 		#endregion
@@ -97,27 +97,28 @@ namespace Controllers {
 		#region Mono Behaviour
 
 		public GraphController GraphController { get; private set; }
-		private NetworkController networkController;
+		public NetworkController NetworkController { get; private set; }
 		private InputController inputController;
 
 		void Awake() {
 			GraphController = GetComponent<GraphController>();
-			networkController = GetComponent<NetworkController>();
+			NetworkController = GetComponent<NetworkController>();
 			inputController = GetComponent<InputController>();
+			NodeLoadManager = new NodeLoadManager(this);
 		}
 
 		private void Start() {
-			NodeLoadManager = new NodeLoadManager(this);
+		
 			NodeStateManager = new NodeStateManager(this);
 			Nodes.Pool = new GameObjectPool(Nodes.Prefab, Nodes.PreloadNumber, Nodes.PoolContainer);
 
-			if (networkController.IsServer()) {
+			if (NetworkController.IsServer()) {
 				for (uint i = 0; i < Math.Min(NodeLoadedLimit, NodeLoadManager.NodeLoader.GetNodeNumber()); i++)
 					NodeLoadManager.LoadNode(i);
 				OnNodeLoadSessionEnded?.Invoke();
 				GraphController.GraphMode.OnValueChanged += mode => {
 					if (mode == GraphMode.FREE_FLIGHT)
-						networkController.SetSelectedNode((Node) null);
+						NetworkController.SetSelectedNode((Node) null);
 				};
 			}
 		}

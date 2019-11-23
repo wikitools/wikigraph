@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Model.Connection {
 	public class Connection : Tuple<Node, Node> {
-		public Route Route;
+		public ConnectionRoute ConnectionRoute;
 		public Connection(Node one, Node two) : base(one.ID <= two.ID ? one : two, one.ID <= two.ID ? two : one) { }
 
 		public List<Node> Ends => new List<Node> {Item1, Item2};

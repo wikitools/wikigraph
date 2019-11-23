@@ -19,6 +19,7 @@ namespace Controllers {
 		private InputController inputController;
 		private NodeController nodeController;
 		private ConnectionController connectionController;
+		private HeaderController headerController;
 
 		private bool active;
 		public Action<bool> OnConsoleToggled;
@@ -29,6 +30,7 @@ namespace Controllers {
 			inputController = Graph.GetComponent<InputController>();
 			nodeController = Graph.GetComponent<NodeController>();
 			connectionController = Graph.GetComponent<ConnectionController>();
+			headerController = Header.GetComponent<HeaderController>();
 		}
 
 		void Start() {
@@ -52,8 +54,12 @@ namespace Controllers {
 			if(!networkController.IsServer())
 				return;
 			canvas.enabled = active;
-			Header.SetActive(!active);
+			headerController.SetEnabled(!active);
 			inputController.SetBlockInput(canvas.enabled, InputBlockType.CONSOLE);
+		}
+
+		public bool GetActive() {
+			return active;
 		}
 
 		[Serializable]

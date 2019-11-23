@@ -1,10 +1,14 @@
-﻿using Services.History.Actions;
+﻿using Controllers;
+using Services.History.Actions;
+using Services.Routes;
+using Services.Search;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Services.History {
-	public class HistoryService {
-		private readonly Stack<UserAction> undoActionStack = new Stack<UserAction>();
-		private readonly Stack<UserAction> redoActionStack = new Stack<UserAction>();
+	public class ActionService {
+		public Stack<UserAction> undoActionStack = new Stack<UserAction>();
+		public Stack<UserAction> redoActionStack = new Stack<UserAction>();
 
 		public void RedoAction() {
 			if (redoActionStack.Count != 0) {
@@ -26,5 +30,8 @@ namespace Services.History {
 			undoActionStack.Push(userAction);
 			redoActionStack.Clear();
 		}
+
+		
+		
 	}
 }

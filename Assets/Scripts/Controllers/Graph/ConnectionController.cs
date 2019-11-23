@@ -29,6 +29,7 @@ namespace Controllers {
 		private ConnectionDistributionService highlightedNodeDistribution;
 		private Graph graph => GraphController.Graph;
 
+
 		private int currentVisibleIndex;
 		private int scrollDirection;
 		private float scrollTimer;
@@ -46,6 +47,7 @@ namespace Controllers {
 			if (scrollDirection == 0) return;
 			scrollTimer -= Time.deltaTime * 1000;
 			if (scrollTimer <= 0) {
+				LoadNewConnectedNodeSet(NodeController.SelectedNode, FilterSelectedNodeSet);
 				NetworkController.SyncConnectionScrolled(scrollDirection);
 				SeriesScrolls++;
 				ResetTimer();
@@ -87,6 +89,30 @@ namespace Controllers {
 
 		#region Connection Updating
 
+		private void LoadNewConnectedNodeSet(Node centerNode, Func<IEnumerable<uint>, List<uint>> setFilter, bool resetIndex = false, ConnectionMode? mode = null) {
+			if(resetIndex)
+				currentVisibleIndex = 0;
+			if(centerNode == null)
+				return;
+			setFilter(GetNodeNeighbours(centerNode, mode ?? GraphController.ConnectionMode.Value)).ForEach(id => NodeController.NodeLoadManager.LoadNode(id));
+			NodeController.OnNodeLoadSessionEnded?.Invoke();
+		}
+
+		private List<uint> FilterHighlightedNodeSet(IEnumerable<uint> set) => set.Take(ConnectionDistribution.MaxVisibleNumber).ToList();
+
+		private List<uint> FilterSelectedNodeSet(IEnumerable<uint> set) {
+			var connectedIDs = set.ToList();
+			List<uint> newSubList;
+			if (connectedIDs.Count <= ConnectionDistribution.MaxVisibleNumber) {
+				newSubList = connectedIDs;
+			} else {
+				var index = currentVisibleIndex;
+				newSubList = Utils.ScrollList(connectedIDs, ref index, scrollDirection * ConnectionDistribution.ChangeBy,
+					ConnectionDistribution.MaxVisibleNumber);
+			}
+			return newSubList;
+		}
+
 		public void UpdateVisibleConnections(int direction) {
 			var centerNode = NodeController.SelectedNode;
 			var connectedIDs = GetNodeNeighbours(centerNode).ToList();
@@ -115,17 +141,19 @@ namespace Controllers {
 		}
 
 		private List<Connection> CreateConnectionsAround(Node centerNode, int limit) {
-			var connections = GetNodeNeighbours(centerNode).Take(limit).Select(id => new Connection(centerNode, NodeController.NodeLoadManager.LoadNode(id))).ToList();
-			NodeController.OnNodeLoadSessionEnded?.Invoke(); //can trigger loading of unloaded connected nodes TODO move once we have a node loader
-			return connections;
+			return GetNodeNeighbours(centerNode).Take(limit).Select(id => CreateConnection(centerNode, id)).ToList();
 		}
 
 		private Connection CreateConnection(Node centerNode, uint otherID) {
-			return new Connection(centerNode, NodeController.NodeLoadManager.LoadNode(otherID));
+			return new Connection(centerNode, GraphController.Graph.IdNodeMap[otherID]);
 		}
 
 		public IEnumerable<uint> GetNodeNeighbours(Node centerNode) {
-			return centerNode.GetConnections(GraphController.ConnectionMode.Value).Where(id => id != centerNode.ID);
+			return GetNodeNeighbours(centerNode, GraphController.ConnectionMode.Value);
+		}
+
+		public IEnumerable<uint> GetNodeNeighbours(Node centerNode, ConnectionMode mode) {
+			return centerNode.GetConnections(mode).Where(id => id != centerNode.ID);
 		}
 
 		private List<Connection> GetConnectionsAround(Node centerNode) {
@@ -150,7 +178,12 @@ namespace Controllers {
 
 		private void Start() {
 			Connections.Pool = new GameObjectPool(Connections.Prefab, Connections.PreloadNumber, Connections.PoolContainer);
-			
+
+			if (NetworkController.IsServer()) {
+				NetworkController.BeforeConnectionModeSync += mode => LoadNewConnectedNodeSet(NodeController.SelectedNode, FilterSelectedNodeSet, true, mode);
+				NetworkController.BeforeSelectedNodeSync += node => LoadNewConnectedNodeSet(node, FilterSelectedNodeSet, true);
+				NetworkController.BeforeHighlightedNodeSync += node => LoadNewConnectedNodeSet(node, FilterHighlightedNodeSet);
+			}
 			NodeController.OnSelectedNodeChanged += (oldNode, newNode) => ReloadSelectedNodeConnections(newNode);
 			GraphController.ConnectionMode.OnValueChanged += mode => ReloadSelectedNodeConnections(NodeController.SelectedNode);
 			NodeController.OnHighlightedNodeChanged += OnHighlightedNodeChanged;

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
-using Services;
+using Model;
 using UnityEngine;
 
 namespace Controllers {
 	public class GraphController : MonoBehaviour {
-
 		public float WorldRadius;
 		public static Graph Graph { get; } = new Graph();
 

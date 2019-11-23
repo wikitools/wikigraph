@@ -3,7 +3,8 @@ using Model;
 
 namespace Services.DataFiles {
 	public class NodeLoader: IDisposable {
-		private DataFileReader fileReader;
+		public DataFileReader fileReader { get; private set; }
+		private readonly uint nodeTypeBorder;
 
 		private static class MAP {
 			public const ushort GRAPH_OFFSET_SIZE = 4;
@@ -14,17 +15,18 @@ namespace Services.DataFiles {
 		}
 
 		private static class GRAPH {
-			public const ushort PARENT_LINKS_SIZE = 2;
+			public const ushort PARENT_LINKS_SIZE = 3;
 			public const ushort ID_SIZE = 3;
 		}
 
 		public NodeLoader(string dataPack, string dataPackDate) {
 			fileReader = new DataFileReader(dataPack, dataPackDate);
+			nodeTypeBorder = fileReader.ReadInt(DataFileType.INFO, 0);
 		}
 
 		public Node LoadNode(uint id) {
 			var node = new Node(id);
-			node.Type = id < fileReader.ReadInt(DataFileType.INFO, 0) ? NodeType.ARTICLE : NodeType.CATEGORY;
+			node.Type = GetNodeType(id);
 			long nodeMapFilePos = id * MAP.LINE_SIZE;
 			loadNodeConnections(ref node, nodeMapFilePos);
 			
@@ -35,16 +37,16 @@ namespace Services.DataFiles {
 			node.Title = node.Title.Replace('_', ' ');
 			return node;
 		}
+		
+		public NodeType GetNodeType(uint id) => id < nodeTypeBorder ? NodeType.ARTICLE : NodeType.CATEGORY;
 
-		public uint GetNodeNumber() {
-			return (uint) (fileReader.GetFileLength(DataFileType.MAP) / MAP.LINE_SIZE);
-		}
+		public uint GetNodeNumber() => (uint) (fileReader.GetFileLength(DataFileType.MAP) / MAP.LINE_SIZE);
 
 		private void loadNodeConnections(ref Node node, long nodeMapFilePos) {
 			uint nodeGraphFilePos = fileReader.ReadInt(DataFileType.MAP, nodeMapFilePos);
 			uint nextNodeGraphFilePos = getNextNodePropPos(DataFileType.GRAPH, nodeMapFilePos + MAP.LINE_SIZE);
 			
-			node.Parents = new uint[fileReader.ReadShort(DataFileType.GRAPH, nodeGraphFilePos)];
+			node.Parents = new uint[fileReader.ReadInt24(DataFileType.GRAPH, nodeGraphFilePos)];
 			nodeGraphFilePos += GRAPH.PARENT_LINKS_SIZE;
 			for (var i = 0; i < node.Parents.Length; i++) {
 				node.Parents[i] = fileReader.ReadInt24(DataFileType.GRAPH, nodeGraphFilePos + i * GRAPH.ID_SIZE);

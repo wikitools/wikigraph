@@ -5,11 +5,11 @@ using Model.Connection;
 using UnityEngine;
 
 namespace Services.Connection {
-	public class RouteService {
+	public class ConnectionRouteService {
 		private static readonly int CURVE_BASE_ANGLE = 30;
 		private static int CURVE_SKEW_ANGLE = 10;
 
-		public static Route GenerateRoute(Vector3 from, Vector3 to, Vector3 relSpherePoint) {
+		public static ConnectionRoute GenerateConnectionRoute(Vector3 from, Vector3 to, Vector3 relSpherePoint) {
 			var controlPoints = new List<Vector3> {Vector3.zero};
 			var pointDir = Vector3.ProjectOnPlane(relSpherePoint, Vector3.up);
 			controlPoints.Add(pointDir);
@@ -29,7 +29,7 @@ namespace Services.Connection {
 
 			var controlPointArray = controlPoints.ToArray();
 			var curveSegments = BezierCurveService.GenerateBSpline(controlPointArray, 4);
-			return new Route {SegmentPoints = curveSegments, ControlPoints = controlPointArray, SpherePoint = relSpherePoint};
+			return new ConnectionRoute {SegmentPoints = curveSegments, ControlPoints = controlPointArray, SpherePoint = relSpherePoint};
 		}
 	}
 }

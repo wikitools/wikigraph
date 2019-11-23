@@ -18,7 +18,7 @@ namespace Services.Nodes {
 		public void UpdateNodeStates() {
 			SetAllNodesAs(DefaultState);
 			if(controller.HighlightedNode != null)
-				SetNodeState(controller.HighlightedNode, NodeState.HIGHLIGHTED);
+				SetConditionalNodeState(controller.HighlightedNode, NodeState.HIGHLIGHTED);
 			if (controller.GraphController.GraphMode.Value == GraphMode.NODE_TRAVERSE)
 				SetNodeState(controller.SelectedNode, NodeState.SELECTED);
 		}
@@ -46,10 +46,8 @@ namespace Services.Nodes {
 		private void SetConnectionNodeState(Node node, NodeState state) {
 			node.State = state;
 			var connection = GraphController.Graph.GetConnectionBetween(controller.SelectedNode, node);
-			if (connection == null || !GraphController.Graph.ConnectionNodes.ContainsKey(connection)) {
-				logger.Warning("No connection for node found");
+			if (connection == null || !GraphController.Graph.ConnectionNodes.ContainsKey(connection))
 				return;
-			}
 			SetNodeObjectState(GraphController.Graph.ConnectionNodes[connection], node.Type, state);
 		}
 		

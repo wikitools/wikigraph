@@ -24,6 +24,8 @@ namespace Services.Nodes {
 		public NodeLoader NodeLoader;
 
 		public Node LoadNode(uint id) {
+			if (controller.NetworkController.IsClient() && !GraphController.Graph.IdNodeMap.ContainsKey(id))
+				Debug.LogError("Node position should never be determined by a client");
 			return LoadNode(id, Random.insideUnitSphere * controller.GraphController.WorldRadius);
 		}
 
