@@ -178,13 +178,13 @@ namespace Controllers {
 
 				// Primary range size & position
 				float primaryRangeWidth = (float)(end > start ? end - start + 1 : count - start + 1) / count * indicatorWidth;
-				targetPrimaryRangeSize = new Vector2(primaryRangeWidth, indicatorHeight);
+				targetPrimaryRangeSize = new Vector2(primaryRangeWidth < Config.HeaderIndicatorMinWidth ? Config.HeaderIndicatorMinWidth : primaryRangeWidth, indicatorHeight);
 				targetPrimaryRangePosition = new Vector3(-(indicatorWidth - primaryRangeWidth) / 2.0f + ((start - 1) * indicatorWidth / count), 0, 0);
 
 				if (end <= start) {
 					// Second range size & position
 					float secondRangeWidth = (float)end / count * 12.0f;
-					targetSecondaryRangeSize = new Vector2(secondRangeWidth, indicatorHeight);
+					targetSecondaryRangeSize = new Vector2(secondRangeWidth < Config.HeaderIndicatorMinWidth ? Config.HeaderIndicatorMinWidth : secondRangeWidth, indicatorHeight);
 					targetSecondaryRangePosition = new Vector3(-(indicatorWidth - secondRangeWidth) / 2.0f, 0, 0);
 				} else {
 					targetSecondaryRangeSize = new Vector2(0, indicatorHeight);
@@ -236,6 +236,7 @@ namespace Controllers {
 			public float HeaderHeight = -6f;
 			public float HeaderDeviation = -10f;
 			public float HeaderDistance = 16f;
+			public float HeaderIndicatorMinWidth = 0.25f;
 			public Vector2 HeaderRangeSize = new Vector2(12f, 0.25f);
 			public string CurrentlySelectedText = "Selected:";
 			public string CurrentlyLookingAtText = "Looking at:";
