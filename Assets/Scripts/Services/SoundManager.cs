@@ -17,8 +17,9 @@ namespace Services {
 			Register(SoundType.NODE_SELECTED, "select1", "selectandscroll2", "selectandscroll3", "selectandscroll4");
 			Register(SoundType.SCROLLED, "scroll1", "selectandscroll2", "selectandscroll3", "selectandscroll4");
 			Register(SoundType.HISTORY, "historiaUP", "historiaDOWN");
-			Register(SoundType.INFO, "infoOUT", "infoDOWN");
+			Register(SoundType.INFO, "infoOUT", "infoIN");
 			Register(SoundType.MODE, "mode1", "mode2");
+			Register(SoundType.FREE_FLIGHT, "freeIN", "freeOUT");
 		}
 
 		public AudioClip GetRandom(SoundType type) => Sounds[type][random.Next(Sounds[type].Length)];
@@ -39,5 +40,6 @@ namespace Services {
 		HISTORY,
 		INFO,
 		MODE,
+		FREE_FLIGHT
 	}
 }

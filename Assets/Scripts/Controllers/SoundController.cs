@@ -1,4 +1,5 @@
 ﻿using Controllers;
+using InputModule.Processor;
 using Model;
 using Services;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ public class SoundController : MonoBehaviour {
 
 	int scrollSoundPositionUp = 0;
 	int scrollSoundPositionDown = 3;
+	bool isInfo = true;
 
 	void Start() {
 		if (Graph.GetComponent<NetworkController>().IsClient()) {
@@ -38,18 +40,18 @@ public class SoundController : MonoBehaviour {
 		actionController = Graph.GetComponent<ActionController>();
 		connectionController = Graph.GetComponent<ConnectionController>();
 		actionController.playSelectSound += (oldNode, newNode, source, isUndo) => {
-			if (newNode != null && oldNode != null) {
-				if (source != ActionController.NodeChangedSource.History) {
-					PlayStickySoundRandom(SoundType.NODE_SELECTED);
-				}
-				else {
-					PlayStickySoundSelected(SoundType.HISTORY, isUndo ? 0 : 1);
-				}
-			}
 
+			if (source == ActionController.NodeChangedSource.History) PlayStickySoundSelected(SoundType.HISTORY, isUndo ? 0 : 1);
+			else if (newNode != null && oldNode != null) PlayStickySoundRandom(SoundType.NODE_SELECTED);
+			else PlayStickySoundSelected(SoundType.FREE_FLIGHT, newNode == null ? 0 : 1);
+			
 		};
-		graphController.ConnectionMode.OnValueChanged += mode => PlayLocalSoundSelected(SoundType.MODE, mode == ConnectionMode.CHILDREN ? 0 : 1);
+		graphController.ConnectionMode.OnValueChanged += mode => PlayStickySoundSelected(SoundType.MODE, mode == ConnectionMode.CHILDREN ? 0 : 1);
 		connectionController.OnScrollInDirection += PlayScrollSounds;
+		InputProcessor.playInfoSound += () => {
+			PlayStickySoundSelected(SoundType.INFO, isInfo ? 0 : 1);
+			isInfo = !isInfo;
+		};
 	}
 
 	public void PlayScrollSounds(int dir) {

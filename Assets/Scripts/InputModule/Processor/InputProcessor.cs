@@ -1,10 +1,13 @@
 using Controllers;
+using System;
 using UnityEngine;
 
 namespace InputModule.Processor {
 	public abstract class InputProcessor {
 		protected InputConfig Config;
 		protected InputController Controller;
+
+		public static Action playInfoSound;
 
 		public InputProcessor(InputConfig config, InputController controller) {
 			Config = config;
@@ -31,8 +34,11 @@ namespace InputModule.Processor {
 			else if (direction == -1)
 				Controller.ActionController.ActionService.RedoAction();
 		}
-		
-		protected void ToggleInfoSpace() => Controller.NetworkController.ToggleInfoSpace();
+
+		protected void ToggleInfoSpace() {
+			playInfoSound?.Invoke();
+			Controller.NetworkController.ToggleInfoSpace();
+		}
 		protected void ToggleOperatorConsole() => Controller.NetworkController.ToggleConsole();
 
 
