@@ -24,5 +24,9 @@ namespace Services.History.Actions {
 		public void UnExecute() {
 			passChangingMode((M)(object)(Convert.ToInt32(newMode) == 0 ? 1 : 0));
 		}
+
+		public bool IsRoute() {
+			return isRouteAction;
+		}
 	}
 }

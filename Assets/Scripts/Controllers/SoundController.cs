@@ -40,7 +40,7 @@ public class SoundController : MonoBehaviour {
 		actionController.playSelectSound += (oldNode, newNode, source, isUndo) => {
 			if (newNode != null && oldNode != null) {
 				if (source != ActionController.NodeChangedSource.History) {
-					PlaySpacialNodeSoundRandom(newNode, SoundType.NODE_SELECTED);
+					PlayStickySoundRandom(SoundType.NODE_SELECTED);
 				}
 				else {
 					if (isUndo) {
