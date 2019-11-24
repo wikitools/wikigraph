@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Controllers;
+﻿using Controllers;
 using Model;
 using Services;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SoundController : MonoBehaviour {
@@ -13,25 +13,59 @@ public class SoundController : MonoBehaviour {
 	private List<AudioSource> sources = new List<AudioSource>();
 	private SoundManager soundManager;
 	private Transform player;
-	
+	List<SoundType> bothSounds = new List<SoundType> { SoundType.NODE_SELECTED_SCROLLED2, SoundType.NODE_SELECTED_SCROLLED3, SoundType.NODE_SELECTED_SCROLLED4 };
+	List<SoundType> selectedSounds = new List<SoundType>();
+	List<SoundType> scrolledSounds = new List<SoundType>();
 	private NodeController nodeController;
 	private GraphController graphController;
-	
-	void Start () {
-		if(Graph.GetComponent<NetworkController>().IsClient())
+	private ActionController actionController;
+
+	int scrollSoundPositionUp = 0;
+	int scrollSoundPositionDown = 3;
+
+	void Start() {
+		selectedSounds.AddRange(bothSounds);
+		selectedSounds.Add(SoundType.NODE_SELECTED1);
+		scrolledSounds.Add(SoundType.SCROLLED1);
+		scrolledSounds.AddRange(bothSounds);
+		if (Graph.GetComponent<NetworkController>().IsClient()) {
 			return;
+		}
+
 		player = Graph.GetComponent<InputController>().Eyes.transform;
 		transform.parent = player;
-		
 		soundManager = new SoundManager();
 		var Audio = GetComponent<AudioSource>();
 		Audio.clip = soundManager.Sounds[SoundType.AMBIENT_LOOP];
 		Audio.Play();
-		
+
 		nodeController = Graph.GetComponent<NodeController>();
 		graphController = Graph.GetComponent<GraphController>();
-		nodeController.OnSelectedNodeChanged += (oldNode, newNode) => PlayStickySound(SoundType.NODE_SELECTED);
+		actionController = Graph.GetComponent<ActionController>();
+		nodeController.OnSelectedNodeChanged += (oldNode, newNode) => PlayStickySound(selectedSounds[Random.Range(0, selectedSounds.Count - 1)]);
+		graphController.ConnectionMode.OnValueChanged += (mode) => {
+			if (mode == ConnectionMode.CHILDREN) PlayLocalSound(SoundType.MODE1);
+			else PlayLocalSound(SoundType.MODE2);
+		};
 	}
+
+	public void PlayScrollSounds(int dir) {
+		if (dir == 1) {
+			if (scrollSoundPositionUp == scrolledSounds.Count) scrollSoundPositionUp = 0;
+			PlayLocalSound(scrolledSounds[scrollSoundPositionUp]);
+			scrollSoundPositionUp++;
+		}
+		else if (dir == -1) {
+			if (scrollSoundPositionDown == -1) scrollSoundPositionDown = 0;
+			PlayLocalSound(scrolledSounds[scrollSoundPositionDown]);
+			scrollSoundPositionDown--;
+		}
+		else {
+			scrollSoundPositionDown = 3;
+			scrollSoundPositionUp = 0;
+		}
+	}
+
 
 	private void PlaySpacialNodeSound(Node node, SoundType sound) {
 		Vector3 direction = GetNodePosition(node) - player.position;

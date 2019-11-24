@@ -27,6 +27,7 @@ namespace Controllers {
 		public ConnectionLoadManager ConnectionLoadManager { get; private set; }
 		private ConnectionDistributionService selectedNodeDistribution;
 		private ConnectionDistributionService highlightedNodeDistribution;
+	
 		private Graph graph => GraphController.Graph;
 
 
@@ -49,8 +50,10 @@ namespace Controllers {
 			if (scrollDirection == 0) return;
 			scrollTimer -= Time.deltaTime * 1000;
 			if (scrollTimer <= 0) {
+				graph.GetComponent<>
 				LoadNewConnectedNodeSet(NodeController.SelectedNode, FilterSelectedNodeSet);
 				NetworkController.SyncConnectionScrolled(scrollDirection);
+				
 				SeriesScrolls++;
 				ResetTimer();
 			}
