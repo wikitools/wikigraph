@@ -38,16 +38,20 @@ public class SoundController : MonoBehaviour {
 		actionController = Graph.GetComponent<ActionController>();
 		connectionController = Graph.GetComponent<ConnectionController>();
 		actionController.playSelectSound += (oldNode, newNode, source, isUndo) => {
-			if(newNode != null && oldNode!= null) {
+			if (newNode != null && oldNode != null) {
 				if (source != ActionController.NodeChangedSource.History) {
 					PlaySpacialNodeSoundRandom(newNode, SoundType.NODE_SELECTED);
 				}
 				else {
-					if (isUndo) PlayStickySoundSelected( SoundType.HISTORY, 0);
-					else PlayStickySoundSelected( SoundType.HISTORY, 1);
+					if (isUndo) {
+						PlayStickySoundSelected(SoundType.HISTORY, 0);
+					}
+					else {
+						PlayStickySoundSelected(SoundType.HISTORY, 1);
+					}
 				}
 			}
-			
+
 		};
 		graphController.ConnectionMode.OnValueChanged += (mode) => {
 			if (mode == ConnectionMode.CHILDREN) {
@@ -57,32 +61,31 @@ public class SoundController : MonoBehaviour {
 				PlayLocalSoundSelected(SoundType.MODE, 1);
 			}
 		};
-		connectionController.OnConnectionRangeChanged += (start, end, count) => PlayScrollSounds(start, end, count);
+		connectionController.OnScrollInDirection += (dir) => PlayScrollSounds(dir);
 
 	}
 
-	public void PlayScrollSounds(int start, int end, int count) {
-		if (false) {
-			if (1 == 1 ) {
-				if (scrollSoundPositionUp == 4) { //fix 
-					scrollSoundPositionUp = 0;
-				}
-				PlayStickySoundSelected(SoundType.SCROLLED, scrollSoundPositionUp);
-				scrollSoundPositionUp++;
-			}
-			else if (start == -1) {
-				if (scrollSoundPositionDown == -1) {
-					scrollSoundPositionDown = 0;
-				}
-
-				PlayStickySoundSelected(SoundType.SCROLLED, scrollSoundPositionDown);
-				scrollSoundPositionDown--;
-			}
-			else {
-				scrollSoundPositionDown = 3;
+	public void PlayScrollSounds(int dir) {
+		if (dir == 1) {
+			if (scrollSoundPositionUp == 4) { //fix 
 				scrollSoundPositionUp = 0;
 			}
+			PlayStickySoundSelected(SoundType.SCROLLED, scrollSoundPositionUp);
+			scrollSoundPositionUp++;
 		}
+		else if (dir == -1) {
+			if (scrollSoundPositionDown == -1) {
+				scrollSoundPositionDown = 3;
+			}
+
+			PlayStickySoundSelected(SoundType.SCROLLED, scrollSoundPositionDown);
+			scrollSoundPositionDown--;
+		}
+		else {
+			scrollSoundPositionDown = 3;
+			scrollSoundPositionUp = 0;
+		}
+
 
 	}
 

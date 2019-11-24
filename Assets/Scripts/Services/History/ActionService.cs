@@ -16,18 +16,20 @@ namespace Services.History {
 		public void RedoAction() {
 			if (redoActionStack.Count != 0) {
 				UserAction userAction = redoActionStack.Pop();
+				onActionSetDirection(false);
 				userAction.Execute();
 				undoActionStack.Push(userAction);
-				onActionSetDirection(false);
+				
 			}
 		}
 
 		public void UndoAction() {
 			if (undoActionStack.Count != 0) {
 				UserAction userAction = undoActionStack.Pop();
+				onActionSetDirection(true);
 				userAction.UnExecute();
 				redoActionStack.Push(userAction);
-				onActionSetDirection(true);
+				
 			}
 		}
 
