@@ -13,9 +13,6 @@ public class SoundController : MonoBehaviour {
 	private List<AudioSource> sources = new List<AudioSource>();
 	private SoundManager soundManager;
 	private Transform player;
-	List<SoundType> bothSounds = new List<SoundType> { SoundType.NODE_SELECTED_SCROLLED2, SoundType.NODE_SELECTED_SCROLLED3, SoundType.NODE_SELECTED_SCROLLED4 };
-	List<SoundType> selectedSounds = new List<SoundType>();
-	List<SoundType> scrolledSounds = new List<SoundType>();
 	private NodeController nodeController;
 	private GraphController graphController;
 	private ActionController actionController;
@@ -25,10 +22,6 @@ public class SoundController : MonoBehaviour {
 	int scrollSoundPositionDown = 3;
 
 	void Start() {
-		selectedSounds.AddRange(bothSounds);
-		selectedSounds.Add(SoundType.NODE_SELECTED1);
-		scrolledSounds.Add(SoundType.SCROLLED1);
-		scrolledSounds.AddRange(bothSounds);
 		if (Graph.GetComponent<NetworkController>().IsClient()) {
 			return;
 		}
@@ -37,7 +30,7 @@ public class SoundController : MonoBehaviour {
 		transform.parent = player;
 		soundManager = new SoundManager();
 		var Audio = GetComponent<AudioSource>();
-		Audio.clip = soundManager.Get(SoundType.AMBIENT_LOOP);
+		Audio.clip = soundManager.GetRandom(SoundType.AMBIENT_LOOP);
 		Audio.Play();
 
 		nodeController = Graph.GetComponent<NodeController>();
@@ -46,15 +39,15 @@ public class SoundController : MonoBehaviour {
 		connectionController = Graph.GetComponent<ConnectionController>();
 		nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
 			if (actionController.nodeChangedSource != ActionController.NodeChangedSource.History) {
-				PlayStickySound(selectedSounds[Random.Range(0, selectedSounds.Count - 1)]);
+				PlayStickySoundRandom(SoundType.NODE_SELECTED);
 			}
 		};
 		graphController.ConnectionMode.OnValueChanged += (mode) => {
 			if (mode == ConnectionMode.CHILDREN) {
-				PlayLocalSound(SoundType.MODE1);
+				PlayLocalSoundSelected(SoundType.MODE, 0);
 			}
 			else {
-				PlayLocalSound(SoundType.MODE2);
+				PlayLocalSoundSelected(SoundType.MODE, 1);
 			}
 		};
 		connectionController.OnConnectionRangeChanged += (start, end, count) => PlayScrollSounds(start, end);
@@ -64,11 +57,10 @@ public class SoundController : MonoBehaviour {
 	public void PlayScrollSounds(int start, int end) {
 		if (start != 0 && end != 0) {
 			if (1 == 1) {
-				if (scrollSoundPositionUp == scrolledSounds.Count) {
+				if (scrollSoundPositionUp == 4) { //fix 
 					scrollSoundPositionUp = 0;
 				}
-
-				PlayLocalSound(scrolledSounds[scrollSoundPositionUp]);
+				PlayLocalSoundSelected(SoundType.SCROLLED, scrollSoundPositionUp);
 				scrollSoundPositionUp++;
 			}
 			else if (start == -1) {
@@ -76,7 +68,7 @@ public class SoundController : MonoBehaviour {
 					scrollSoundPositionDown = 0;
 				}
 
-				PlayLocalSound(scrolledSounds[scrollSoundPositionDown]);
+				PlayLocalSoundSelected(SoundType.SCROLLED, scrollSoundPositionDown);
 				scrollSoundPositionDown--;
 			}
 			else {
@@ -90,20 +82,34 @@ public class SoundController : MonoBehaviour {
 
 	private void PlaySpacialNodeSound(Node node, SoundType sound) {
 		Vector3 direction = GetNodePosition(node) - player.position;
-		AudioSource.PlayClipAtPoint(soundManager.Get(sound), player.position + direction * (MaxNodeSpacialSoundDist / graphController.WorldRadius));
+		AudioSource.PlayClipAtPoint(soundManager.GetRandom(sound), player.position + direction * (MaxNodeSpacialSoundDist / graphController.WorldRadius));
 	}
 
-	private void PlayLocalSound(SoundType sound) {
-		AudioSource.PlayClipAtPoint(soundManager.Get(sound), player.position);
+	private void PlayLocalSoundRandom(SoundType sound) {
+		AudioSource.PlayClipAtPoint(soundManager.GetRandom(sound), player.position);
 	}
 
-	private void PlayStickySound(SoundType sound) {
+	private void PlayLocalSoundSelected(SoundType sound, int index) {
+		AudioSource.PlayClipAtPoint(soundManager.Get(sound, index), player.position);
+	}
+
+	private void PlayStickySoundRandom(SoundType sound) {
+		var audioSource = GetAudioSource();
+		audioSource.PlayOneShot(soundManager.GetRandom(sound));
+	}
+
+	private void PlayStickySoundSelected(SoundType sound, int index) {
+		var audioSource = GetAudioSource();
+		audioSource.PlayOneShot(soundManager.Get(sound, index));
+	}
+
+	private AudioSource GetAudioSource() {
 		var audioSource = sources.FirstOrDefault(source => !source.isPlaying);
 		if (audioSource == null) {
 			audioSource = gameObject.AddComponent<AudioSource>();
 			sources.Add(audioSource);
 		}
-		audioSource.PlayOneShot(soundManager.Get(sound));
+		return audioSource;
 	}
 
 	private Vector3 GetNodePosition(Node node) => GraphController.Graph.NodeObjectMap[node].transform.position;
