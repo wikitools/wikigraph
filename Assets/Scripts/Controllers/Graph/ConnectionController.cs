@@ -123,12 +123,10 @@ namespace Controllers {
 		public void UpdateVisibleConnections(int direction, bool centralNodeChanged = false) {
 			var centerNode = NodeController.SelectedNode;
 			var connectedIDs = GetNodeNeighbours(centerNode).ToList();
-			int rangeStart, rangeEnd;
 			
 			if (connectedIDs.Count <= ConnectionDistribution.MaxVisibleNumber) {
 				connectedIDs.ForEach(id => ConnectionLoadManager.LoadConnection(CreateConnection(centerNode, id), selectedNodeDistribution));
-				rangeStart = Mathf.Min(1, connectedIDs.Count);
-				rangeEnd = connectedIDs.Count;
+				OnConnectionRangeChanged?.Invoke(Mathf.Min(1, connectedIDs.Count), connectedIDs.Count, connectedIDs.Count);
 			} else {
 				var oldSubList = GetConnectionsAround(centerNode);
 				var oldIDList = oldSubList.Select(con => con.OtherEnd(centerNode).ID).ToList();
@@ -142,10 +140,8 @@ namespace Controllers {
 					ConnectionLoadManager.UnloadConnection(connection);
 				});
 				int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleNumber - 1, connectedIDs.Count);
-				rangeStart = currentVisibleIndex + 1;
-				rangeEnd = endIndex + 1;
+				OnConnectionRangeChanged?.Invoke(currentVisibleIndex + 1, endIndex + 1, connectedIDs.Count);
 			}
-			OnConnectionRangeChanged?.Invoke(rangeStart, rangeEnd, connectedIDs.Count);
 			if(!centralNodeChanged)
 				OnScrollInDirection?.Invoke(direction);
 		}
