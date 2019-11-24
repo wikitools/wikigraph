@@ -16,7 +16,7 @@ namespace Services.History {
 		public void RedoAction() {
 			if (redoActionStack.Count != 0) {
 				UserAction userAction = redoActionStack.Pop();
-				if(userAction.IsRoute()) onActionSetDirection(false);
+				if(!userAction.IsRoute()) onActionSetDirection(false);
 				userAction.Execute();
 				undoActionStack.Push(userAction);
 				
@@ -26,7 +26,7 @@ namespace Services.History {
 		public void UndoAction() {
 			if (undoActionStack.Count != 0) {
 				UserAction userAction = undoActionStack.Pop();
-				if(userAction.IsRoute()) onActionSetDirection(true);
+				if(!userAction.IsRoute()) onActionSetDirection(true);
 				userAction.UnExecute();
 				redoActionStack.Push(userAction);
 				
