@@ -16,7 +16,7 @@ namespace Services {
 			Register(SoundType.AMBIENT_LOOP, "WikiAmbient");
 			Register(SoundType.NODE_SELECTED, "select1", "selectandscroll2", "selectandscroll3", "selectandscroll4");
 			Register(SoundType.SCROLLED, "scroll1", "selectandscroll2", "selectandscroll3", "selectandscroll4");
-			Register(SoundType.HISTORY, "historyUP", "historyDOWN");
+			Register(SoundType.HISTORY, "historiaUP", "historiaDOWN");
 			Register(SoundType.INFO, "infoOUT", "infoDOWN");
 			Register(SoundType.MODE, "mode1", "mode2");
 		}

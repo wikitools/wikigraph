@@ -20,7 +20,7 @@ namespace Controllers {
 		public ActionService ActionService { get; private set; }
 		public RouteController routeController { get; private set; }
 
-		public Action<NodeChangedSource, bool> playSelectSound;
+		public Action<Node, Node, NodeChangedSource, bool> playSelectSound;
 
 		public bool IsUndo {
 			get; private set;
@@ -51,7 +51,7 @@ namespace Controllers {
 						ActionService.RegisterAction(new NodeSelectedAction(oldNode?.ID, newNode?.ID, false));						
 					}
 					if (nodeChangedSource != NodeChangedSource.Route && routeController.routeService.IsRoutePlaying) networkController.SyncRoutePlaying(false);
-					playSelectSound(nodeChangedSource, IsUndo);
+					playSelectSound(oldNode, newNode, nodeChangedSource, IsUndo);
 					nodeChangedSource = NodeChangedSource.User;
 				};
 				NodeSelectedAction.selectNodeAction = (node, isRoute) => {
