@@ -42,7 +42,7 @@ namespace Controllers.UI {
 			routeController.OnRoutePlayStateChanged += UpdateAutoStateAfterRouteChange;
 			consoleWindowController.OnConsoleToggled += UpdateConsoleState;
 			connectionController.OnConnectionRangeChanged += UpdateNodeHeaderAfterConnectionRangeChange;
-			connectionController.OnConnectionRangeChanged?.Invoke(0, 0, -1);
+			UpdateNodeHeaderAfterConnectionRangeChange(0, 0, -1);
 
 			Transform indicatorBase = transform.GetChild(3);
 			indicatorBase.GetComponent<SpriteRenderer>().size = Config.HeaderRangeSize;
@@ -133,7 +133,7 @@ namespace Controllers.UI {
 					ShowConnectionRangeCount(null);
 				}
 			} else {
-				connectionController.OnConnectionRangeChanged?.Invoke(0, 0, -1);
+				UpdateNodeHeaderAfterConnectionRangeChange(0, 0, -1);
 				if (nodeController.HighlightedNode != null) {
 					ShowConnectionRangeCount(connectionController.GetNodeNeighbours(nodeController.HighlightedNode).ToArray().Length);
 				}

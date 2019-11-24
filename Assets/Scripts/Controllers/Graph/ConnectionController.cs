@@ -23,6 +23,7 @@ namespace Controllers {
 		public Action<Connection> OnConnectionLoaded;
 		public Action<Connection> OnConnectionUnloaded;
 		public Action<int, int, int> OnConnectionRangeChanged;
+		public Action<int> OnConnectionScrolled;
 
 		public ConnectionLoadManager ConnectionLoadManager { get; private set; }
 		private ConnectionDistributionService selectedNodeDistribution;
@@ -67,7 +68,7 @@ namespace Controllers {
 
 			if (centerNode == null) return;
 			selectedNodeDistribution = new ConnectionDistributionService(centerNode, this);
-			UpdateVisibleConnections(scrollDirection);
+			UpdateVisibleConnections(scrollDirection, true);
 			SwitchConnectionTypes();
 		}
 
@@ -117,27 +118,29 @@ namespace Controllers {
 			return newSubList;
 		}
 
-		public void UpdateVisibleConnections(int direction) {
+		public void UpdateVisibleConnections(int direction, bool centralNodeChanged = false) {
 			var centerNode = NodeController.SelectedNode;
 			var connectedIDs = GetNodeNeighbours(centerNode).ToList();
 			if (connectedIDs.Count <= ConnectionDistribution.MaxVisibleNumber) {
 				connectedIDs.ForEach(id => ConnectionLoadManager.LoadConnection(CreateConnection(centerNode, id), selectedNodeDistribution));
 				OnConnectionRangeChanged?.Invoke(Mathf.Min(1, connectedIDs.Count), connectedIDs.Count, connectedIDs.Count);
-				return;
-			}
-			var oldSubList = GetConnectionsAround(centerNode);
-			var oldIDList = oldSubList.Select(con => con.OtherEnd(centerNode).ID).ToList();
+			} else {
+				var oldSubList = GetConnectionsAround(centerNode);
+				var oldIDList = oldSubList.Select(con => con.OtherEnd(centerNode).ID).ToList();
 
-			var newSubList = Utils.ScrollList(connectedIDs, ref currentVisibleIndex, 
-				direction * ConnectionDistribution.ChangeBy, ConnectionDistribution.MaxVisibleNumber);
-			newSubList.Where(id => !oldIDList.Contains(id)).ToList().ForEach(id => 
-				ConnectionLoadManager.LoadConnection(CreateConnection(centerNode, id), selectedNodeDistribution));
-			oldSubList.Where(connection => !newSubList.Contains(connection.OtherEnd(centerNode).ID)).ToList().ForEach(connection => {
-				selectedNodeDistribution.OnConnectionUnloaded(connection);
-				ConnectionLoadManager.UnloadConnection(connection);
-			});
-			int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleNumber - 1, connectedIDs.Count);
-			OnConnectionRangeChanged?.Invoke(currentVisibleIndex + 1, endIndex + 1, connectedIDs.Count);
+				var newSubList = Utils.ScrollList(connectedIDs, ref currentVisibleIndex, 
+					direction * ConnectionDistribution.ChangeBy, ConnectionDistribution.MaxVisibleNumber);
+				newSubList.Where(id => !oldIDList.Contains(id)).ToList().ForEach(id => 
+					ConnectionLoadManager.LoadConnection(CreateConnection(centerNode, id), selectedNodeDistribution));
+				oldSubList.Where(connection => !newSubList.Contains(connection.OtherEnd(centerNode).ID)).ToList().ForEach(connection => {
+					selectedNodeDistribution.OnConnectionUnloaded(connection);
+					ConnectionLoadManager.UnloadConnection(connection);
+				});
+				int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleNumber - 1, connectedIDs.Count);
+				OnConnectionRangeChanged?.Invoke(currentVisibleIndex + 1, endIndex + 1, connectedIDs.Count);
+			}
+			if(!centralNodeChanged)
+				OnConnectionScrolled?.Invoke(direction);
 		}
 
 		private void SwitchConnectionTypes() {
