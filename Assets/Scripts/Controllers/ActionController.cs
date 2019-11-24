@@ -19,7 +19,13 @@ namespace Controllers {
 		private GraphController graphController;
 		public ActionService ActionService { get; private set; }
 		public RouteController routeController { get; private set; }
-	
+
+		public Action<NodeChangedSource, bool> playSelectSound;
+
+		public bool IsUndo {
+			get; private set;
+		}
+			
 		public NodeChangedSource nodeChangedSource { get; set; }
 		public enum NodeChangedSource {
 			User,
@@ -39,11 +45,13 @@ namespace Controllers {
 			if (networkController.IsServer()) {
 				ActionService = new ActionService();
 				nodeChangedSource = NodeChangedSource.User;
+				ActionService.onActionSetDirection += (value) => IsUndo = value;
 				nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
 					if (nodeChangedSource != NodeChangedSource.History) {
 						ActionService.RegisterAction(new NodeSelectedAction(oldNode?.ID, newNode?.ID, false));						
 					}
 					if (nodeChangedSource != NodeChangedSource.Route && routeController.routeService.IsRoutePlaying) networkController.SyncRoutePlaying(false);
+					playSelectSound(nodeChangedSource, IsUndo);
 					nodeChangedSource = NodeChangedSource.User;
 				};
 				NodeSelectedAction.selectNodeAction = (node, isRoute) => {

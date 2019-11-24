@@ -37,9 +37,12 @@ public class SoundController : MonoBehaviour {
 		graphController = Graph.GetComponent<GraphController>();
 		actionController = Graph.GetComponent<ActionController>();
 		connectionController = Graph.GetComponent<ConnectionController>();
-		nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
-			if (actionController.nodeChangedSource != ActionController.NodeChangedSource.History) {
+		actionController.playSelectSound += (source, isUndo) => {
+			if (source != ActionController.NodeChangedSource.History) {
 				PlayStickySoundRandom(SoundType.NODE_SELECTED);
+			} else {
+				if(isUndo) PlayStickySoundSelected(SoundType.HISTORY, 0);
+				else PlayStickySoundSelected(SoundType.HISTORY, 1);
 			}
 		};
 		graphController.ConnectionMode.OnValueChanged += (mode) => {
@@ -50,13 +53,13 @@ public class SoundController : MonoBehaviour {
 				PlayLocalSoundSelected(SoundType.MODE, 1);
 			}
 		};
-		connectionController.OnConnectionRangeChanged += (start, end, count) => PlayScrollSounds(start, end);
+		connectionController.OnConnectionRangeChanged += (start, end, count) => PlayScrollSounds(start, end, count);
 
 	}
 
-	public void PlayScrollSounds(int start, int end) {
-		if (start != 0 && end != 0) {
-			if (1 == 1) {
+	public void PlayScrollSounds(int start, int end, int count) {
+		if (start != 0 && end != 0 && count != -1) {
+			if (1 == 1 ) {
 				if (scrollSoundPositionUp == 4) { //fix 
 					scrollSoundPositionUp = 0;
 				}
