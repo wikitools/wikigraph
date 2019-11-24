@@ -1,13 +1,18 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Services {
 	public class SoundManager {
-		public readonly Dictionary<SoundType, AudioClip> Sounds = new Dictionary<SoundType, AudioClip>();
+		private readonly Dictionary<SoundType, AudioClip[]> Sounds = new Dictionary<SoundType, AudioClip[]>();
 		private const string PREFIX = "Sounds";
+		private readonly Random random;
 
 		public SoundManager() {
+			random = new Random();
+			
 			Register(SoundType.AMBIENT_LOOP, "WikiAmbient");
 			Register(SoundType.NODE_SELECTED1, "select1");
 			Register(SoundType.SCROLLED1, "scroll1");
@@ -22,9 +27,13 @@ namespace Services {
 			Register(SoundType.MODE2, "mode2");
 		}
 
-		private void Register(SoundType type, string file) {
-			Sounds.Add(type, Resources.Load<AudioClip>(Path.Combine(PREFIX, file)));
+		public AudioClip Get(SoundType type) => Sounds[type][random.Next(Sounds[type].Length)];
+
+		private void Register(SoundType type, params string[] files) {
+			Sounds.Add(type, files.Select(LoadFile).ToArray());
 		}
+
+		private AudioClip LoadFile(string file) => Resources.Load<AudioClip>(Path.Combine(PREFIX, file));
 	}
 		
 	public enum SoundType {
