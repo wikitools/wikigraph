@@ -1225,7 +1225,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1507118958}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999999
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3398,7 +3398,7 @@ AudioSource:
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -3492,6 +3492,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Graph: {fileID: 68664594}
+  MaxNodeSpacialSoundDist: 10
 --- !u!4 &971141200
 Transform:
   m_ObjectHideFlags: 0

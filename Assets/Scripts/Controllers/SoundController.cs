@@ -1,5 +1,6 @@
 ﻿using Controllers;
 using Model;
+using Services;
 using UnityEngine;
 
 public class SoundController : MonoBehaviour {
@@ -7,7 +8,7 @@ public class SoundController : MonoBehaviour {
 	[Range(1, 50)]
 	public float MaxNodeSpacialSoundDist = 10f;
 	
-	private AudioSource Audio;
+	private SoundManager SoundManager;
 	private Transform player;
 	
 	private NodeController nodeController;
@@ -18,17 +19,24 @@ public class SoundController : MonoBehaviour {
 			return;
 		player = Graph.GetComponent<InputController>().Eyes.transform;
 		transform.parent = player;
-		Audio = GetComponent<AudioSource>();
+		
+		SoundManager = new SoundManager();
+		var Audio = GetComponent<AudioSource>();
+		Audio.clip = SoundManager.Sounds[SoundType.AMBIENT_LOOP];
+		Audio.Play();
 		
 		nodeController = Graph.GetComponent<NodeController>();
 		graphController = Graph.GetComponent<GraphController>();
-		nodeController.OnSelectedNodeChanged += (oldNode, newNode) => PlaySpacialNodeSound(newNode, null);
-
+		nodeController.OnSelectedNodeChanged += (oldNode, newNode) => PlayLocalSound(SoundManager.Sounds[SoundType.NODE_SELECTED]);
 	}
 
 	private void PlaySpacialNodeSound(Node node, AudioClip sound) {
 		Vector3 direction = GetNodePosition(node) - player.position;
 		AudioSource.PlayClipAtPoint(sound, player.position + direction * (MaxNodeSpacialSoundDist / graphController.WorldRadius));
+	}
+
+	private void PlayLocalSound(AudioClip sound) {
+		AudioSource.PlayClipAtPoint(sound, player.position);
 	}
 
 	private Vector3 GetNodePosition(Node node) => GraphController.Graph.NodeObjectMap[node].transform.position;
