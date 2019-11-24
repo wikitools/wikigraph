@@ -23,7 +23,7 @@ namespace Controllers {
 		public Action<Connection> OnConnectionLoaded;
 		public Action<Connection> OnConnectionUnloaded;
 		public Action<int, int, int> OnConnectionRangeChanged;
-		public Action<int> OnConnectionScrolled;
+		public Action<int> OnScrollInDirection;
 
 		public ConnectionLoadManager ConnectionLoadManager { get; private set; }
 		private ConnectionDistributionService selectedNodeDistribution;
@@ -41,6 +41,8 @@ namespace Controllers {
 		#region Scrolling
 
 		public void OnScrollInputChanged(int direction) {
+			if(direction == 0)
+				OnScrollInDirection?.Invoke(0);
 			if(GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT)
 				return;
 			scrollDirection = direction;
@@ -121,9 +123,12 @@ namespace Controllers {
 		public void UpdateVisibleConnections(int direction, bool centralNodeChanged = false) {
 			var centerNode = NodeController.SelectedNode;
 			var connectedIDs = GetNodeNeighbours(centerNode).ToList();
+			int rangeStart, rangeEnd;
+			
 			if (connectedIDs.Count <= ConnectionDistribution.MaxVisibleNumber) {
 				connectedIDs.ForEach(id => ConnectionLoadManager.LoadConnection(CreateConnection(centerNode, id), selectedNodeDistribution));
-				OnConnectionRangeChanged?.Invoke(Mathf.Min(1, connectedIDs.Count), connectedIDs.Count, connectedIDs.Count);
+				rangeStart = Mathf.Min(1, connectedIDs.Count);
+				rangeEnd = connectedIDs.Count;
 			} else {
 				var oldSubList = GetConnectionsAround(centerNode);
 				var oldIDList = oldSubList.Select(con => con.OtherEnd(centerNode).ID).ToList();
@@ -137,10 +142,12 @@ namespace Controllers {
 					ConnectionLoadManager.UnloadConnection(connection);
 				});
 				int endIndex = Utils.Mod(currentVisibleIndex + ConnectionDistribution.MaxVisibleNumber - 1, connectedIDs.Count);
-				OnConnectionRangeChanged?.Invoke(currentVisibleIndex + 1, endIndex + 1, connectedIDs.Count);
+				rangeStart = currentVisibleIndex + 1;
+				rangeEnd = endIndex + 1;
 			}
+			OnConnectionRangeChanged?.Invoke(rangeStart, rangeEnd, connectedIDs.Count);
 			if(!centralNodeChanged)
-				OnConnectionScrolled?.Invoke(direction);
+				OnScrollInDirection?.Invoke(direction);
 		}
 
 		private void SwitchConnectionTypes() {
