@@ -27,16 +27,16 @@ public class SoundController : MonoBehaviour {
 		
 		nodeController = Graph.GetComponent<NodeController>();
 		graphController = Graph.GetComponent<GraphController>();
-		nodeController.OnSelectedNodeChanged += (oldNode, newNode) => PlayLocalSound(SoundManager.Sounds[SoundType.NODE_SELECTED]);
+		nodeController.OnSelectedNodeChanged += (oldNode, newNode) => PlayLocalSound(SoundType.NODE_SELECTED);
 	}
 
-	private void PlaySpacialNodeSound(Node node, AudioClip sound) {
+	private void PlaySpacialNodeSound(Node node, SoundType sound) {
 		Vector3 direction = GetNodePosition(node) - player.position;
-		AudioSource.PlayClipAtPoint(sound, player.position + direction * (MaxNodeSpacialSoundDist / graphController.WorldRadius));
+		AudioSource.PlayClipAtPoint(SoundManager.Sounds[sound], player.position + direction * (MaxNodeSpacialSoundDist / graphController.WorldRadius));
 	}
 
-	private void PlayLocalSound(AudioClip sound) {
-		AudioSource.PlayClipAtPoint(sound, player.position);
+	private void PlayLocalSound(SoundType sound) {
+		AudioSource.PlayClipAtPoint(SoundManager.Sounds[sound], player.position);
 	}
 
 	private Vector3 GetNodePosition(Node node) => GraphController.Graph.NodeObjectMap[node].transform.position;
