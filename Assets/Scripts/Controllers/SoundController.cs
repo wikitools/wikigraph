@@ -43,26 +43,13 @@ public class SoundController : MonoBehaviour {
 					PlayStickySoundRandom(SoundType.NODE_SELECTED);
 				}
 				else {
-					if (isUndo) {
-						PlayStickySoundSelected(SoundType.HISTORY, 0);
-					}
-					else {
-						PlayStickySoundSelected(SoundType.HISTORY, 1);
-					}
+					PlayStickySoundSelected(SoundType.HISTORY, isUndo ? 0 : 1);
 				}
 			}
 
 		};
-		graphController.ConnectionMode.OnValueChanged += (mode) => {
-			if (mode == ConnectionMode.CHILDREN) {
-				PlayLocalSoundSelected(SoundType.MODE, 0);
-			}
-			else {
-				PlayLocalSoundSelected(SoundType.MODE, 1);
-			}
-		};
-		connectionController.OnScrollInDirection += (dir) => PlayScrollSounds(dir);
-
+		graphController.ConnectionMode.OnValueChanged += mode => PlayLocalSoundSelected(SoundType.MODE, mode == ConnectionMode.CHILDREN ? 0 : 1);
+		connectionController.OnScrollInDirection += PlayScrollSounds;
 	}
 
 	public void PlayScrollSounds(int dir) {
