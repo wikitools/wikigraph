@@ -44,30 +44,47 @@ public class SoundController : MonoBehaviour {
 		graphController = Graph.GetComponent<GraphController>();
 		actionController = Graph.GetComponent<ActionController>();
 		connectionController = Graph.GetComponent<ConnectionController>();
-		nodeController.OnSelectedNodeChanged += (oldNode, newNode) => PlayStickySound(selectedSounds[Random.Range(0, selectedSounds.Count - 1)]);
-		graphController.ConnectionMode.OnValueChanged += (mode) => {
-			if (mode == ConnectionMode.CHILDREN) PlayLocalSound(SoundType.MODE1);
-			else PlayLocalSound(SoundType.MODE2);
+		nodeController.OnSelectedNodeChanged += (oldNode, newNode) => {
+			if (actionController.nodeChangedSource != ActionController.NodeChangedSource.History) {
+				PlayStickySound(selectedSounds[Random.Range(0, selectedSounds.Count - 1)]);
+			}
 		};
-		connectionController.OnConnectionRangeChanged += (start, end, pos) => PlayScrollSounds(pos);
-		
+		graphController.ConnectionMode.OnValueChanged += (mode) => {
+			if (mode == ConnectionMode.CHILDREN) {
+				PlayLocalSound(SoundType.MODE1);
+			}
+			else {
+				PlayLocalSound(SoundType.MODE2);
+			}
+		};
+		connectionController.OnConnectionRangeChanged += (start, end, count) => PlayScrollSounds(start, end);
+
 	}
 
-	public void PlayScrollSounds(int dir) {
-		if (dir == 1) {
-			if (scrollSoundPositionUp == scrolledSounds.Count) scrollSoundPositionUp = 0;
-			PlayLocalSound(scrolledSounds[scrollSoundPositionUp]);
-			scrollSoundPositionUp++;
+	public void PlayScrollSounds(int start, int end) {
+		if (start != 0 && end != 0) {
+			if (1 == 1) {
+				if (scrollSoundPositionUp == scrolledSounds.Count) {
+					scrollSoundPositionUp = 0;
+				}
+
+				PlayLocalSound(scrolledSounds[scrollSoundPositionUp]);
+				scrollSoundPositionUp++;
+			}
+			else if (start == -1) {
+				if (scrollSoundPositionDown == -1) {
+					scrollSoundPositionDown = 0;
+				}
+
+				PlayLocalSound(scrolledSounds[scrollSoundPositionDown]);
+				scrollSoundPositionDown--;
+			}
+			else {
+				scrollSoundPositionDown = 3;
+				scrollSoundPositionUp = 0;
+			}
 		}
-		else if (dir == -1) {
-			if (scrollSoundPositionDown == -1) scrollSoundPositionDown = 0;
-			PlayLocalSound(scrolledSounds[scrollSoundPositionDown]);
-			scrollSoundPositionDown--;
-		}
-		else {
-			scrollSoundPositionDown = 3;
-			scrollSoundPositionUp = 0;
-		}
+
 	}
 
 
