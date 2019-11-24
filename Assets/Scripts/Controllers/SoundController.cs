@@ -19,6 +19,7 @@ public class SoundController : MonoBehaviour {
 	private NodeController nodeController;
 	private GraphController graphController;
 	private ActionController actionController;
+	private ConnectionController connectionController;
 
 	int scrollSoundPositionUp = 0;
 	int scrollSoundPositionDown = 3;
@@ -42,11 +43,14 @@ public class SoundController : MonoBehaviour {
 		nodeController = Graph.GetComponent<NodeController>();
 		graphController = Graph.GetComponent<GraphController>();
 		actionController = Graph.GetComponent<ActionController>();
+		connectionController = Graph.GetComponent<ConnectionController>();
 		nodeController.OnSelectedNodeChanged += (oldNode, newNode) => PlayStickySound(selectedSounds[Random.Range(0, selectedSounds.Count - 1)]);
 		graphController.ConnectionMode.OnValueChanged += (mode) => {
 			if (mode == ConnectionMode.CHILDREN) PlayLocalSound(SoundType.MODE1);
 			else PlayLocalSound(SoundType.MODE2);
 		};
+		connectionController.OnConnectionRangeChanged += (start, end, pos) => PlayScrollSounds(pos);
+		
 	}
 
 	public void PlayScrollSounds(int dir) {
