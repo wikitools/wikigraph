@@ -37,6 +37,7 @@ namespace Services.Nodes {
 			GraphController.Graph.IdNodeMap[id] = node;
 			GameObject nodeObject = controller.Nodes.Pool.Spawn();
 			InitializeNode(node, ref nodeObject, position);
+			nodeObject.layer = LayerMask.NameToLayer("Node");
 			GraphController.Graph.NodeObjectMap[node] = nodeObject;
 
 			controller.OnNodeLoaded?.Invoke(node, position);
