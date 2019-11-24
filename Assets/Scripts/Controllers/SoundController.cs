@@ -10,6 +10,13 @@ public class SoundController : MonoBehaviour {
 	public GameObject Graph;
 	[Range(1, 50)]
 	public float MaxNodeSpacialSoundDist = 10f;
+	[Range(0, 1)]
+	public float AmbientVolume = 0.2f;
+	[Range(0, 1)]
+	public float EffectsVolume = 0.5f;
+
+	public bool Mute = false;
+
 
 	private List<AudioSource> sources = new List<AudioSource>();
 	private SoundManager soundManager;
@@ -24,15 +31,16 @@ public class SoundController : MonoBehaviour {
 	bool isInfo = true;
 
 	void Start() {
+		if (Mute) return;
 		if (Graph.GetComponent<NetworkController>().IsClient()) {
 			return;
 		}
-
 		player = Graph.GetComponent<InputController>().Eyes.transform;
 		transform.parent = player;
 		soundManager = new SoundManager();
 		var Audio = GetComponent<AudioSource>();
 		Audio.clip = soundManager.GetRandom(SoundType.AMBIENT_LOOP);
+		Audio.volume = AmbientVolume;
 		Audio.Play();
 
 		nodeController = Graph.GetComponent<NodeController>();
@@ -112,6 +120,7 @@ public class SoundController : MonoBehaviour {
 		if (audioSource == null) {
 			audioSource = gameObject.AddComponent<AudioSource>();
 			sources.Add(audioSource);
+			audioSource.volume = EffectsVolume;
 		}
 		return audioSource;
 	}
