@@ -11,6 +11,7 @@ namespace Controllers {
 		private NodeController nodeController;
 		private GraphController graphController;
 		private ConnectionController connectionController;
+		private NetworkController networkController;
 
 		public int nodeStartingAmount = 1000;
 		public int maxNodeLimit = 2000;
@@ -25,9 +26,12 @@ namespace Controllers {
 			nodeController = GetComponent<NodeController>();
 			graphController = GetComponent<GraphController>();
 			connectionController = GetComponent<ConnectionController>();
+			networkController = GetComponent<NetworkController>();
 		}
 
 		void Start() {
+			if(networkController.IsClient())
+				return;
 			for (uint i = 0; i < Math.Min(nodeStartingAmount, nodeController.NodeLoadManager.NodeLoader.GetNodeNumber()); i++) {
 				nodeController.NodeLoadManager.LoadNode(i);
 				AddLowPriorityNode(i);
@@ -39,9 +43,6 @@ namespace Controllers {
 			nodeController.OnNodeLoaded += (node, position) => UnloadHandler();
 			connectionController.OnConnectionRangeChanged += (start, end, count) => BehaviourConnectionChange();
 			graphController.ConnectionMode.OnValueChanged += (mode) => BehaviourConnectionChange();
-		}
-		
-		void Update() {
 		}
 
 		private void UnloadHandler() {
