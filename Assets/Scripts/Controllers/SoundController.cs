@@ -64,7 +64,7 @@ public class SoundController : MonoBehaviour {
 
 	public void PlayScrollSounds(int dir) {
 		if (dir == 1) {
-			if (scrollSoundPositionUp == 4) { //fix 
+			if (scrollSoundPositionUp == soundManager.Count(SoundType.SCROLLED)) { //fix 
 				scrollSoundPositionUp = 0;
 			}
 			PlayStickySoundSelected(SoundType.SCROLLED, scrollSoundPositionUp);
@@ -72,14 +72,14 @@ public class SoundController : MonoBehaviour {
 		}
 		else if (dir == -1) {
 			if (scrollSoundPositionDown == -1) {
-				scrollSoundPositionDown = 3;
+				scrollSoundPositionDown = soundManager.Count(SoundType.SCROLLED) - 1;
 			}
 
 			PlayStickySoundSelected(SoundType.SCROLLED, scrollSoundPositionDown);
 			scrollSoundPositionDown--;
 		}
 		else {
-			scrollSoundPositionDown = 3;
+			scrollSoundPositionDown = soundManager.Count(SoundType.SCROLLED) - 1;
 			scrollSoundPositionUp = 0;
 		}
 

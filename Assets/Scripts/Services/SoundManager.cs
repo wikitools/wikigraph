@@ -31,6 +31,8 @@ namespace Services {
 		}
 
 		private AudioClip LoadFile(string file) => Resources.Load<AudioClip>(Path.Combine(PREFIX, file));
+
+		public int Count(SoundType type) => Sounds[type].Length;
 	}
 		
 	public enum SoundType {
