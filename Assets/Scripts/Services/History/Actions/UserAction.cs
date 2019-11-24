@@ -2,5 +2,7 @@
 	public interface UserAction {
 		void Execute();
 		void UnExecute();
+		bool IsRoute();
+
 	}
 }

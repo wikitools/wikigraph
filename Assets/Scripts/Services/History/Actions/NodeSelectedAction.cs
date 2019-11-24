@@ -26,6 +26,10 @@ namespace Services.History.Actions {
 		public void UnExecute() {
 			passSelectAction(oldSelectedNode);
 		}
+
+		public bool IsRoute() {
+			return isRouteAction;
+		}
 		#endregion
 	}
 }
