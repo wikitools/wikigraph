@@ -30,7 +30,7 @@ namespace Services.Connection {
 
 		private void DistributeConnections() {
 			int connectionNumber = Mathf.Min(controller.GetNodeNeighbours(CentralNode).ToArray().Length, distribution.MaxVisibleNumber);
-			int totalNumber = connectionNumber + distribution.ChangeBy + 2;
+			int totalNumber = connectionNumber + distribution.ChangeBy;
 			int firstRowNumber = Mathf.Min(totalNumber, Mathf.RoundToInt(distribution.MaxVisibleNumber * .75f));
 			
 			DistributeAtElevation(firstRowNumber, distribution.RingAngleSpan.y);

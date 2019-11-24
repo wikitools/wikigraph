@@ -94,7 +94,7 @@ namespace Controllers {
 		
 		#endregion
 
-		#region Connection Updating
+		#region Node Loading Requests
 
 		private void LoadNewConnectedNodeSet(Node centerNode, Func<IEnumerable<uint>, List<uint>> setFilter, bool resetIndex = false, ConnectionMode? mode = null) {
 			if(resetIndex)
@@ -119,6 +119,10 @@ namespace Controllers {
 			}
 			return newSubList;
 		}
+
+		#endregion
+
+		#region Connection Updating
 
 		public void UpdateVisibleConnections(int direction, bool centralNodeChanged = false) {
 			var centerNode = NodeController.SelectedNode;
@@ -155,6 +159,10 @@ namespace Controllers {
 		}
 
 		private Connection CreateConnection(Node centerNode, uint otherID) {
+			if (!GraphController.Graph.IdNodeMap.ContainsKey(otherID)) {
+				Debug.LogWarning("Node needed by connection not loaded");
+				return null;
+			}
 			return new Connection(centerNode, GraphController.Graph.IdNodeMap[otherID]);
 		}
 
