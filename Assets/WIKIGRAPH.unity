@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.15158325, g: 0.21595481, b: 0.3097374, a: 1}
+  m_IndirectSpecularColor: {r: 0.15133008, g: 0.21595052, b: 0.30976254, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -340,6 +340,7 @@ GameObject:
   - component: {fileID: 68664603}
   - component: {fileID: 68664605}
   - component: {fileID: 68664604}
+  - component: {fileID: 68664606}
   m_Layer: 0
   m_Name: GRAPH
   m_TagString: Untagged
@@ -551,11 +552,11 @@ MonoBehaviour:
     Prefab: {fileID: 1534031500408350, guid: 4fca75af5504140b6814370e66ce13db, type: 2}
     PreloadNumber: 2000
   NodeMaterial: {fileID: 2100000, guid: b9514d8527b8e47f9b3ff643b0420608, type: 2}
-  NodeLoadedLimit: 1000
-  DataPack: pl-wiki
-  DataPackDate: 20191023
+  DataPack: pl-Wiki
+  DataPackDate: 20191101
   NodeScaleTime: 0.8
   ConnectionNodeScaleTime: 0.4
+  NodeLoaderController: {fileID: 0}
 --- !u!114 &68664598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -687,6 +688,19 @@ MonoBehaviour:
     type: 2}
   RouteParent: {fileID: 1875772820}
   secondsToChangeRoute: 8
+--- !u!114 &68664606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 68664594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4258db8c0b8c5dd4e9b1ecfc3d9addde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodeStartingAmount: 1000
+  maxNodeLimit: 2000
 --- !u!1 &73039935
 GameObject:
   m_ObjectHideFlags: 0
@@ -1212,7 +1226,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1507118958}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999999
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3430,7 +3444,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 428358285}
   m_HandleRect: {fileID: 428358284}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

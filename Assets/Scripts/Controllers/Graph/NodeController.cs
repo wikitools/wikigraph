@@ -12,8 +12,7 @@ namespace Controllers {
 
 		public GraphPooledObject Nodes;
 		public Material NodeMaterial;
-
-		public int NodeLoadedLimit;
+		
 		[HideInInspector]
 		public string DataPack;
 		[HideInInspector]
@@ -33,7 +32,8 @@ namespace Controllers {
 
 		public NodeLoadManager NodeLoadManager;
 		public NodeStateManager NodeStateManager;
-		
+		public NodeLoaderController NodeLoaderController;
+
 		#region Highlighted Node
 
 		private Node highlightedNode;
@@ -105,17 +105,13 @@ namespace Controllers {
 			NetworkController = GetComponent<NetworkController>();
 			inputController = GetComponent<InputController>();
 			NodeLoadManager = new NodeLoadManager(this);
+			NodeLoaderController = GetComponent<NodeLoaderController>();
 		}
 
 		private void Start() {
-		
 			NodeStateManager = new NodeStateManager(this);
 			Nodes.Pool = new GameObjectPool(Nodes.Prefab, Nodes.PreloadNumber, Nodes.PoolContainer);
-
 			if (NetworkController.IsServer()) {
-				for (uint i = 0; i < Math.Min(NodeLoadedLimit, NodeLoadManager.NodeLoader.GetNodeNumber()); i++)
-					NodeLoadManager.LoadNode(i);
-				OnNodeLoadSessionEnded?.Invoke();
 				GraphController.GraphMode.OnValueChanged += mode => {
 					if (mode == GraphMode.FREE_FLIGHT)
 						NetworkController.SetSelectedNode((Node) null);

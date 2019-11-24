@@ -35,7 +35,7 @@ namespace Services.Connection {
 			
 			DistributeAtElevation(firstRowNumber, distribution.RingAngleSpan.y);
 			if(totalNumber > firstRowNumber)
-				DistributeAtElevation(totalNumber - firstRowNumber, distribution.RingAngleSpan.x, 15);
+				DistributeAtElevation(totalNumber - firstRowNumber, distribution.RingAngleSpan.x, 180f / firstRowNumber);
 		}
 
 		private void DistributeAtElevation(int connectionNumber, float elevationAngle, float angleOffset = 0f) {
@@ -57,7 +57,7 @@ namespace Services.Connection {
 			int nearestPlace = 0;
 			float nearestDist = float.MaxValue;
 			if (freePlaces.Count == 0) 
-				DistributeAtElevation(distribution.ChangeBy, (distribution.RingAngleSpan.x + distribution.RingAngleSpan.y) / 2, 15);
+				DistributeAtElevation(distribution.ChangeBy, (distribution.RingAngleSpan.x + distribution.RingAngleSpan.y) / 2, 5);
 			for (var i = 0; i < freePlaces.Count; i++) {
 				float dist = Vector3.Distance(basePos + freePlaces[i], toPos);
 				if (nearestDist > dist) {

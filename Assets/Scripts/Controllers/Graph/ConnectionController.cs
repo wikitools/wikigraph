@@ -39,6 +39,8 @@ namespace Controllers {
 		#region Scrolling
 
 		public void OnScrollInputChanged(int direction) {
+			if(GraphController.GraphMode.Value == GraphMode.FREE_FLIGHT)
+				return;
 			scrollDirection = direction;
 			SeriesScrolls = 0;
 		}
