@@ -51,7 +51,7 @@ namespace Controllers {
 						ActionService.RegisterAction(new NodeSelectedAction(oldNode?.ID, newNode?.ID, false));						
 					}
 					if (nodeChangedSource != NodeChangedSource.Route && routeController.routeService.IsRoutePlaying) networkController.SyncRoutePlaying(false);
-					playSelectSound(oldNode, newNode, nodeChangedSource, IsUndo);
+					playSelectSound?.Invoke(oldNode, newNode, nodeChangedSource, IsUndo);
 					nodeChangedSource = NodeChangedSource.User;
 				};
 				NodeSelectedAction.selectNodeAction = (node, isRoute) => {
