@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections;
-using UnityEngine.UI;
-using System.Collections.Generic;
-using UnityEngine;
-using Model;
 using System.Linq;
+using Controllers.UI.Console;
+using Model;
 using Services.History;
-using Services.History.Actions;
+using UnityEngine;
 
-namespace Controllers {
+namespace Controllers.UI {
 	public class HeaderController : MonoBehaviour {
 
 		public GameObject Entity;

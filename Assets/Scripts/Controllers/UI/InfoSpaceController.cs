@@ -1,11 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using Inspector;
 using UnityEngine;
-using UnityEngine.UI;
-using Model;
 
-namespace Controllers {
+namespace Controllers.UI {
 	public class InfoSpaceController : MonoBehaviour {
 
 		public GameObject Entity;
@@ -19,15 +16,11 @@ namespace Controllers {
 
 		private InputController inputController;
 		private NodeController nodeController;
-		private NetworkController networkController;
-		private ConnectionController connectionController;
 		private HeaderController headerController;
 
 		void Awake() {
-			networkController = Graph.GetComponent<NetworkController>();
 			inputController = Graph.GetComponent<InputController>();
 			nodeController = Graph.GetComponent<NodeController>();
-			connectionController = Graph.GetComponent<ConnectionController>();
 			headerController = Header.GetComponent<HeaderController>();
 		}
 

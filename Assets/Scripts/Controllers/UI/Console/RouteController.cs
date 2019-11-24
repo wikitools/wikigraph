@@ -1,14 +1,12 @@
-﻿using Controllers;
-using Services.History;
-using System;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
+using Services.History;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Controllers {
+namespace Controllers.UI.Console {
 	public class RouteController : MonoBehaviour {
 
 		private NodeController nodeController;

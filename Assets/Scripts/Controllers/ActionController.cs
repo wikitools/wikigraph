@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Controllers.UI.Console;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;

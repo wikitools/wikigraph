@@ -1,10 +1,10 @@
 ﻿using System;
 using Inspector;
+using Model;
 using UnityEngine;
 using UnityEngine.UI;
-using Model;
 
-namespace Controllers {
+namespace Controllers.UI.Console {
 	public class ConsoleWindowController : MonoBehaviour {
 
 		public GameObject Graph;

@@ -1,12 +1,12 @@
-﻿using Model;
-using Services.Search;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Model;
+using Services.Search;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Controllers {
+namespace Controllers.UI.Console {
 	public class SearchController : MonoBehaviour {
 		private NodeController nodeController;
 		private ActionController actionController;

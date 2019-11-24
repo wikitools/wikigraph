@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
-using Services;
 using UnityEngine;
 
-namespace Controllers {
+namespace Controllers.UI {
 	public class GridController : MonoBehaviour {
 
 		public GameObject Entity;
