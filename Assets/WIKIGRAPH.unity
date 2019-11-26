@@ -525,38 +525,37 @@ MonoBehaviour:
   NodeSprites:
   - Type: 0
     State: 0
-    Sprite: {fileID: 21300000, guid: 7d36a44c5e7c0574daaf07b28f7c7dac, type: 3}
+    Texture: {fileID: 2800000, guid: 7d36a44c5e7c0574daaf07b28f7c7dac, type: 3}
   - Type: 0
     State: 1
-    Sprite: {fileID: 21300000, guid: 6f07ee0882d7d7249881e7c431d2f3c3, type: 3}
+    Texture: {fileID: 2800000, guid: 6f07ee0882d7d7249881e7c431d2f3c3, type: 3}
   - Type: 0
     State: 2
-    Sprite: {fileID: 21300000, guid: c0ad050e077f303429d4c1fb26b50761, type: 3}
+    Texture: {fileID: 2800000, guid: c0ad050e077f303429d4c1fb26b50761, type: 3}
   - Type: 0
     State: 3
-    Sprite: {fileID: 21300000, guid: 6f07ee0882d7d7249881e7c431d2f3c3, type: 3}
+    Texture: {fileID: 2800000, guid: 6f07ee0882d7d7249881e7c431d2f3c3, type: 3}
   - Type: 1
     State: 0
-    Sprite: {fileID: 21300000, guid: 7d36a44c5e7c0574daaf07b28f7c7dac, type: 3}
+    Texture: {fileID: 2800000, guid: 7d36a44c5e7c0574daaf07b28f7c7dac, type: 3}
   - Type: 1
     State: 1
-    Sprite: {fileID: 21300000, guid: 344fcbeeb63121f4280f980034e94734, type: 3}
+    Texture: {fileID: 2800000, guid: 344fcbeeb63121f4280f980034e94734, type: 3}
   - Type: 1
     State: 2
-    Sprite: {fileID: 21300000, guid: 814d98fbbb2ca5b409960f4579267e4f, type: 3}
+    Texture: {fileID: 2800000, guid: 814d98fbbb2ca5b409960f4579267e4f, type: 3}
   - Type: 1
     State: 3
-    Sprite: {fileID: 21300000, guid: 344fcbeeb63121f4280f980034e94734, type: 3}
+    Texture: {fileID: 2800000, guid: 344fcbeeb63121f4280f980034e94734, type: 3}
   Nodes:
     Container: {fileID: 2007395970}
-    Prefab: {fileID: 1534031500408350, guid: 4fca75af5504140b6814370e66ce13db, type: 2}
+    Prefab: {fileID: 1553028415447372, guid: f9cfd03ea9c16414fa336302da1d87a4, type: 2}
     PreloadNumber: 2000
   NodeMaterial: {fileID: 2100000, guid: b9514d8527b8e47f9b3ff643b0420608, type: 2}
   DataPack: pl-Wiki
   DataPackDate: 20191101
   NodeScaleTime: 0.8
   ConnectionNodeScaleTime: 0.4
-  NodeLoaderController: {fileID: 0}
 --- !u!114 &68664598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -670,7 +669,7 @@ MonoBehaviour:
   SearchParent: {fileID: 1737072744}
   searchBox: {fileID: 1965067068}
   SearchScrollView: {fileID: 1706649565}
-  console: {fileID: 0}
+  console: {fileID: 1684452361}
   numberOfDisplayedSearchEntries: 10
 --- !u!114 &68664605
 MonoBehaviour:
@@ -3493,6 +3492,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Graph: {fileID: 68664594}
   MaxNodeSpacialSoundDist: 10
+  AmbientVolume: 0.2
+  EffectsVolume: 0.8
+  Mute: 0
 --- !u!4 &971141200
 Transform:
   m_ObjectHideFlags: 0
@@ -5215,7 +5217,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000012367342}
+  m_AnchoredPosition: {x: 0, y: 0.00003167053}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1737072746

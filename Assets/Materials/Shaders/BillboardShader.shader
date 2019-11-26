@@ -2,8 +2,7 @@ Shader "BillboardShader"
 {
     Properties
     {
-        _FaceObject ("Face Object", Vector) = (0, 0, 0, 0)
-        [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
+        _MainTex ("Texture", 2D) = "white" {}
 	    [Enum(RenderOnTop, 0,RenderWithTest, 4)] _ZTest("Render on top", Int) = 1
         _Color ("Tint", Color) = (1,1,1,1)
 
@@ -55,10 +54,6 @@ Shader "BillboardShader"
             #pragma target 2.0
 
             #include "UnityCG.cginc"
-            #include "UnityUI.cginc"
-
-            #pragma multi_compile __ UNITY_UI_CLIP_RECT
-            #pragma multi_compile __ UNITY_UI_ALPHACLIP
 
             struct appdata_t
             {
@@ -78,7 +73,6 @@ Shader "BillboardShader"
 
             fixed4 _Color;
             fixed4 _TextureSampleAdd;
-            float4 _ClipRect;
 	        float4 _FaceObject;
 	        
 	        inline float4x4 CalcRotationMatrix() {
@@ -119,16 +113,7 @@ Shader "BillboardShader"
 
             fixed4 frag(v2f IN) : SV_Target
             {
-                half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
-
-                #ifdef UNITY_UI_CLIP_RECT
-                color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
-                #endif
-
-                #ifdef UNITY_UI_ALPHACLIP
-                clip (color.a - 0.001);
-                #endif
-                return color;
+                return tex2D(_MainTex, IN.texcoord) * IN.color;
             }
         ENDCG
         }

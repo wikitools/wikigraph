@@ -94,11 +94,9 @@ namespace Services.Nodes {
 		}
 
 		private void ScaleNodeSize(GameObject node, float scale) {
-			GetNodeRectTransform<Canvas>(node).localScale = Vector3.one * scale;
+			node.transform.localScale = Vector3.one * scale;
 		}
 		
-		private RectTransform GetNodeRectTransform<C>(GameObject node) where C: Component => node.GetComponentInChildren<C>().GetComponent<RectTransform>();
-
 		private void AnimationEndAction(GameObject node, float scale) {
 			if(scale == 0)
 				controller.Nodes.Pool.Despawn(node);
@@ -108,15 +106,14 @@ namespace Services.Nodes {
 		public float GetNodeTypeScale(NodeType type) => type == NodeType.ARTICLE ? 1 : CATEGORY_SCALE;
 		
 		private IEnumerator AnimateNodeSize(GameObject node, float scale, float time) {
-			var canvasRect = GetNodeRectTransform<Canvas>(node);
-			float incAmount = (scale - canvasRect.localScale.x) * Time.deltaTime / time;
+			float incAmount = (scale - node.transform.localScale.x) * Time.deltaTime / time;
 			while (true) {
-				if (Mathf.Abs(canvasRect.localScale.x - scale) > Mathf.Abs(incAmount)) {
-					var newScale = Vector3.one * (canvasRect.localScale.x + incAmount);
-					canvasRect.localScale = newScale;
+				if (Mathf.Abs(node.transform.localScale.x - scale) > Mathf.Abs(incAmount)) {
+					var newScale = Vector3.one * (node.transform.localScale.x + incAmount);
+					node.transform.localScale = newScale;
 					yield return null;
 				} else {
-					canvasRect.localScale = Vector3.one * scale;
+					node.transform.localScale = Vector3.one * scale;
 					break;
 				}
 			}

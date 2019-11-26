@@ -53,21 +53,22 @@ namespace Services.Nodes {
 		}
 		
 		public void SetNodeObjectState(GameObject nodeObject, NodeType type, NodeState state) {
-			nodeObject.GetComponentInChildren<Image>().sprite = GetStateSprite(type, state);
+			var material = nodeObject.GetComponent<MeshRenderer>().material;
+			material.mainTexture = GetStateSprite(type, state);
 			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
 			if(state == NodeState.DISABLED) {
-				nodeObject.GetComponentInChildren<Image>().color = Random.ColorHSV(0.5f, 0.6f, 0.5f, 0.7f, 0.4f, 0.6f, 0.75f, 1f);
+				material.color = Random.ColorHSV(0.5f, 0.6f, 0.5f, 0.7f, 0.4f, 0.6f, 0.75f, 1f);
 			} else {
-				nodeObject.GetComponentInChildren<Image>().color = new Color(255, 255, 255);
+				material.color = new Color(1, 1, 1, 1);
 			}
 		}
 		
 		public void SetNodeSprite(Node node, NodeState state) {
 			var nodeObject = GraphController.Graph.NodeObjectMap[node];
-			nodeObject.GetComponentInChildren<Image>().sprite = GetStateSprite(node.Type, state);
+			nodeObject.GetComponent<MeshRenderer>().material.mainTexture = GetStateSprite(node.Type, state);
 		}
 		
-		public Sprite GetStateSprite(NodeType type, NodeState state) => controller.NodeSprites.First(node => node.State == state && node.Type == type).Sprite;
+		public Texture GetStateSprite(NodeType type, NodeState state) => controller.NodeSprites.First(node => node.State == state && node.Type == type).Texture;
 
 		public void ForceSetSelectedNode(Node node) {
 			if(node != null && node.State != NodeState.SELECTED)
