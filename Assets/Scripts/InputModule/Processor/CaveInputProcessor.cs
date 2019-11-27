@@ -28,7 +28,7 @@ namespace InputModule.Processor {
 		}
 
 		private void OnMovementJoystickYAxisMove(float amount) {
-			if (Controller.GraphController.GraphMode.Value != GraphMode.FREE_FLIGHT || Controller.BlockType == InputBlockType.INFO_SPACE) 
+			if (Controller.GraphController.GraphMode.Value != GraphMode.FREE_FLIGHT || Controller.BlockType.HasValue)
 				return;
 			var translation = CaveInputBinding.Flystick(binding.MovementJoystick.Instance).pose.rotation * Vector3.forward;
 			EntityTransform.Translate(Config.MovementSpeed * amount * translation, Space.World);

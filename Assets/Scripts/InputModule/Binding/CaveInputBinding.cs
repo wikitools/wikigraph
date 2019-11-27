@@ -14,7 +14,7 @@ namespace InputModule.Binding {
 	public class CaveInputBinding : InputBinding {
 		private static readonly Logger<CaveInputBinding> LOGGER = new Logger<CaveInputBinding>();
 
-		[NotBlocked(InputBlockType.INFO_SPACE)]
+		[NotBlocked]
 		public FlystickCursor MovementJoystick;
 		public FlystickPointer NodePointer;
 		public FlystickPointer NodeChooser;
