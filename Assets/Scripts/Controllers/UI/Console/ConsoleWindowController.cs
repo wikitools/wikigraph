@@ -41,6 +41,9 @@ namespace Controllers.UI.Console {
 			headerHint.text = Config.CurrentlySelectedText;
 			nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelect;
 			UpdateNodeHeaderAfterSelect(null, null);
+
+			if (networkController.IsServer())
+				Cursor.visible = true;
 		}
 
 		private void UpdateNodeHeaderAfterSelect(Node previousNode, Node selectedNode) {
