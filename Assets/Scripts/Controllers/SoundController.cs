@@ -31,7 +31,6 @@ namespace Controllers {
 		bool isInfo = true;
 
 		void Start() {
-			if (Mute) return;
 			if (Graph.GetComponent<NetworkController>().IsClient()) {
 				return;
 			}
@@ -42,6 +41,7 @@ namespace Controllers {
 			AmbientAudio.clip = soundManager.GetRandom(SoundType.AMBIENT_LOOP);
 			AmbientAudio.volume = AmbientVolume;
 			AmbientAudio.Play();
+			SetVolume(AmbientAudio, AmbientVolume);
 
 			nodeController = Graph.GetComponent<NodeController>();
 			graphController = Graph.GetComponent<GraphController>();
