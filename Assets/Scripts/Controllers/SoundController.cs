@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Controllers.UI;
 using InputModule.Processor;
 using Model;
 using Services;
@@ -56,7 +57,7 @@ namespace Controllers {
 			};
 			graphController.ConnectionMode.OnValueChanged += mode => PlayStickySoundSelected(SoundType.MODE, mode == ConnectionMode.CHILDREN ? 0 : 1);
 			connectionController.OnScrollInDirection += PlayScrollSounds;
-			InputProcessor.playInfoSound += () => {
+			InfoSpaceController.playInfoSound += () => {
 				PlayStickySoundSelected(SoundType.INFO, isInfo ? 0 : 1);
 				isInfo = !isInfo;
 			};
