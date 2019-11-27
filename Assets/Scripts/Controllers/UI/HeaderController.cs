@@ -95,7 +95,10 @@ namespace Controllers.UI {
 		}
 
 		private void UpdateConsoleState(bool active) {
-			transform.GetChild(6).gameObject.SetActive(active);
+			if(networkController.IsClient())
+				transform.GetChild(6).gameObject.SetActive(active);
+			else
+				transform.GetChild(6).gameObject.SetActive(false);
 		}
 
 		private void UpdateAutoStateAfterRouteChange(bool started) {
@@ -104,7 +107,10 @@ namespace Controllers.UI {
 		}
 
 		private void UpdateAutoState(bool value) {
-			transform.GetChild(5).GetComponent<TextMesh>().text = value && (nodeController.HighlightedNode == null) ? Config.AutoText : "";
+			transform.GetChild(5).GetComponent<TextMesh>().text = value && 
+				(nodeController.HighlightedNode == null || 
+				(nodeController.HighlightedNode != null && nodeController.SelectedNode != null && nodeController.HighlightedNode == nodeController.SelectedNode)
+			) ? Config.AutoText : "";
 		}
 
 		private void UpdateNodeHeaderAfterSelectOrHighlight(Node previousNode, Node selectedNode) {
