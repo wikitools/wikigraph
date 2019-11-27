@@ -12,8 +12,10 @@ namespace Controllers.UI.Console {
 		private NodeController nodeController;
 		private NetworkController networkController;
 		private ActionController historyController;
+		private ConsoleWindowController consoleWindow;
 
 		public RouteService routeService;
+		public GameObject console;
 		public Action<bool> OnRoutePlayStateChanged;
 		IEnumerator autoRouteCoroutine;
 
@@ -35,7 +37,7 @@ namespace Controllers.UI.Console {
 
 		void Start() {
 			if (networkController.IsServer()) {
-
+				consoleWindow = console.GetComponent<ConsoleWindowController>();
 				routesPath = Path.Combine(nodeController.NodeLoadManager.NodeLoader.fileReader.GetDataPackDirectory(), ROUTES_DIR);
 				routeService = new RouteService(historyController, secondsToChangeRoute, routesPath);
 				OnRoutePlayStateChanged += isStarted => {
@@ -71,8 +73,8 @@ namespace Controllers.UI.Console {
 				string getFileName = Path.GetFileNameWithoutExtension(name);
 				routesTiles[i].transform.GetChild(0).GetComponent<Text>().text = getFileName;
 				routesTiles[i].transform.GetChild(1).GetComponent<Text>().text = "Route Length: <color=black>" + lengths[i] + "</color>";
-				routesTiles[i].transform.GetChild(2).name = i.ToString();
-				routesTiles[i].transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => onRouteButtonClicked());
+				routesTiles[i].name = i.ToString();
+				routesTiles[i].GetComponent<Button>().onClick.AddListener(() => onRouteButtonClicked());
 				routesTiles[i].transform.position = routesTiles[i].transform.position + new Vector3(0, -64 * i, 0);
 				i++;
 			}
@@ -86,8 +88,9 @@ namespace Controllers.UI.Console {
 					if (routeService.IsRoutePlaying) networkController.SyncRoutePlaying(false);
 					routeIndex = newIndex;
 					routeService.startRoute(routeIndex);
-					routesTiles[routeIndex].transform.GetComponent<Image>().color = new Color(0.341f, 0.58f, 0.808f, 1.0f);
-					routesTiles[routeIndex].transform.GetChild(2).GetComponent<Button>().transform.GetChild(0).GetComponent<Text>().text = "Stop";
+					routesTiles[routeIndex].transform.GetComponent<Image>().color = new Color(0.341f, 0.58f, 0.808f, 0.65f);
+					routesTiles[routeIndex].transform.GetChild(2).GetComponent<Text>().text = "Stop";
+					consoleWindow.ToggleVisibility();
 				}
 				else {
 					if (routeService.IsRoutePlaying) networkController.SyncRoutePlaying(false);
@@ -100,7 +103,7 @@ namespace Controllers.UI.Console {
 
 		public void makeDefaultColorOnRouteTile() {
 			routesTiles[routeIndex].transform.GetComponent<Image>().color = new Color(0.91f, 0.91f, 0.91f, 0.404f);
-			routesTiles[routeIndex].transform.GetChild(2).GetComponent<Button>().transform.GetChild(0).GetComponent<Text>().text = "Start";
+			routesTiles[routeIndex].transform.GetChild(2).GetComponent<Text>().text = "Start";
 		}
 	}
 
