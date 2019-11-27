@@ -119,12 +119,6 @@ namespace Controllers {
 		private void Start() {
 			NodeStateManager = new NodeStateManager(this);
 			Nodes.Pool = new GameObjectPool(Nodes.Prefab, Nodes.PreloadNumber, Nodes.PoolContainer);
-			if (NetworkController.IsServer()) {
-				GraphController.GraphMode.OnValueChanged += mode => {
-					if (mode == GraphMode.FREE_FLIGHT)
-						NetworkController.SetSelectedNode((Node) null);
-				};
-			}
 		}
 
 		private void Update() {

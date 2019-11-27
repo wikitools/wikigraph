@@ -21,7 +21,7 @@ namespace Services.Connection {
 		#region Connection Loading
 
 		public void LoadConnection(Model.Connection.Connection connection, ConnectionDistributionService distributionService) {
-			if (graph.ConnectionObjectMap.ContainsKey(connection) || connection == null)
+			if (connection == null || graph.ConnectionObjectMap.ContainsKey(connection))
 				return;
 			InitConnection(connection, distributionService);
 			controller.OnConnectionLoaded?.Invoke(connection);

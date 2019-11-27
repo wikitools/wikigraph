@@ -1,5 +1,6 @@
 using Controllers;
 using System;
+using Model;
 using UnityEngine;
 
 namespace InputModule.Processor {
@@ -19,7 +20,7 @@ namespace InputModule.Processor {
 		protected void ExitNodeTraverseMode() {
 			if (Controller.ActionController.routeController.routeService.IsRoutePlaying) 
 				Controller.NetworkController.SyncRoutePlaying(false);
-			else Controller.NetworkController.SetGraphMode(GraphMode.FREE_FLIGHT);
+			else Controller.NetworkController.SetSelectedNode((Node) null);
 		}
 
 		protected void OnScrollInputChanged(int direction) {
