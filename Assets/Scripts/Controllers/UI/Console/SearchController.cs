@@ -39,17 +39,8 @@ namespace Controllers.UI.Console {
 				string path = nodeController.NodeLoadManager.NodeLoader.fileReader.GetDataPackFile() + FILE_EXTENSION_LETTER;
 				searchLoader = new SearchLoader(numberOfDisplayedSearchEntries, path);
 				consoleWindow = console.GetComponent<ConsoleWindowController>();
-				consoleWindow.OnConsoleToggled += (isOn) => onSearchOpened(isOn);
 
 			}
-		}
-
-		public void onSearchOpened(bool value) {
-			if (value) {
-				searchBox.GetComponent<InputField>().ActivateInputField();
-				searchBox.GetComponent<InputField>().Select();
-			}
-			else searchBox.GetComponent<InputField>().DeactivateInputField();
 		}
 
 		private void Awake() {
@@ -88,6 +79,7 @@ namespace Controllers.UI.Console {
 			if (uint.TryParse(EventSystem.current.currentSelectedGameObject.name, out index)) {
 				actionController.nodeChangedSource = ActionController.NodeChangedSource.Search;
 				actionController.SelectNode(index);
+				consoleWindow.ToggleVisibility();
 			}
 		}
 

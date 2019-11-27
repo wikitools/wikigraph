@@ -3,17 +3,21 @@ using Inspector;
 using Model;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace Controllers.UI.Console {
 	public class ConsoleWindowController : MonoBehaviour {
 
 		public GameObject Graph;
 		public GameObject Header;
+		public GameObject RoutesContent;
 		public ConsoleWindowConfig Config;
 
 		private Canvas canvas;
 		private Text headerHint, headerTitle;
 		private Image headerIcon;
+		private Toggle headerTabSearch, headerTabRoutes;
+		private InputField searchInput;
 
 		private NetworkController networkController;
 		private InputController inputController;
@@ -37,6 +41,9 @@ namespace Controllers.UI.Console {
 			headerHint = transform.Find("ConsoleHeader/NodeHint").GetComponent<Text>();
 			headerTitle = transform.Find("ConsoleHeader/NodeName").GetComponent<Text>();
 			headerIcon = transform.Find("ConsoleHeader/NodeIcon").GetComponent<Image>();
+			headerTabSearch = transform.Find("TabPanel/TabContainer/TabSearch").GetComponent<Toggle>();
+			headerTabRoutes = transform.Find("TabPanel/TabContainer/TabRoutes").GetComponent<Toggle>();
+			searchInput = transform.Find("TabPanel/SearchContent/SearchInput").GetComponent<InputField>();
 			canvas = gameObject.GetComponent<Canvas>();
 			headerHint.text = Config.CurrentlySelectedText;
 			nodeController.OnSelectedNodeChanged += UpdateNodeHeaderAfterSelect;
@@ -56,10 +63,56 @@ namespace Controllers.UI.Console {
 			canvas.enabled = active;
 			headerController.SetEnabled(!active);
 			inputController.SetBlockInput(canvas.enabled, InputBlockType.CONSOLE);
+			if (active) {
+				if (headerTabSearch.isOn) {
+					SelectSearchInput();
+				} else {
+					SelectFirstRoute();
+				}
+			} else {
+				DeselectSearchInput();
+			}
 		}
 
 		public bool GetActive() {
 			return active;
+		}
+
+		void SelectSearchInput() {
+			searchInput.ActivateInputField();
+			searchInput.Select();
+		}
+
+		void DeselectSearchInput() {
+			searchInput.DeactivateInputField();
+		}
+
+		void SelectFirstRoute() {
+			if (RoutesContent.transform.childCount > 0)
+				EventSystem.current.SetSelectedGameObject(RoutesContent.transform.GetChild(0).GetComponent<Button>().gameObject);
+		}
+
+		void Update() {
+			if (active) {
+				// Tab change
+				if (Input.GetKeyDown(KeyCode.Tab)) {
+					if (headerTabSearch.isOn) {
+						headerTabSearch.isOn = false;
+						headerTabRoutes.isOn = true;
+						SelectFirstRoute();
+					} else {
+						headerTabSearch.isOn = true;
+						headerTabRoutes.isOn = false;
+						SelectSearchInput();
+					}
+				}
+				// Search input exit with arrow down
+				if (Input.GetKeyDown(KeyCode.DownArrow)) {
+					if (headerTabSearch.isOn) {
+						searchInput.OnDeselect(new BaseEventData(EventSystem.current));
+					}
+				}
+			}
 		}
 
 		[Serializable]
