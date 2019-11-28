@@ -62,6 +62,7 @@ namespace Controllers.UI.Console {
 				}
 				searchTiles[i].transform.GetChild(1).GetComponent<Text>().text = result.Value.Replace("_", " ");
 				searchTiles[i].GetComponent<Button>().onClick.AddListener(() => OnSearchEntryClicked());
+				searchTiles[i].transform.GetChild(searchTiles[i].transform.childCount - 1).GetComponent<Text>().text = "ID: <color=black>" + result.Key + "</color>";
 				searchTiles[i].name = result.Key.ToString();
 				i++;
 			}
