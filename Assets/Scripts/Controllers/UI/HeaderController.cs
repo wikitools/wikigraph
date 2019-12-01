@@ -95,7 +95,7 @@ namespace Controllers.UI {
 		}
 
 		private void UpdateConsoleState(bool active) {
-			if(networkController.IsClient())
+			if (networkController.IsClient())
 				transform.GetChild(6).gameObject.SetActive(active);
 			else
 				transform.GetChild(6).gameObject.SetActive(false);
