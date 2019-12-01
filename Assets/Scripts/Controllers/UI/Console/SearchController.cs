@@ -11,14 +11,13 @@ namespace Controllers.UI.Console {
 		private NodeController nodeController;
 		private ActionController actionController;
 		private NetworkController networkController;
-		private ConsoleWindowController consoleWindow;
 
 		public GameObject SearchTemplateArticle;
 		public GameObject SearchTemplateCategory;
 		public GameObject SearchParent;
 		public GameObject searchBox;
 		public GameObject SearchScrollView;
-		public GameObject console;
+		public GameObject EmptySetHint;
 		List<GameObject> searchTiles = new List<GameObject>();
 
 		int searchIndex;
@@ -38,7 +37,6 @@ namespace Controllers.UI.Console {
 				};
 				string path = nodeController.NodeLoadManager.NodeLoader.fileReader.GetDataPackFile() + FILE_EXTENSION_LETTER;
 				searchLoader = new SearchLoader(numberOfDisplayedSearchEntries, path);
-				consoleWindow = console.GetComponent<ConsoleWindowController>();
 
 			}
 		}
@@ -60,10 +58,14 @@ namespace Controllers.UI.Console {
 				else {
 					searchTiles.Add(Instantiate(SearchTemplateCategory, SearchParent.transform));
 				}
-				searchTiles[i].transform.GetChild(1).GetComponent<Text>().text = result.Value.Replace("_", " ");
+				string entryText = result.Value.Replace("_", " ") + $" <color=#00000040><size=16>{result.Key}</size></color>";
+				searchTiles[i].transform.GetChild(1).GetComponent<Text>().text = entryText;
 				searchTiles[i].GetComponent<Button>().onClick.AddListener(() => OnSearchEntryClicked());
 				searchTiles[i].name = result.Key.ToString();
 				i++;
+			}
+			if(i>0) {
+				EmptySetHint.SetActive(false);
 			}
 		}
 
@@ -72,6 +74,7 @@ namespace Controllers.UI.Console {
 				Destroy(entry);
 			}
 			searchTiles.Clear();
+			EmptySetHint.SetActive(true);
 		}
 
 		public void OnSearchEntryClicked() {
@@ -79,7 +82,7 @@ namespace Controllers.UI.Console {
 			if (uint.TryParse(EventSystem.current.currentSelectedGameObject.name, out index)) {
 				actionController.nodeChangedSource = ActionController.NodeChangedSource.Search;
 				actionController.SelectNode(index);
-				consoleWindow.ToggleVisibility();
+				networkController.ToggleConsole();
 			}
 		}
 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Inspector;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace Controllers.UI {
 		public GameObject Grid;
 		public bool State;
 
+		public static Action playInfoSound;
 		private CanvasGroup[] BackgroundCanvasGroups;
 		private float SpaceOpacity;
 
@@ -40,11 +42,13 @@ namespace Controllers.UI {
 			if (State && SpaceOpacity == 1.0f) {
 				StopAllCoroutines();
 				StartCoroutine(ChangeOpacity(SpaceOpacity, 0f, 1f));
+				playInfoSound?.Invoke();
 			}
 			if (!State && SpaceOpacity == 0.0f) {
 				StopAllCoroutines();
 				nodeController.HighlightedNode = null;
 				StartCoroutine(ChangeOpacity(SpaceOpacity, 1f, 1f));
+				playInfoSound?.Invoke();
 			}
 		}
 

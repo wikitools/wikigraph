@@ -12,10 +12,8 @@ namespace Controllers.UI.Console {
 		private NodeController nodeController;
 		private NetworkController networkController;
 		private ActionController historyController;
-		private ConsoleWindowController consoleWindow;
 
 		public RouteService routeService;
-		public GameObject console;
 		public Action<bool> OnRoutePlayStateChanged;
 		IEnumerator autoRouteCoroutine;
 
@@ -37,7 +35,6 @@ namespace Controllers.UI.Console {
 
 		void Start() {
 			if (networkController.IsServer()) {
-				consoleWindow = console.GetComponent<ConsoleWindowController>();
 				routesPath = Path.Combine(nodeController.NodeLoadManager.NodeLoader.fileReader.GetDataPackDirectory(), ROUTES_DIR);
 				routeService = new RouteService(historyController, secondsToChangeRoute, routesPath);
 				OnRoutePlayStateChanged += isStarted => {
@@ -90,7 +87,7 @@ namespace Controllers.UI.Console {
 					routeService.startRoute(routeIndex);
 					routesTiles[routeIndex].transform.GetComponent<Image>().color = new Color(0.341f, 0.58f, 0.808f, 0.65f);
 					routesTiles[routeIndex].transform.GetChild(2).GetComponent<Text>().text = "Stop";
-					consoleWindow.ToggleVisibility();
+					networkController.ToggleConsole();
 				}
 				else {
 					if (routeService.IsRoutePlaying) networkController.SyncRoutePlaying(false);

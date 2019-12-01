@@ -8,7 +8,7 @@ namespace InputModule.Processor {
 		protected InputConfig Config;
 		protected InputController Controller;
 
-		public static Action playInfoSound;
+
 
 		public InputProcessor(InputConfig config, InputController controller) {
 			Config = config;
@@ -36,10 +36,8 @@ namespace InputModule.Processor {
 				Controller.ActionController.ActionService.RedoAction();
 		}
 
-		protected void ToggleInfoSpace() {
-			playInfoSound?.Invoke();
-			Controller.NetworkController.ToggleInfoSpace();
-		}
+		protected void ToggleInfoSpace() => Controller.NetworkController.ToggleInfoSpace();
+
 		protected void ToggleOperatorConsole() => Controller.NetworkController.ToggleConsole();
 
 
