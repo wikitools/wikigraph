@@ -12,8 +12,12 @@ Interaktywna wizualizacja artykułów Wikipedii w formie trójwymiarowego grafu 
 - Wybierz jedną z dostępnych opcji wikipedii (Data Pack)
 - Ewentualnie dostosuj pola ``Max Node Limit`` oraz ``Node Starting Amount`` w ``Node Loader Controller``
 
-### Tworzenie własnych paczek danych
+#### Tworzenie własnych paczek danych
 - ...
+
+## Sterowanie
+#### LZWP
+#### PC
 
 ## Wygląd
 

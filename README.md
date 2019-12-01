@@ -6,10 +6,12 @@ Interactive 3D visualization of Wikipedia articles and categories in a graph-lik
 ### Running
 - Clone project
 - Open in Unity (2018.1.9f2 preferred)
+- Open ``WIKIGRAPH_NO_LZWP`` scene
 - Download the [data packs](https://drive.google.com/file/d/1v7wjfuuUWdu8ApqQHOk-0H4YvAvf9lHY/view?usp=sharing)
 - Unpack to ``Assets/StreamingAssets/DataFiles`` folder
 - Choose ``GRAPH`` object in Hierarchy and find ``Node Controller`` in Inspector
 - Reload the data packs and choose one of the wiki options
+- Make sure the ``Input Controller`` &rarr; ``Environment`` is set to ``PC``
 - You might want to tweak the ``Max Node Limit`` & ``Node Starting Amount`` - start from a couple hundred to a thousand
 - Basic settings are on ``GRAPH`` object in ``Graph Controller``
 
