@@ -58,8 +58,10 @@ namespace Services.Nodes {
 			nodeObject.GetComponent<SphereCollider>().enabled = state != NodeState.DISABLED;
 			if(state == NodeState.DISABLED) {
 				material.color = Random.ColorHSV(0.5f, 0.6f, 0.5f, 0.7f, 0.4f, 0.6f, 0.75f, 1f);
+				nodeObject.transform.GetComponent<MeshRenderer>().sortingOrder = 1;
 			} else {
 				material.color = new Color(1, 1, 1, 1);
+				nodeObject.transform.GetComponent<MeshRenderer>().sortingOrder = 10;
 			}
 		}
 		

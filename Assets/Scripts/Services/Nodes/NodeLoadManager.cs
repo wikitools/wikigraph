@@ -67,6 +67,7 @@ namespace Services.Nodes {
 		public void InitializeNode(Node model, ref GameObject nodeObject, Vector3 position) {
 			nodeObject.transform.parent = controller.Nodes.Container.transform;
 			nodeObject.transform.position = position;
+			nodeObject.transform.GetComponent<MeshRenderer>().sortingOrder = 10;
 			UpdateNodeObjectState(model.Type, model.State, ref nodeObject);
 			nodeObject.name = model.ID.ToString();
 			ScaleNodeSize(nodeObject, GetNodeTypeScale(model.Type));

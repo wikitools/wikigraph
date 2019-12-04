@@ -4,6 +4,7 @@ using Controllers.UI.Console;
 using Model;
 using Services.History;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Controllers.UI {
 	public class HeaderController : MonoBehaviour {
@@ -53,9 +54,8 @@ namespace Controllers.UI {
 			stateIcon = transform.GetChild(4).GetComponent<SpriteRenderer>();
 
 			// Render always on top of nodes and connections
-			for (int i = 0; i < 3; i++) {
-				SetRendererSortingOrder(transform.GetChild(i), 50);
-			}
+			SetRendererSortingOrder(transform.GetChild(0), 50);
+			SetRendererSortingOrder(transform.GetChild(2), 50);
 			SetRendererSortingOrder(transform.GetChild(5), 51);
 			SetRendererSortingOrder(transform.GetChild(6).GetChild(1), 51);
 			transform.GetChild(6).GetChild(1).GetComponent<TextMesh>().text = Config.ConsoleActiveText;
@@ -115,7 +115,7 @@ namespace Controllers.UI {
 
 		private void UpdateNodeHeaderAfterSelectOrHighlight(Node previousNode, Node selectedNode) {
 			TextMesh headerTitle = transform.GetChild(0).GetComponent<TextMesh>();
-			TextMesh headerValue = transform.GetChild(1).GetComponent<TextMesh>();
+			Text headerValue = transform.GetChild(1).GetChild(0).GetComponent<Text>();
 
 			if (nodeController.HighlightedNode != null) {
 				headerTitle.text = Config.CurrentlyLookingAtText;
