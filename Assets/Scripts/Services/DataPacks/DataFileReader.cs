@@ -28,32 +28,40 @@ namespace Services.DataFiles {
 		}
 
 		public ulong ReadLong(DataFileType file, long offset) {
-			byte[] bytes = readBytes(file, offset, 8);
+			byte[] bytes = ReadBytes(file, offset, 8);
 			return (ulong) (bytes[0] | bytes[1] << 8 | bytes[2] << 16 | bytes[3] << 24 | bytes[4] << 32 | bytes[5] << 40 | bytes[6] << 48 | bytes[7] << 56);
 		}
 
 		public uint ReadInt(DataFileType file, long offset) {
-			byte[] bytes = readBytes(file, offset, 4);
+			byte[] bytes = ReadBytes(file, offset, 4);
 			return (uint) (bytes[0] | bytes[1] << 8 | bytes[2] << 16 | bytes[3] << 24);
 		}
 
 		public uint ReadInt24(DataFileType file, long offset) {
-			byte[] bytes = readBytes(file, offset, 3);
+			byte[] bytes = ReadBytes(file, offset, 3);
 			return (uint) (bytes[0] | bytes[1] << 8 | bytes[2] << 16);
 		}
 
+		public uint[] ReadInt24Array(DataFileType file, long offset, int size) {
+			byte[] bytes = ReadBytes(file, offset, size * 3);
+			uint[] array = new uint[size];
+			for (var i = 0; i < size; i++)
+				array[i] = (uint) (bytes[i * 3] | bytes[i * 3 + 1] << 8 | bytes[i * 3 + 2] << 16);
+			return array;
+		}
+
 		public ushort ReadShort(DataFileType file, long offset) {
-			byte[] bytes = readBytes(file, offset, 2);
+			byte[] bytes = ReadBytes(file, offset, 2);
 			return (ushort) (bytes[0] | bytes[1] << 8);
 		}
 
 		public byte ReadByte(DataFileType file, long offset) {
-			byte[] bytes = readBytes(file, offset, 1);
+			byte[] bytes = ReadBytes(file, offset, 1);
 			return bytes[0];
 		}
 
 		public string ReadString(DataFileType file, long offset, int length) {
-			byte[] bytes = readBytes(file, offset, length);
+			byte[] bytes = ReadBytes(file, offset, length);
 			return Encoding.UTF8.GetString(bytes);
 		}
 
@@ -76,7 +84,7 @@ namespace Services.DataFiles {
 
 		public string GetDataPackDirectory() => Path.Combine(DATA_FILE_PATH, dataPack, dataPackDate);
 
-		private byte[] readBytes(DataFileType file, long offset, int count) {
+		private byte[] ReadBytes(DataFileType file, long offset, int count) {
 			byte[] bytes = new byte[count];
 			streams[file].Stream.Position = offset;
 			int bytesRead = streams[file].Stream.Read(bytes, 0, count);

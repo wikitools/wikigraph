@@ -1,5 +1,6 @@
 using System;
 using Model;
+using UnityEngine;
 
 namespace Services.DataFiles {
 	public class NodeLoader: IDisposable {
@@ -45,16 +46,13 @@ namespace Services.DataFiles {
 		private void loadNodeConnections(ref Node node, long nodeMapFilePos) {
 			uint nodeGraphFilePos = fileReader.ReadInt(DataFileType.MAP, nodeMapFilePos);
 			uint nextNodeGraphFilePos = getNextNodePropPos(DataFileType.GRAPH, nodeMapFilePos + MAP.LINE_SIZE);
-			
-			node.Parents = new uint[fileReader.ReadInt24(DataFileType.GRAPH, nodeGraphFilePos)];
+
+			var parentCount = fileReader.ReadInt24(DataFileType.GRAPH, nodeGraphFilePos);
 			nodeGraphFilePos += GRAPH.PARENT_LINKS_SIZE;
-			for (var i = 0; i < node.Parents.Length; i++) {
-				node.Parents[i] = fileReader.ReadInt24(DataFileType.GRAPH, nodeGraphFilePos + i * GRAPH.ID_SIZE);
-			}
-			node.Children = new uint[(nextNodeGraphFilePos - nodeGraphFilePos) / GRAPH.ID_SIZE - node.Parents.Length];
-			for (var i = 0; i < node.Children.Length; i++) {
-				node.Children[i] = fileReader.ReadInt24(DataFileType.GRAPH, nodeGraphFilePos + (node.Parents.Length + i) * GRAPH.ID_SIZE);
-			}
+			node.Parents = fileReader.ReadInt24Array(DataFileType.GRAPH, nodeGraphFilePos, (int) parentCount);
+			nodeGraphFilePos += parentCount * GRAPH.ID_SIZE;
+			
+			node.Children = fileReader.ReadInt24Array(DataFileType.GRAPH, nodeGraphFilePos, (int) ((nextNodeGraphFilePos - nodeGraphFilePos) / GRAPH.ID_SIZE));
 			// Shuffle Children and parents arrays with constant seed
 			UnityEngine.Random.InitState((int)node.ID);
 			ShuffleArray(node.Parents);
