@@ -119,7 +119,7 @@ namespace Controllers.UI {
 
 			if (nodeController.HighlightedNode != null) {
 				headerTitle.text = Config.CurrentlyLookingAtText;
-				headerValue.text = nodeController.HighlightedNode.Title;
+				headerValue.text = BreakTitleText(nodeController.HighlightedNode.Title);
 			} else {
 				headerTitle.text = string.Empty;
 				headerValue.text = string.Empty;
@@ -127,13 +127,13 @@ namespace Controllers.UI {
 			if (nodeController.SelectedNode != null) {
 				if (nodeController.HighlightedNode != null && nodeController.HighlightedNode != nodeController.SelectedNode) {
 					headerTitle.text = Config.CurrentlyLookingAtText;
-					headerValue.text = nodeController.HighlightedNode.Title;
+					headerValue.text = BreakTitleText(nodeController.HighlightedNode.Title);
 					stateIcon.sprite = null;
 					UpdateAutoState(false);
 					ShowConnectionRangeCount(connectionController.GetNodeNeighbours(nodeController.HighlightedNode).ToArray().Length);
 				} else {
 					headerTitle.text = Config.CurrentlySelectedText;
-					headerValue.text = nodeController.SelectedNode.Title;
+					headerValue.text = BreakTitleText(nodeController.SelectedNode.Title);
 					UpdateConnectionMode(graphController.ConnectionMode.Value);
 					UpdateAutoState(routeActive);
 					ShowConnectionRangeCount(null);
@@ -145,6 +145,32 @@ namespace Controllers.UI {
 				}
 				stateIcon.sprite = null;
 			}
+		}
+
+		private string BreakTitleText(string title) {
+			transform.GetChild(1).GetComponent<TextMesh>().fontSize = title.Length < 30 ? 90 : 40;
+			if (title.Length < 30) return title;
+			var words = title.Split(' ');
+			var cnt = 0;
+			for (var w = 0; w < words.Length; ++w) {
+				cnt += words[w].Length;
+				if (cnt > title.Length / 2) {
+					if (w == words.Length - 1) {
+						var brokenWord = words[w].Split('-');
+						if(brokenWord.Length == 1) {
+							words[w] = words[w].Substring(0, words[w].Length / 2) +  "-\n" + words[w].Substring(words[w].Length / 2);
+						} else {
+							brokenWord[brokenWord.Length / 2] += "-\n";
+							words[w] = string.Join("-", brokenWord);
+						}
+					} else {
+						words[w] += "\n";
+					}
+					title = string.Join(" ", words);
+					break;
+				}
+			}
+			return title;
 		}
 
 		private void ShowConnectionRangeCount(int? count) {
